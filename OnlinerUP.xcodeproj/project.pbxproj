@@ -79,6 +79,18 @@
 		58C5246A19A733A60012CB5E /* envelope_unread.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5246819A733A60012CB5E /* envelope_unread.png */; };
 		58C5246B19A733A60012CB5E /* envelope_read.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5246919A733A60012CB5E /* envelope_read.png */; };
 		58C5246E19A7EB2E0012CB5E /* icon_comment_unread.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5246D19A7EB2E0012CB5E /* icon_comment_unread.png */; };
+		58C5247C19A8D7280012CB5E /* NSMutableArray+SWUtilityButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5247119A8D7280012CB5E /* NSMutableArray+SWUtilityButtons.m */; };
+		58C5247D19A8D7280012CB5E /* SWCellScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5247319A8D7280012CB5E /* SWCellScrollView.m */; };
+		58C5247E19A8D7280012CB5E /* SWLongPressGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5247519A8D7280012CB5E /* SWLongPressGestureRecognizer.m */; };
+		58C5247F19A8D7280012CB5E /* SWTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5247719A8D7280012CB5E /* SWTableViewCell.m */; };
+		58C5248019A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5247919A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.m */; };
+		58C5248119A8D7280012CB5E /* SWUtilityButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5247B19A8D7280012CB5E /* SWUtilityButtonView.m */; };
+		58C5248619A8D9DB0012CB5E /* check@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5248219A8D9DB0012CB5E /* check@2x.png */; };
+		58C5248719A8D9DB0012CB5E /* clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5248319A8D9DB0012CB5E /* clock@2x.png */; };
+		58C5248819A8D9DB0012CB5E /* cross@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5248419A8D9DB0012CB5E /* cross@2x.png */; };
+		58C5248919A8D9DB0012CB5E /* list@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5248519A8D9DB0012CB5E /* list@2x.png */; };
+		58C5248D19A926000012CB5E /* BaraholkaTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */; };
+		58C5249019A9261A0012CB5E /* BaraholkaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -201,6 +213,26 @@
 		58C5246819A733A60012CB5E /* envelope_unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = envelope_unread.png; path = ../envelope_unread.png; sourceTree = "<group>"; };
 		58C5246919A733A60012CB5E /* envelope_read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = envelope_read.png; path = ../envelope_read.png; sourceTree = "<group>"; };
 		58C5246D19A7EB2E0012CB5E /* icon_comment_unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_comment_unread.png; sourceTree = "<group>"; };
+		58C5247019A8D7280012CB5E /* NSMutableArray+SWUtilityButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+SWUtilityButtons.h"; sourceTree = "<group>"; };
+		58C5247119A8D7280012CB5E /* NSMutableArray+SWUtilityButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+SWUtilityButtons.m"; sourceTree = "<group>"; };
+		58C5247219A8D7280012CB5E /* SWCellScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWCellScrollView.h; sourceTree = "<group>"; };
+		58C5247319A8D7280012CB5E /* SWCellScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWCellScrollView.m; sourceTree = "<group>"; };
+		58C5247419A8D7280012CB5E /* SWLongPressGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWLongPressGestureRecognizer.h; sourceTree = "<group>"; };
+		58C5247519A8D7280012CB5E /* SWLongPressGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWLongPressGestureRecognizer.m; sourceTree = "<group>"; };
+		58C5247619A8D7280012CB5E /* SWTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWTableViewCell.h; sourceTree = "<group>"; };
+		58C5247719A8D7280012CB5E /* SWTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWTableViewCell.m; sourceTree = "<group>"; };
+		58C5247819A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWUtilityButtonTapGestureRecognizer.h; sourceTree = "<group>"; };
+		58C5247919A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWUtilityButtonTapGestureRecognizer.m; sourceTree = "<group>"; };
+		58C5247A19A8D7280012CB5E /* SWUtilityButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWUtilityButtonView.h; sourceTree = "<group>"; };
+		58C5247B19A8D7280012CB5E /* SWUtilityButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWUtilityButtonView.m; sourceTree = "<group>"; };
+		58C5248219A8D9DB0012CB5E /* check@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check@2x.png"; sourceTree = "<group>"; };
+		58C5248319A8D9DB0012CB5E /* clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock@2x.png"; sourceTree = "<group>"; };
+		58C5248419A8D9DB0012CB5E /* cross@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cross@2x.png"; sourceTree = "<group>"; };
+		58C5248519A8D9DB0012CB5E /* list@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list@2x.png"; sourceTree = "<group>"; };
+		58C5248B19A926000012CB5E /* BaraholkaTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaraholkaTableViewController.h; sourceTree = "<group>"; };
+		58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaraholkaTableViewController.m; sourceTree = "<group>"; };
+		58C5248E19A9261A0012CB5E /* BaraholkaTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaraholkaTableViewCell.h; sourceTree = "<group>"; };
+		58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaraholkaTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -352,6 +384,7 @@
 			isa = PBXGroup;
 			children = (
 				58A53D261989448600792508 /* Main.storyboard */,
+				58C5248A19A925D90012CB5E /* Baraholka */,
 				589FE21F199506CA00CBB57C /* Modal */,
 				58A53D4F1989452900792508 /* MyAd */,
 				58A110F919A68DD6002A97F4 /* Messages */,
@@ -439,6 +472,10 @@
 		58C5246C19A733B30012CB5E /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				58C5248219A8D9DB0012CB5E /* check@2x.png */,
+				58C5248319A8D9DB0012CB5E /* clock@2x.png */,
+				58C5248419A8D9DB0012CB5E /* cross@2x.png */,
+				58C5248519A8D9DB0012CB5E /* list@2x.png */,
 				58A110B619A39E54002A97F4 /* email_read.png */,
 				58A110B719A39E54002A97F4 /* email_unread.png */,
 				58C5246819A733A60012CB5E /* envelope_unread.png */,
@@ -467,9 +504,41 @@
 			path = "UIKit+AFNetworking";
 			sourceTree = "<group>";
 		};
+		58C5246F19A8D7280012CB5E /* SWTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				58C5247019A8D7280012CB5E /* NSMutableArray+SWUtilityButtons.h */,
+				58C5247119A8D7280012CB5E /* NSMutableArray+SWUtilityButtons.m */,
+				58C5247219A8D7280012CB5E /* SWCellScrollView.h */,
+				58C5247319A8D7280012CB5E /* SWCellScrollView.m */,
+				58C5247419A8D7280012CB5E /* SWLongPressGestureRecognizer.h */,
+				58C5247519A8D7280012CB5E /* SWLongPressGestureRecognizer.m */,
+				58C5247619A8D7280012CB5E /* SWTableViewCell.h */,
+				58C5247719A8D7280012CB5E /* SWTableViewCell.m */,
+				58C5247819A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.h */,
+				58C5247919A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.m */,
+				58C5247A19A8D7280012CB5E /* SWUtilityButtonView.h */,
+				58C5247B19A8D7280012CB5E /* SWUtilityButtonView.m */,
+			);
+			name = SWTableViewCell;
+			path = PodFiles;
+			sourceTree = "<group>";
+		};
+		58C5248A19A925D90012CB5E /* Baraholka */ = {
+			isa = PBXGroup;
+			children = (
+				58C5248B19A926000012CB5E /* BaraholkaTableViewController.h */,
+				58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */,
+				58C5248E19A9261A0012CB5E /* BaraholkaTableViewCell.h */,
+				58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */,
+			);
+			name = Baraholka;
+			sourceTree = "<group>";
+		};
 		58D7EF80199B9E8100601D09 /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
+				58C5246F19A8D7280012CB5E /* SWTableViewCell */,
 				58A11098199E8F80002A97F4 /* SVPullToRefresh */,
 			);
 			name = Dependency;
@@ -569,14 +638,18 @@
 				589FE22119989A8D00CBB57C /* 10385417.jpeg in Resources */,
 				589FE22B19989A9F00CBB57C /* label_change.png in Resources */,
 				58A53D49198944D600792508 /* icon-selected-green-25x25.png in Resources */,
+				58C5248919A8D9DB0012CB5E /* list@2x.png in Resources */,
 				58A53D071989438300792508 /* Images.xcassets in Resources */,
 				58A53D46198944D600792508 /* btn-enter.png in Resources */,
 				58A53D4C198944D600792508 /* icon-unselected-25x25@2x.png in Resources */,
 				589FE233199A10F200CBB57C /* btn-up-all.png in Resources */,
+				58C5248819A8D9DB0012CB5E /* cross@2x.png in Resources */,
+				58C5248619A8D9DB0012CB5E /* check@2x.png in Resources */,
 				58C5246A19A733A60012CB5E /* envelope_unread.png in Resources */,
 				58A53D47198944D600792508 /* btn-up-1.png in Resources */,
 				58A110B919A39E54002A97F4 /* email_unread.png in Resources */,
 				58A110B819A39E54002A97F4 /* email_read.png in Resources */,
+				58C5248719A8D9DB0012CB5E /* clock@2x.png in Resources */,
 				589FE23119989A9F00CBB57C /* icon_comment.png in Resources */,
 				589FE22F19989A9F00CBB57C /* label_sell.png in Resources */,
 			);
@@ -603,7 +676,10 @@
 				58A110ED19A52694002A97F4 /* AFURLConnectionOperation.m in Sources */,
 				58A53D371989448600792508 /* MyAd.m in Sources */,
 				58A110F819A52694002A97F4 /* UIWebView+AFNetworking.m in Sources */,
+				58C5248D19A926000012CB5E /* BaraholkaTableViewController.m in Sources */,
 				58A110EA19A52694002A97F4 /* AFHTTPSessionManager.m in Sources */,
+				58C5247F19A8D7280012CB5E /* SWTableViewCell.m in Sources */,
+				58C5249019A9261A0012CB5E /* BaraholkaTableViewCell.m in Sources */,
 				58A110EB19A52694002A97F4 /* AFNetworkReachabilityManager.m in Sources */,
 				589FE21E199504A300CBB57C /* ModalWebViewController.m in Sources */,
 				58A53D351989448600792508 /* LoginViewController.m in Sources */,
@@ -615,9 +691,11 @@
 				58A53D3D1989448600792508 /* XPathQuery.m in Sources */,
 				58A110E919A52694002A97F4 /* AFHTTPRequestOperationManager.m in Sources */,
 				58A53D3C1989448600792508 /* TFHppleElement.m in Sources */,
+				58C5248019A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.m in Sources */,
 				58A110FF19A68EFB002A97F4 /* MyMessagesTableViewCell.m in Sources */,
 				58A1110219A73116002A97F4 /* MyMessage.m in Sources */,
 				58A53D3B1989448600792508 /* TFHpple.m in Sources */,
+				58C5247D19A8D7280012CB5E /* SWCellScrollView.m in Sources */,
 				58A110F319A52694002A97F4 /* UIAlertView+AFNetworking.m in Sources */,
 				58A53D391989448600792508 /* MyAdTableViewController.m in Sources */,
 				58A53D381989448600792508 /* MyAdTableViewCell.m in Sources */,
@@ -628,9 +706,12 @@
 				58A110F119A52694002A97F4 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				58A110E819A52694002A97F4 /* AFHTTPRequestOperation.m in Sources */,
 				58A110F219A52694002A97F4 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
+				58C5247C19A8D7280012CB5E /* NSMutableArray+SWUtilityButtons.m in Sources */,
 				58A110EF19A52694002A97F4 /* AFURLResponseSerialization.m in Sources */,
 				58A1109F199E8F80002A97F4 /* UIScrollView+SVPullToRefresh.m in Sources */,
+				58C5248119A8D7280012CB5E /* SWUtilityButtonView.m in Sources */,
 				58A110FC19A68EE1002A97F4 /* MyMessagesTableViewController.m in Sources */,
+				58C5247E19A8D7280012CB5E /* SWLongPressGestureRecognizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
