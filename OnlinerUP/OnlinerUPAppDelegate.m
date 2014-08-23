@@ -8,6 +8,9 @@
 
 #import "OnlinerUPAppDelegate.h"
 
+NSString* const KeyForUserDefaultsAuthorisationInfo=@"Authorizated";
+NSString* const KeyForUserDefaultUserName=@"UserName";
+
 @implementation OnlinerUPAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -16,10 +19,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
     return YES;
 }
 

@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="Test1.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <elements/>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Ads" syncable="YES">
+        <attribute name="adCategory" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="adDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="adLastUpdate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="adTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="adType" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="adUserID" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="User" syncable="YES">
+        <attribute name="userID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userLogin" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userPainment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userPassword" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="User" positionX="-54" positionY="-10" width="128" height="103"/>
+        <element name="Ads" positionX="178" positionY="-18" width="128" height="133"/>
+    </elements>
 </model>
