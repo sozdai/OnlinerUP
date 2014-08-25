@@ -91,6 +91,7 @@
 		58C5248919A8D9DB0012CB5E /* list@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58C5248519A8D9DB0012CB5E /* list@2x.png */; };
 		58C5248D19A926000012CB5E /* BaraholkaTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */; };
 		58C5249019A9261A0012CB5E /* BaraholkaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */; };
+		58C5249319AA24840012CB5E /* Baraholka.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5249219AA24840012CB5E /* Baraholka.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -233,6 +234,8 @@
 		58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaraholkaTableViewController.m; sourceTree = "<group>"; };
 		58C5248E19A9261A0012CB5E /* BaraholkaTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaraholkaTableViewCell.h; sourceTree = "<group>"; };
 		58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaraholkaTableViewCell.m; sourceTree = "<group>"; };
+		58C5249119AA24840012CB5E /* Baraholka.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Baraholka.h; sourceTree = "<group>"; };
+		58C5249219AA24840012CB5E /* Baraholka.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Baraholka.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -531,6 +534,8 @@
 				58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */,
 				58C5248E19A9261A0012CB5E /* BaraholkaTableViewCell.h */,
 				58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */,
+				58C5249119AA24840012CB5E /* Baraholka.h */,
+				58C5249219AA24840012CB5E /* Baraholka.m */,
 			);
 			name = Baraholka;
 			sourceTree = "<group>";
@@ -683,6 +688,7 @@
 				58A110EB19A52694002A97F4 /* AFNetworkReachabilityManager.m in Sources */,
 				589FE21E199504A300CBB57C /* ModalWebViewController.m in Sources */,
 				58A53D351989448600792508 /* LoginViewController.m in Sources */,
+				58C5249319AA24840012CB5E /* Baraholka.m in Sources */,
 				58A53D051989438300792508 /* OnlinerUP.xcdatamodeld in Sources */,
 				58A110EC19A52694002A97F4 /* AFSecurityPolicy.m in Sources */,
 				58A110F619A52694002A97F4 /* UIProgressView+AFNetworking.m in Sources */,

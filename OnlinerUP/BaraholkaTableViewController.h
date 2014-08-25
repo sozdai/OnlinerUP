@@ -10,4 +10,6 @@
 
 @interface BaraholkaTableViewController : UITableViewController
 
+@property (strong, nonatomic) NSDictionary* sellType;
+
 @end
