@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5862329A19AE10F80016418C /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = 5862329919AE10F80016418C /* Network.m */; };
 		589FE21E199504A300CBB57C /* ModalWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 589FE21D199504A300CBB57C /* ModalWebViewController.m */; };
 		589FE22119989A8D00CBB57C /* 10385417.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 589FE22019989A8D00CBB57C /* 10385417.jpeg */; };
 		589FE22A19989A9F00CBB57C /* label_buy.png in Resources */ = {isa = PBXBuildFile; fileRef = 589FE22219989A9F00CBB57C /* label_buy.png */; };
@@ -105,6 +106,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5862329819AE10F80016418C /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
+		5862329919AE10F80016418C /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		589FE21C199504A300CBB57C /* ModalWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalWebViewController.h; sourceTree = "<group>"; };
 		589FE21D199504A300CBB57C /* ModalWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModalWebViewController.m; sourceTree = "<group>"; };
 		589FE22019989A8D00CBB57C /* 10385417.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 10385417.jpeg; path = ../10385417.jpeg; sourceTree = "<group>"; };
@@ -266,6 +269,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5862329B19AE11080016418C /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				5862329819AE10F80016418C /* Network.h */,
+				5862329919AE10F80016418C /* Network.m */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
 		589FE21F199506CA00CBB57C /* Modal */ = {
 			isa = PBXGroup;
 			children = (
@@ -387,6 +399,7 @@
 			isa = PBXGroup;
 			children = (
 				58A53D261989448600792508 /* Main.storyboard */,
+				5862329B19AE11080016418C /* Network */,
 				58C5248A19A925D90012CB5E /* Baraholka */,
 				589FE21F199506CA00CBB57C /* Modal */,
 				58A53D4F1989452900792508 /* MyAd */,
@@ -689,6 +702,7 @@
 				589FE21E199504A300CBB57C /* ModalWebViewController.m in Sources */,
 				58A53D351989448600792508 /* LoginViewController.m in Sources */,
 				58C5249319AA24840012CB5E /* Baraholka.m in Sources */,
+				5862329A19AE10F80016418C /* Network.m in Sources */,
 				58A53D051989438300792508 /* OnlinerUP.xcdatamodeld in Sources */,
 				58A110EC19A52694002A97F4 /* AFSecurityPolicy.m in Sources */,
 				58A110F619A52694002A97F4 /* UIProgressView+AFNetworking.m in Sources */,

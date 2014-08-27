@@ -116,7 +116,7 @@
             <objects>
                 <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="rYi-pd-BGv" customClass="MyAdTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="103" sectionHeaderHeight="22" sectionFooterHeight="22" id="Smt-XS-qdp">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -311,7 +311,7 @@
             <objects>
                 <tableViewController id="LQv-GS-XHP" customClass="MyMessagesTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" id="aME-8T-YNK">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -440,31 +440,31 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jL0-u7-Da3">
-                                            <rect key="frame" x="0.0" y="4" width="320" height="44"/>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jL0-u7-Da3">
+                                            <rect key="frame" x="0.0" y="4" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="bTe-Rl-NaK">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="Gfm-Vz-K0B" userLabel="title">
+                                                    <rect key="frame" x="8" y="18" width="304" height="21"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="hxA-VD-GoZ">
                                                     <rect key="frame" x="8" y="5" width="40" height="9"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Минск" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rlc-NX-9ie" userLabel="date">
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Минск" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vyg-QE-Dtc" userLabel="date">
                                                     <rect key="frame" x="56" y="4" width="98" height="10"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="15 y.e." textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kNG-Zk-eou" userLabel="date">
-                                                    <rect key="frame" x="178" y="0.0" width="96" height="13"/>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="15 y.e." textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejO-Ns-tAm" userLabel="date">
+                                                    <rect key="frame" x="162" y="0.0" width="112" height="13"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gfm-Vz-K0B" userLabel="title">
-                                                    <rect key="frame" x="8" y="18" width="304" height="21"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vhf-MO-mkd" userLabel="date">
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wUB-1q-qpp" userLabel="date">
                                                     <rect key="frame" x="282" y="0.0" width="30" height="14"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" red="1" green="0.43137258290000002" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
@@ -472,25 +472,33 @@
                                                 </label>
                                             </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstItem="Gfm-Vz-K0B" firstAttribute="top" secondItem="jL0-u7-Da3" secondAttribute="top" constant="18" id="MnU-YD-wuh"/>
+                                                <constraint firstAttribute="bottom" secondItem="Gfm-Vz-K0B" secondAttribute="bottom" constant="5" id="aEp-n4-YKH"/>
+                                                <constraint firstItem="Gfm-Vz-K0B" firstAttribute="leading" secondItem="jL0-u7-Da3" secondAttribute="leading" constant="8" id="cQl-sc-mCn"/>
+                                                <constraint firstAttribute="trailing" secondItem="Gfm-Vz-K0B" secondAttribute="trailing" constant="8" id="hNZ-Cy-XwY"/>
+                                            </constraints>
                                         </view>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="jL0-u7-Da3" firstAttribute="leading" secondItem="anX-iV-MHG" secondAttribute="leading" id="DoQ-lK-dhH"/>
+                                        <constraint firstItem="jL0-u7-Da3" firstAttribute="top" secondItem="anX-iV-MHG" secondAttribute="top" constant="4" id="W0f-cd-fQS"/>
+                                        <constraint firstAttribute="trailing" secondItem="jL0-u7-Da3" secondAttribute="trailing" id="Ydu-NM-ete"/>
+                                        <constraint firstAttribute="bottom" secondItem="jL0-u7-Da3" secondAttribute="bottom" constant="4" id="uzC-bo-7ta"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="cityLabel" destination="Rlc-NX-9ie" id="hbs-HH-UtF"/>
-                                    <outlet property="priceLabel" destination="kNG-Zk-eou" id="It0-YS-BBe"/>
-                                    <outlet property="sellTypeImage" destination="bTe-Rl-NaK" id="TL3-KL-J5V"/>
-                                    <outlet property="titleLabel" destination="Gfm-Vz-K0B" id="YlI-wa-6d6"/>
-                                    <outlet property="torgLabel" destination="vhf-MO-mkd" id="DPt-p4-Thx"/>
+                                    <outlet property="cityLabel" destination="Vyg-QE-Dtc" id="uZK-j5-kQh"/>
+                                    <outlet property="priceLabel" destination="ejO-Ns-tAm" id="eNF-H4-bAE"/>
+                                    <outlet property="sellTypeImage" destination="hxA-VD-GoZ" id="Kfp-we-Wq8"/>
+                                    <outlet property="titleLabel" destination="Gfm-Vz-K0B" id="O15-Us-M6q"/>
+                                    <outlet property="torgLabel" destination="wUB-1q-qpp" id="Upe-6T-tqg"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="IQ3-ju-Uyz">
-                        <barButtonItem key="leftBarButtonItem" systemItem="compose" id="jfS-de-FSf">
-                            <connections>
-                                <segue destination="rYi-pd-BGv" kind="push" id="jw1-ry-xcX"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" systemItem="compose" id="jfS-de-FSf"/>
                         <connections>
                             <outlet property="titleView" destination="XSS-Ur-hTi" id="gSC-d9-E6c"/>
                         </connections>
