@@ -116,7 +116,7 @@
             <objects>
                 <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="rYi-pd-BGv" customClass="MyAdTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="103" sectionHeaderHeight="22" sectionFooterHeight="22" id="Smt-XS-qdp">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -311,7 +311,7 @@
             <objects>
                 <tableViewController id="LQv-GS-XHP" customClass="MyMessagesTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" id="aME-8T-YNK">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -424,7 +424,7 @@
             </objects>
             <point key="canvasLocation" x="611" y="1023"/>
         </scene>
-        <!--Baraholka Table View Controller - Root View Controller-->
+        <!--Baraholka Table View Controller - Онлайнер-->
         <scene sceneID="3GU-EC-MMk">
             <objects>
                 <tableViewController id="iz0-uE-9V2" customClass="BaraholkaTableViewController" sceneMemberID="viewController">
@@ -512,9 +512,12 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="IQ3-ju-Uyz">
+                    <navigationItem key="navigationItem" title="Онлайнер" id="IQ3-ju-Uyz">
                         <barButtonItem key="leftBarButtonItem" systemItem="compose" id="jfS-de-FSf">
                             <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
+                            <connections>
+                                <segue destination="rYi-pd-BGv" kind="push" id="qB4-7o-Ngm"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
