@@ -43,7 +43,7 @@
                       @"7":@"label_close.png"};
 
     
-    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:YES];
+    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:NO];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

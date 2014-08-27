@@ -149,7 +149,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                             <state key="normal" title=" 1" image="email_unread.png">
-                                                <color key="titleColor" red="0.53333336109999996" green="0.16078431900000001" blue="0.0078431377190000002" alpha="1" colorSpace="deviceRGB"/>
+                                                <color key="titleColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -432,9 +432,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Введите текст" showsCancelButton="YES" id="XSS-Ur-hTi">
+                            <rect key="frame" x="0.0" y="64" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <scopeButtonTitles>
+                                <string>Каталог</string>
+                                <string>Барахолка</string>
+                                <string>Форум</string>
+                                <string>Новости</string>
+                            </scopeButtonTitles>
+                            <connections>
+                                <outlet property="delegate" destination="iz0-uE-9V2" id="ziN-2h-htU"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="52" id="1Uj-Rp-Yaw" customClass="BaraholkaTableViewCell">
-                                <rect key="frame" x="0.0" y="86" width="320" height="52"/>
+                                <rect key="frame" x="0.0" y="130" width="320" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Uj-Rp-Yaw" id="anX-iV-MHG">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
@@ -467,7 +482,7 @@
                                                 <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wUB-1q-qpp" userLabel="date">
                                                     <rect key="frame" x="282" y="0.0" width="30" height="14"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
-                                                    <color key="textColor" red="1" green="0.43137258290000002" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
+                                                    <color key="textColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -498,28 +513,15 @@
                         </prototypes>
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="IQ3-ju-Uyz">
-                        <barButtonItem key="leftBarButtonItem" systemItem="compose" id="jfS-de-FSf"/>
-                        <connections>
-                            <outlet property="titleView" destination="XSS-Ur-hTi" id="gSC-d9-E6c"/>
-                        </connections>
+                        <barButtonItem key="leftBarButtonItem" systemItem="compose" id="jfS-de-FSf">
+                            <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="searchDisplayController" destination="Q3a-MF-IcW" id="ZSF-Fw-6mb"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1oS-rr-Frj" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchBar contentMode="redraw" placeholder="Search" showsCancelButton="YES" id="XSS-Ur-hTi">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <textInputTraits key="textInputTraits"/>
-                    <scopeButtonTitles>
-                        <string>Scope 1</string>
-                        <string>Scope 2</string>
-                    </scopeButtonTitles>
-                    <connections>
-                        <outlet property="delegate" destination="iz0-uE-9V2" id="ziN-2h-htU"/>
-                    </connections>
-                </searchBar>
                 <searchDisplayController id="Q3a-MF-IcW">
                     <connections>
                         <outlet property="delegate" destination="iz0-uE-9V2" id="MhO-ub-1A6"/>
