@@ -86,39 +86,90 @@
     return cell;
 }
 
-
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
+{
+    [_objects removeAllObjects];
+    switch(selectedScope)
+    {
+        case 0:
+            /* do something */
+            break;
+            
+        case 1:
+            [self baraholkaQuickSearch:searchBar.text];
+            break;
+            
+        case 2:
+            /* do something else */
+            break;
+            
+        case 3:
+            /* do something else */
+            break;
+            
+        default:
+            /* do some default thing for unknown unit */
+            break;
+    };
+}
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    if (![searchText isEqualToString:@""]) {
-       [Network getUrl:@"http://baraholka.onliner.by/gapi/search/baraholka/topic.json" withParams:@{@"s":searchText} andHeaders:nil :^(NSArray *array, NSString *responseString, NSError *error) {
-           NSMutableArray *newBaraholkaTopic= [[NSMutableArray alloc] initWithCapacity:0];
-           NSMutableArray* responseArray = [[NSArray arrayWithArray:array] mutableCopy];
-           if (![responseString isEqualToString:@"[]"]) {
-               [responseArray removeObjectAtIndex:0];
-           }
-           for (id key in responseArray) {
-               Baraholka *myBaraholkaTotic = [Baraholka new];
-               [newBaraholkaTopic addObject:myBaraholkaTotic];
-               
-               NSString* link = [key valueForKey:@"link"];
-               myBaraholkaTotic.title = [[self findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"] stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
-               myBaraholkaTotic.topicID = [self findTextIn:link fromStart:@"?t=" toEnd:@"\""];
-               myBaraholkaTotic.city = [self findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
-               myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
-               NSString* price = [NSString stringWithFormat:@"%@",[key valueForKey:@"price"]];
-               if (![price isEqualToString:@"<null>"]) {
-                   myBaraholkaTotic.price = [NSString stringWithFormat:@"%@ %@", price, [key valueForKey:@"currency"]];
-               }
-               
-               myBaraholkaTotic.isTorg = [key valueForKey:@"bargain"];
-               
-           }
-           [_objects removeAllObjects];
-           _objects = [newBaraholkaTopic mutableCopy];
-           [self.searchDisplayController.searchResultsTableView reloadData];
-       }];
+    [_objects removeAllObjects];
+    switch(searchBar.selectedScopeButtonIndex)
+    {
+        case 0:
+            /* do something */
+            break;
+            
+        case 1:
+            [self baraholkaQuickSearch:searchBar.text];
+            break;
+            
+        case 2:
+            /* do something else */
+            break;
+            
+        case 3:
+            /* do something else */
+            break;
+            
+        default:
+            /* do some default thing for unknown unit */
+            break;
+    };
+}
 
+- (void) baraholkaQuickSearch: (NSString*) searchText
+{
+    if (![searchText isEqualToString:@""]) {
+        [Network getUrl:@"http://baraholka.onliner.by/gapi/search/baraholka/topic.json" withParams:@{@"s":searchText} andHeaders:nil :^(NSArray *array, NSString *responseString, NSError *error) {
+            NSMutableArray *newBaraholkaTopic= [[NSMutableArray alloc] initWithCapacity:0];
+            NSMutableArray* responseArray = [[NSArray arrayWithArray:array] mutableCopy];
+            if (![responseString isEqualToString:@"[]"]) {
+                [responseArray removeObjectAtIndex:0];
+            }
+            for (id key in responseArray) {
+                Baraholka *myBaraholkaTotic = [Baraholka new];
+                [newBaraholkaTopic addObject:myBaraholkaTotic];
+                
+                NSString* link = [key valueForKey:@"link"];
+                myBaraholkaTotic.title = [[self findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"] stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+                myBaraholkaTotic.topicID = [self findTextIn:link fromStart:@"?t=" toEnd:@"\""];
+                myBaraholkaTotic.city = [self findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
+                myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
+                NSString* price = [NSString stringWithFormat:@"%@",[key valueForKey:@"price"]];
+                if (![price isEqualToString:@"<null>"]) {
+                    myBaraholkaTotic.price = [NSString stringWithFormat:@"%@ %@", price, [key valueForKey:@"currency"]];
+                }
+                
+                myBaraholkaTotic.isTorg = [key valueForKey:@"bargain"];
+                
+            }
+            [_objects removeAllObjects];
+            _objects = [newBaraholkaTopic mutableCopy];
+            [self.searchDisplayController.searchResultsTableView reloadData];
+        }];
     }
 }
 

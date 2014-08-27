@@ -13,6 +13,7 @@
 
 + (void)getUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*)headers :(void (^)(NSArray *array, NSString* responseString, NSError *error))block {
     
+    [[AFHTTPRequestOperationManager manager].operationQueue cancelAllOperations];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];

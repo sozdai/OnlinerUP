@@ -5,19 +5,19 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>80A84BFA-2D23-4890-8883-5F55413A4555</string>
+	<string>173919C8-CA8C-4A05-B62D-F6CE20D7BDF1</string>
 	<key>IDESourceControlProjectName</key>
 	<string>OnlinerUP</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>41FD9239-4477-45A3-A845-C1508CEB1808</key>
+		<key>31FF0F8E-7579-4D1D-81D2-0FE7C4B2AB64</key>
 		<string>https://github.com/sozdai/OnlinerUP.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>OnlinerUP.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>41FD9239-4477-45A3-A845-C1508CEB1808</key>
+		<key>31FF0F8E-7579-4D1D-81D2-0FE7C4B2AB64</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
@@ -25,14 +25,14 @@
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>41FD9239-4477-45A3-A845-C1508CEB1808</string>
+	<string>31FF0F8E-7579-4D1D-81D2-0FE7C4B2AB64</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>41FD9239-4477-45A3-A845-C1508CEB1808</string>
+			<string>31FF0F8E-7579-4D1D-81D2-0FE7C4B2AB64</string>
 			<key>IDESourceControlWCCName</key>
 			<string>OnlinerUP</string>
 		</dict>
