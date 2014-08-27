@@ -145,7 +145,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <button opaque="NO" contentMode="scaleAspectFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9rM-7V-js9">
-                                            <rect key="frame" x="14" y="8" width="55" height="32"/>
+                                            <rect key="frame" x="0.0" y="7" width="55" height="32"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                             <state key="normal" title=" 1" image="email_unread.png">
@@ -513,6 +513,7 @@
                         </prototypes>
                     </tableView>
                     <navigationItem key="navigationItem" title="Онлайнер" id="IQ3-ju-Uyz">
+                        <barButtonItem key="backBarButtonItem" title=" " id="SbJ-yi-mXE"/>
                         <barButtonItem key="leftBarButtonItem" systemItem="compose" id="jfS-de-FSf">
                             <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
                             <connections>

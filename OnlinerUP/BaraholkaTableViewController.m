@@ -42,8 +42,22 @@
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
 
-    
+
     [self.searchDisplayController setDisplaysSearchBarInNavigationBar:NO];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self.searchDisplayController.searchBar setShowsCancelButton:NO];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillAppear:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+}
+
+- (void)keyboardWillAppear:(NSNotification *)notification
+{
+    [self.searchDisplayController.searchBar setShowsCancelButton:NO];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
