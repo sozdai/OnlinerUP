@@ -30,10 +30,9 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-//    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:YES];
+    
     self.sellType = @{@"1":@"label_important.png",
                       @"2":@"label_sell.png",
                       @"3":@"label_buy.png",
@@ -41,18 +40,54 @@
                       @"5":@"label_service.png",
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
+
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:YES];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    int count;
+    if (tableView == self.tableView) {
+        count = 3;
+    }
+    else if (tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        count = [_objects count];
+    }
+    return count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    BaraholkaTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if (tableView == self.tableView) {
+        if (!cell) {
+            cell = [[BaraholkaTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        }
+        cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %d Row %d",indexPath.section,indexPath.row];
+    }
+    else if (tableView == self.searchDisplayController.searchResultsTableView) {
+        if (!cell) {
+            cell = [[BaraholkaTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        }
+        if ([_objects count] != 0) {
+            Baraholka *myBaraholkaTotic = [Baraholka new];
+            myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
+            
+            cell.titleLabel.text = myBaraholkaTotic.title;
+            cell.cityLabel.text = myBaraholkaTotic.city;
+            cell.priceLabel.text = myBaraholkaTotic.price;
+            cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.type]];
+            cell.torgLabel.text = myBaraholkaTotic.isTorg;
+            
+        }
+
+    }
+    return cell;
 }
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -93,7 +128,7 @@
             myBaraholkaTotic.title = [self findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"];
             myBaraholkaTotic.topicID = [self findTextIn:link fromStart:@"?t=" toEnd:@"\""];
             myBaraholkaTotic.city = [self findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
-            myBaraholkaTotic.type = [key valueForKey:@"category"];
+            myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
             myBaraholkaTotic.price = [NSString stringWithFormat:@"%@ %@", [key valueForKey:@"price"], [key valueForKey:@"currency"]];
             myBaraholkaTotic.isTorg = [key valueForKey:@"bargain"];
             
@@ -110,44 +145,21 @@
     }];
 }
 
-
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [_objects count];
-}
-
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Cell";
-    BaraholkaTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[BaraholkaTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
-    
-    
-    if ([_objects count] != 0) {
-        Baraholka *myBaraholkaTotic = [Baraholka new];
-        myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
-        
-        cell.textLabel.text = myBaraholkaTotic.title;
-        cell.titleLabel.text = myBaraholkaTotic.title;
-        cell.cityLabel.text = myBaraholkaTotic.city;
-        cell.priceLabel.text = myBaraholkaTotic.price;
-        cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.type]];
-        cell.torgLabel.text = myBaraholkaTotic.isTorg;
-   
-    }
-    return cell;
-}
+//#pragma mark - Table view data source
+//
+//
+//
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    static NSString *CellIdentifier = @"Cell";
+//    BaraholkaTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+//    if (!cell) {
+//        cell = [[BaraholkaTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+//    }
+//    
+//    
+//    return cell;
+//}
 
 - (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText {
     NSString* value;
@@ -165,53 +177,5 @@
 }
 
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

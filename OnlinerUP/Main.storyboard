@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="9Um-iw-g24">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="xRZ-Rk-Pns">
     <dependencies>
         <deployment defaultVersion="1536" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
@@ -424,56 +424,47 @@
             </objects>
             <point key="canvasLocation" x="611" y="1023"/>
         </scene>
-        <!--Baraholka Table View Controller - Барахолка-->
-        <scene sceneID="gz5-eb-slN">
+        <!--Baraholka Table View Controller - Root View Controller-->
+        <scene sceneID="3GU-EC-MMk">
             <objects>
-                <tableViewController id="eUX-hj-PFv" customClass="BaraholkaTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="2Zf-o8-P63">
+                <tableViewController id="iz0-uE-9V2" customClass="BaraholkaTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="52" sectionHeaderHeight="22" sectionFooterHeight="22" id="i4O-lY-0Pd">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search" showsCancelButton="YES" id="L06-mr-Buu">
-                            <rect key="frame" x="0.0" y="64" width="320" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                            <scopeButtonTitles>
-                                <string>Scope 1</string>
-                                <string>Scope 2</string>
-                            </scopeButtonTitles>
-                        </searchBar>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="4Qg-dI-xas" customClass="BaraholkaTableViewCell">
-                                <rect key="frame" x="0.0" y="130" width="320" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="52" id="1Uj-Rp-Yaw" customClass="BaraholkaTableViewCell">
+                                <rect key="frame" x="0.0" y="86" width="320" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Qg-dI-xas" id="Uxv-V9-8iS">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Uj-Rp-Yaw" id="anX-iV-MHG">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KXv-q7-H8M">
-                                            <rect key="frame" x="0.0" y="-1" width="320" height="44"/>
+                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jL0-u7-Da3">
+                                            <rect key="frame" x="0.0" y="4" width="320" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="gDB-tL-Eoo">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="bTe-Rl-NaK">
                                                     <rect key="frame" x="8" y="5" width="40" height="9"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Минск" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w9N-fw-dDF" userLabel="date">
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Минск" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rlc-NX-9ie" userLabel="date">
                                                     <rect key="frame" x="56" y="4" width="98" height="10"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="15 y.e." textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="70g-hr-WD1" userLabel="date">
-                                                    <rect key="frame" x="236" y="0.0" width="38" height="13"/>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="15 y.e." textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kNG-Zk-eou" userLabel="date">
+                                                    <rect key="frame" x="178" y="0.0" width="96" height="13"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j7C-Eo-b5u" userLabel="title">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gfm-Vz-K0B" userLabel="title">
                                                     <rect key="frame" x="8" y="18" width="304" height="21"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fQE-QO-fnM" userLabel="date">
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vhf-MO-mkd" userLabel="date">
                                                     <rect key="frame" x="282" y="0.0" width="30" height="14"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" red="1" green="0.43137258290000002" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
@@ -485,58 +476,68 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="accessoryView" destination="L06-mr-Buu" id="Vxo-T2-Qji"/>
-                                    <outlet property="cityLabel" destination="w9N-fw-dDF" id="J86-91-Jgd"/>
-                                    <outlet property="priceLabel" destination="70g-hr-WD1" id="FdA-bP-jln"/>
-                                    <outlet property="sellTypeImage" destination="gDB-tL-Eoo" id="JL4-QF-xey"/>
-                                    <outlet property="titleLabel" destination="j7C-Eo-b5u" id="DHh-WU-rvc"/>
-                                    <outlet property="torgLabel" destination="fQE-QO-fnM" id="Klo-BU-bDI"/>
+                                    <outlet property="cityLabel" destination="Rlc-NX-9ie" id="hbs-HH-UtF"/>
+                                    <outlet property="priceLabel" destination="kNG-Zk-eou" id="It0-YS-BBe"/>
+                                    <outlet property="sellTypeImage" destination="bTe-Rl-NaK" id="TL3-KL-J5V"/>
+                                    <outlet property="titleLabel" destination="Gfm-Vz-K0B" id="YlI-wa-6d6"/>
+                                    <outlet property="torgLabel" destination="vhf-MO-mkd" id="DPt-p4-Thx"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Барахолка" id="Dql-Rw-GPd">
-                        <barButtonItem key="backBarButtonItem" title=" " id="G9l-CF-YG4"/>
-                        <barButtonItem key="leftBarButtonItem" systemItem="compose" id="OqK-RF-XJU">
-                            <color key="tintColor" red="1" green="0.43137258290000002" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="IQ3-ju-Uyz">
+                        <barButtonItem key="leftBarButtonItem" systemItem="compose" id="jfS-de-FSf">
                             <connections>
-                                <segue destination="rYi-pd-BGv" kind="push" id="zes-9C-0K0"/>
+                                <segue destination="rYi-pd-BGv" kind="push" id="jw1-ry-xcX"/>
                             </connections>
                         </barButtonItem>
+                        <connections>
+                            <outlet property="titleView" destination="XSS-Ur-hTi" id="gSC-d9-E6c"/>
+                        </connections>
                     </navigationItem>
                     <connections>
-                        <outlet property="searchDisplayController" destination="sJK-fV-REa" id="NZA-lu-t6h"/>
+                        <outlet property="searchDisplayController" destination="Q3a-MF-IcW" id="ZSF-Fw-6mb"/>
                     </connections>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0zi-sY-lz7" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="sJK-fV-REa">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1oS-rr-Frj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchBar contentMode="redraw" placeholder="Search" showsCancelButton="YES" id="XSS-Ur-hTi">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits"/>
+                    <scopeButtonTitles>
+                        <string>Scope 1</string>
+                        <string>Scope 2</string>
+                    </scopeButtonTitles>
                     <connections>
-                        <outlet property="delegate" destination="eUX-hj-PFv" id="jtv-Lz-4t4"/>
-                        <outlet property="searchContentsController" destination="eUX-hj-PFv" id="GTb-DN-Avj"/>
-                        <outlet property="searchResultsDataSource" destination="eUX-hj-PFv" id="6lD-QU-3Y2"/>
-                        <outlet property="searchResultsDelegate" destination="eUX-hj-PFv" id="KE1-jo-Ahx"/>
+                        <outlet property="delegate" destination="iz0-uE-9V2" id="ziN-2h-htU"/>
+                    </connections>
+                </searchBar>
+                <searchDisplayController id="Q3a-MF-IcW">
+                    <connections>
+                        <outlet property="delegate" destination="iz0-uE-9V2" id="MhO-ub-1A6"/>
+                        <outlet property="searchBar" destination="XSS-Ur-hTi" id="XHU-Ra-Lma"/>
+                        <outlet property="searchContentsController" destination="iz0-uE-9V2" id="BlM-mn-iWO"/>
+                        <outlet property="searchResultsDataSource" destination="iz0-uE-9V2" id="kCO-dp-5pi"/>
+                        <outlet property="searchResultsDelegate" destination="iz0-uE-9V2" id="wNg-6B-XKC"/>
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="1045" y="-387"/>
+            <point key="canvasLocation" x="1008" y="-261"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="N3T-R1-WMq">
+        <scene sceneID="yAL-SP-9TW">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9Um-iw-g24" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="QHY-Cm-ayA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <navigationController definesPresentationContext="YES" id="xRZ-Rk-Pns" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hPg-tv-fJ0">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
-                    <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="eUX-hj-PFv" kind="relationship" relationship="rootViewController" id="V2Q-TL-snF"/>
+                        <segue destination="iz0-uE-9V2" kind="relationship" relationship="rootViewController" id="9IK-VJ-gOq"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6qt-64-Vaz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fip-3e-fVw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="617" y="-387"/>
+            <point key="canvasLocation" x="611" y="-261"/>
         </scene>
     </scenes>
     <resources>
