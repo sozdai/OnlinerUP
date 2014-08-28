@@ -80,6 +80,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     BaraholkaTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
     
+    
     if (tableView == self.tableView) {
         cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %d Row %d",indexPath.section,indexPath.row];
     }
@@ -93,7 +94,7 @@
             cell.priceLabel.text = myBaraholkaTotic.price;
             cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.type]];
             cell.torgLabel.text = myBaraholkaTotic.isTorg;
-            
+            [cell setBackgroundColor:[UIColor colorWithRed:255.f green:0.f blue:0.f alpha:0.05]];
         }
 
     }
@@ -154,12 +155,27 @@
     };
 }
 
-- (void) baraholkaQuickSearch: (NSString*) searchText
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [self baraholkaFullSearch:searchBar.text];
+}
+
+-(void) baraholkaFullSearch: (NSString*) searchText
+{
+    if (![searchText isEqualToString:@""])
+    {
+        [Network getUrl:@"http://baraholka.onliner.by/search.php" withParams:@{@"charset":@"utf-8",@"q":searchText} andHeaders:nil andSerializer:@"HTTP" :^(NSArray* responseObject, NSString *responseString, NSError *error) {
+            NSLog(@"%@",responseString);
+        }];
+    }
+}
+
+-(void) baraholkaQuickSearch: (NSString*) searchText
 {
     if (![searchText isEqualToString:@""]) {
-        [Network getUrl:@"http://baraholka.onliner.by/gapi/search/baraholka/topic.json" withParams:@{@"s":searchText} andHeaders:nil :^(NSArray *array, NSString *responseString, NSError *error) {
+        [Network getUrl:@"http://baraholka.onliner.by/gapi/search/baraholka/topic.json" withParams:@{@"s":searchText} andHeaders:nil andSerializer:@"JSON" :^(NSArray* responseObject,NSString *responseString, NSError *error) {
             NSMutableArray *newBaraholkaTopic= [[NSMutableArray alloc] initWithCapacity:0];
-            NSMutableArray* responseArray = [[NSArray arrayWithArray:array] mutableCopy];
+            NSMutableArray* responseArray = [[NSArray arrayWithArray:responseObject] mutableCopy];
             if (![responseString isEqualToString:@"[]"]) {
                 [responseArray removeObjectAtIndex:0];
             }

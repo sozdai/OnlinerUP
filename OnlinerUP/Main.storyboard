@@ -327,7 +327,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                             <state key="normal" title="Мистер Грин">
-                                                <color key="titleColor" red="0.53333336109999996" green="0.16078431900000001" blue="0.0078431377190000002" alpha="1" colorSpace="deviceRGB"/>
+                                                <color key="titleColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -436,7 +436,7 @@
                             <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                             <scopeButtonTitles>
                                 <string>Каталог</string>
                                 <string>Барахолка</string>
@@ -459,39 +459,47 @@
                                             <rect key="frame" x="0.0" y="4" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="Gfm-Vz-K0B" userLabel="title">
-                                                    <rect key="frame" x="8" y="18" width="304" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="Gfm-Vz-K0B" userLabel="title">
+                                                    <rect key="frame" x="8" y="18" width="304" height="20"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="hxA-VD-GoZ">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="hxA-VD-GoZ">
                                                     <rect key="frame" x="8" y="5" width="40" height="9"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Минск" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vyg-QE-Dtc" userLabel="date">
-                                                    <rect key="frame" x="56" y="4" width="98" height="10"/>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Минск" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vyg-QE-Dtc" userLabel="date">
+                                                    <rect key="frame" x="56" y="3" width="99" height="13"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="15 y.e." textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejO-Ns-tAm" userLabel="date">
-                                                    <rect key="frame" x="162" y="0.0" width="112" height="13"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="15 y.e." textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejO-Ns-tAm" userLabel="date">
+                                                    <rect key="frame" x="184" y="0.0" width="92" height="14"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="11"/>
+                                                    <color key="textColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wUB-1q-qpp" userLabel="date">
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wUB-1q-qpp" userLabel="date">
                                                     <rect key="frame" x="282" y="0.0" width="30" height="14"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                             <constraints>
+                                                <constraint firstItem="wUB-1q-qpp" firstAttribute="leading" secondItem="ejO-Ns-tAm" secondAttribute="trailing" constant="8" id="DHV-Bc-Xir"/>
+                                                <constraint firstItem="wUB-1q-qpp" firstAttribute="top" secondItem="jL0-u7-Da3" secondAttribute="top" id="Hbv-sr-yti"/>
+                                                <constraint firstItem="hxA-VD-GoZ" firstAttribute="top" secondItem="jL0-u7-Da3" secondAttribute="top" constant="5" id="MO2-jY-V7F"/>
                                                 <constraint firstItem="Gfm-Vz-K0B" firstAttribute="top" secondItem="jL0-u7-Da3" secondAttribute="top" constant="18" id="MnU-YD-wuh"/>
+                                                <constraint firstItem="hxA-VD-GoZ" firstAttribute="leading" secondItem="jL0-u7-Da3" secondAttribute="leading" constant="8" id="OsW-KH-Uzd"/>
+                                                <constraint firstItem="Vyg-QE-Dtc" firstAttribute="leading" secondItem="hxA-VD-GoZ" secondAttribute="trailing" constant="8" id="VIh-ER-VQO"/>
                                                 <constraint firstAttribute="bottom" secondItem="Gfm-Vz-K0B" secondAttribute="bottom" constant="5" id="aEp-n4-YKH"/>
+                                                <constraint firstItem="Vyg-QE-Dtc" firstAttribute="top" secondItem="jL0-u7-Da3" secondAttribute="top" constant="3" id="al2-fk-jj5"/>
                                                 <constraint firstItem="Gfm-Vz-K0B" firstAttribute="leading" secondItem="jL0-u7-Da3" secondAttribute="leading" constant="8" id="cQl-sc-mCn"/>
                                                 <constraint firstAttribute="trailing" secondItem="Gfm-Vz-K0B" secondAttribute="trailing" constant="8" id="hNZ-Cy-XwY"/>
+                                                <constraint firstItem="ejO-Ns-tAm" firstAttribute="top" secondItem="jL0-u7-Da3" secondAttribute="top" id="rtc-HN-RaZ"/>
+                                                <constraint firstAttribute="trailing" secondItem="wUB-1q-qpp" secondAttribute="trailing" constant="8" id="tRL-IX-Uwe"/>
                                             </constraints>
                                         </view>
                                     </subviews>
@@ -508,6 +516,108 @@
                                     <outlet property="sellTypeImage" destination="hxA-VD-GoZ" id="Kfp-we-Wq8"/>
                                     <outlet property="titleLabel" destination="Gfm-Vz-K0B" id="O15-Us-M6q"/>
                                     <outlet property="torgLabel" destination="wUB-1q-qpp" id="Upe-6T-tqg"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FullCell" rowHeight="101" id="ieB-CT-6wa" customClass="MyAdTableViewCell">
+                                <rect key="frame" x="0.0" y="182" width="320" height="101"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ieB-CT-6wa" id="6tj-yO-we2">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GXP-sO-SGC">
+                                            <rect key="frame" x="44" y="3" width="268" height="39"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="4R8-zq-8h8">
+                                                    <rect key="frame" x="2" y="4" width="40" height="9"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Барановичи" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qVZ-Vv-ccv" userLabel="date">
+                                                    <rect key="frame" x="49" y="2" width="66" height="14"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="11"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qcx-NA-DOC">
+                                                    <rect key="frame" x="161" y="1" width="30" height="15"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <subviews>
+                                                        <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="12" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YIr-Mz-xiK" userLabel="date">
+                                                            <rect key="frame" x="6" y="1" width="13" height="14"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <imageView userInteractionEnabled="NO" contentMode="bottomLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon_comment.png" translatesAutoresizingMaskIntoConstraints="NO" id="jIr-4o-mCq">
+                                                            <rect key="frame" x="20" y="4" width="10" height="9"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                </view>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="15 y.e." textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v8g-2w-P5Y" userLabel="date">
+                                                    <rect key="frame" x="161" y="2" width="71" height="14"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="11"/>
+                                                    <color key="textColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ТОРГ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ewV-C6-3Np" userLabel="date">
+                                                    <rect key="frame" x="238" y="3" width="30" height="14"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                    <color key="textColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Все что не вошло в другие категории" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wq5-TA-Cxl" userLabel="date">
+                                                    <rect key="frame" x="2" y="24" width="266" height="14"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="11"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstItem="4R8-zq-8h8" firstAttribute="leading" secondItem="GXP-sO-SGC" secondAttribute="leading" constant="2" id="5YW-YV-iZT"/>
+                                                <constraint firstItem="4R8-zq-8h8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="GXP-sO-SGC" secondAttribute="leading" constant="2" id="B0T-GX-f8S"/>
+                                                <constraint firstItem="4R8-zq-8h8" firstAttribute="top" secondItem="GXP-sO-SGC" secondAttribute="top" constant="4" id="CCw-wn-l2D"/>
+                                                <constraint firstItem="qVZ-Vv-ccv" firstAttribute="leading" secondItem="4R8-zq-8h8" secondAttribute="trailing" constant="7" id="gQ0-wS-i3N"/>
+                                                <constraint firstItem="qVZ-Vv-ccv" firstAttribute="top" secondItem="GXP-sO-SGC" secondAttribute="top" constant="2" id="mnJ-wF-JNi"/>
+                                            </constraints>
+                                        </view>
+                                        <view contentMode="scaleAspectFit" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oVy-6N-Q5x">
+                                            <rect key="frame" x="4" y="7" width="35" height="35"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="10385417.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="QnO-wt-llc">
+                                                    <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        </view>
+                                        <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="308" translatesAutoresizingMaskIntoConstraints="NO" id="dzd-k8-V3k" userLabel="date">
+                                            <rect key="frame" x="4" y="63" width="308" height="33"/>
+                                            <string key="text">iKey.by - Первый специализированный магазин АвтоМото-Чип Ключей в Беларуси. Магазин iKey.by предлагает самый широкий выбор ключей на все марки легковых, грузовых автомобилей и мотоциклов.</string>
+                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Авто Мото Ключи на все марки iKey.by" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zd4-ru-Gcj" userLabel="title">
+                                            <rect key="frame" x="4" y="44" width="308" height="21"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
+                                            <color key="textColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="GXP-sO-SGC" firstAttribute="top" secondItem="6tj-yO-we2" secondAttribute="top" constant="3" id="QmB-s9-4L9"/>
+                                        <constraint firstItem="GXP-sO-SGC" firstAttribute="leading" secondItem="6tj-yO-we2" secondAttribute="leading" constant="44" id="Vvv-id-Kaq"/>
+                                        <constraint firstAttribute="trailing" secondItem="GXP-sO-SGC" secondAttribute="trailing" constant="8" id="jk5-84-254"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="adImage" destination="QnO-wt-llc" id="FsD-FW-cDO"/>
+                                    <outlet property="sellTypeImage" destination="4R8-zq-8h8" id="HA4-YW-Pu7"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

@@ -10,8 +10,8 @@
 
 @interface Network : NSObject
 
-+ (void)getUrl: (NSString*) url withParams: (NSDictionary*)params andHeaders:(NSDictionary*)headers :(void (^)(NSArray *array, NSString* responseString, NSError *error))block;
++ (void)getUrl: (NSString*) url withParams: (NSDictionary*)params andHeaders:(NSDictionary*)headers andSerializer: (NSString*)serializer :(void (^)(NSArray *responseObject, NSString* responseString, NSError *error))block;
 
-+ (void)postUrl: (NSString*) url withParams: (NSDictionary*)params andHeaders:(NSDictionary*)headers :(void (^)(NSArray *array, NSString* responseString, NSError *error))block;
++ (void)postUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*)headers andSerializer:(NSString*)serializer :(void (^)(NSArray *responseObject, NSString* responseString, NSError *error))block;
 
 @end

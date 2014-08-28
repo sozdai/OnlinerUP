@@ -11,11 +11,18 @@
 
 @implementation Network
 
-+ (void)getUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*)headers :(void (^)(NSArray *array, NSString* responseString, NSError *error))block {
++ (void)getUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*)headers andSerializer:(NSString*)serializer :(void (^)(NSArray *responseObject, NSString* responseString, NSError *error))block {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
     [[AFHTTPRequestOperationManager manager].operationQueue cancelAllOperations];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    if ([serializer isEqualToString:@"JSON"]) {
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    }
+    else if ([serializer isEqualToString:@"HTTP"])
+    {
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    }
+    
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     for(id key in headers)
     {
@@ -26,7 +33,11 @@
     [manager GET:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         if (block) {
-            block([NSArray arrayWithArray:responseObject], operation.responseString, nil);
+            NSMutableArray* array = [NSMutableArray array];
+            if ([serializer isEqualToString:@"JSON"]) {
+                array = responseObject;
+            }
+            block([NSArray arrayWithArray:array], operation.responseString, nil);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
         }
         
@@ -39,10 +50,18 @@
     }];
 }
 
-+ (void)postUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*)headers :(void (^)(NSArray *array, NSString* responseString, NSError *error))block {
-    
++ (void)postUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*)headers andSerializer:(NSString*)serializer :(void (^)(NSArray *responseObject, NSString* responseString, NSError *error))block {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
+    [[AFHTTPRequestOperationManager manager].operationQueue cancelAllOperations];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    if ([serializer isEqualToString:@"JSON"]) {
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    }
+    else if ([serializer isEqualToString:@"HTTP"])
+    {
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    }
+    
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     for(id key in headers)
     {
@@ -53,15 +72,23 @@
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         if (block) {
-            block([NSArray arrayWithArray:responseObject], operation.responseString, nil);
+            NSMutableArray* array = [NSMutableArray array];
+            if ([serializer isEqualToString:@"JSON"]) {
+                array = responseObject;
+            }
+            block([NSArray arrayWithArray:array], operation.responseString, nil);
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"error connection %@",error);
         if (block) {
             block([NSArray array], [NSString string], error);
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
         }
     }];
 }
+
+
 
 @end
