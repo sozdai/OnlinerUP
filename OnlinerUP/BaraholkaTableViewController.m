@@ -35,6 +35,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.searchDisplayController.searchResultsTableView.separatorColor = [UIColor redColor];
+
     self.isFullCell = NO;
     self.sellType = @{@"1":@"label_important.png",
                       @"2":@"label_sell.png",
@@ -96,9 +98,11 @@
                 
                 cell.titleLabel.text = myBaraholkaTotic.title;
                 cell.descriptionLabel.text = myBaraholkaTotic.description;
-                cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.type]];
+                cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.sellType]];
                 cell.cityLabel.text = myBaraholkaTotic.city;
-                cell.priceLabel.text = [NSString stringWithFormat:@"%@ %@", myBaraholkaTotic.price, myBaraholkaTotic.currency];
+                if (myBaraholkaTotic.price) {
+                    cell.priceLabel.text = [NSString stringWithFormat:@"%@ %@", myBaraholkaTotic.price, myBaraholkaTotic.currency];
+                } else cell.priceLabel.text = @"";
                 cell.torgLabel.text = myBaraholkaTotic.isTorg;
                 cell.baraholkaImage.image = [UIImage imageWithData:myBaraholkaTotic.imageData];
                 cell.categoryLabel.text = myBaraholkaTotic.category;
@@ -111,7 +115,6 @@
                     [cell.commentsImage setHidden:YES];
                     [cell.commentsLabel setHidden:YES];
                 }
-                [cell setBackgroundColor:[UIColor colorWithRed:255.f green:0.f blue:0.f alpha:0.05]];
             }
         }
         return cell;
@@ -141,28 +144,57 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    int height;
-    if (tableView == self.tableView) {
-        height = 60;
-    }
-    else if (tableView == self.searchDisplayController.searchResultsTableView)
-    {
-        Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
-        NSString* subject = myBaraholka.title;
-        NSString* description = myBaraholka.description;
-        UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
-        UIFont *descriptionFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
-        CGSize constraintSize;
-        if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationPortrait) {
-            constraintSize = CGSizeMake(304.0f,MAXFLOAT);
-        } else
-        {
-            constraintSize = CGSizeMake(465.0f,MAXFLOAT);
+    CGFloat height;
+    if (self.isFullCell) {
+        
+        if (tableView == self.tableView) {
+            height = 60;
         }
-        CGSize textSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-        height = textSize.height+34;
+        else if (tableView == self.searchDisplayController.searchResultsTableView)
+        {
+            Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
+            NSString* subject = myBaraholka.title;
+            NSString* description = myBaraholka.description;
+            UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
+            UIFont *descriptionFont = [UIFont fontWithName:@"Helvetica Neue" size:12.0f];
+            CGSize constraintSize;
+            
+            if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationPortrait) {
+                constraintSize = CGSizeMake(304.0f,MAXFLOAT);
+            } else
+            {
+                constraintSize = CGSizeMake(464.0f,MAXFLOAT);
+            }
+            
+            CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+            CGSize descriptionSize = [description sizeWithFont:descriptionFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+            
+            height = titleSize.height+descriptionSize.height+64;
+        }
+        
+        
+        
     }
-    
+    else {
+        if (tableView == self.tableView) {
+            height = 60;
+        }
+        else if (tableView == self.searchDisplayController.searchResultsTableView)
+        {
+            Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
+            NSString* subject = myBaraholka.title;
+            UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
+            CGSize constraintSize;
+            if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationPortrait) {
+                constraintSize = CGSizeMake(304.0f,MAXFLOAT);
+            } else
+            {
+                constraintSize = CGSizeMake(464.0f,MAXFLOAT);
+            }
+            CGSize textSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+            height = textSize.height+34;
+        }
+    }
     
     return height;
 }
@@ -199,6 +231,7 @@
     
     self.topicPriceXpath=@"//td[@class='cost']/big/strong";
     self.topicCurrencyXpath=@"//td[@class='cost']/big";
+    self.topicTorgXpath = @"//small[@class='cost-torg']";
     
     self.topicAuthorXpath=@"//a[@class='gray']";
     self.imageUrlXpath=@"http://content.onliner.by/baraholka/icon_large/";
@@ -249,7 +282,7 @@
         // 1
         self.isFullCell = YES;
         NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@",searchText];
-        NSURL *url = [NSURL URLWithString:urlString];
+        NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
         NSData *data = [NSData dataWithContentsOfURL:url];
         self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
         
@@ -275,7 +308,7 @@
             
             myBaraholka.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
             if ([[element searchWithXPathQuery:self.descriptionXpath] count]) {
-                myBaraholka.description = [[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text];
+                myBaraholka.description = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
 
             }
             myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
@@ -295,6 +328,10 @@
            if ([[element searchWithXPathQuery:self.commentsCountXpath] count]) {
                 myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
             }
+            if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
+                myBaraholka.isTorg = [[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text];
+            }
+            
         }
         
         // 8

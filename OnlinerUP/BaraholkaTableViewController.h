@@ -23,6 +23,7 @@
 @property (strong,nonatomic) NSString* topicIDXpath;
 @property (strong,nonatomic) NSString* urlXpath;
 @property (strong,nonatomic) NSString* topicPriceXpath;
+@property (strong,nonatomic) NSString* topicTorgXpath;
 @property (strong,nonatomic) NSString* topicCurrencyXpath;
 @property (strong,nonatomic) NSString* topicAuthorXpath;
 
