@@ -15,6 +15,7 @@
 #import "OnlinerUPAppDelegate.h"
 #import "UIScrollView+SVPullToRefresh.h"
 #import "AFNetworking/AFNetworking.h"
+#import "Network.h"
 
 @interface MyAdTableViewController (){
     NSMutableArray *_objects;

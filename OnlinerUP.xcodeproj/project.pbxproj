@@ -93,6 +93,7 @@
 		58C5248D19A926000012CB5E /* BaraholkaTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */; };
 		58C5249019A9261A0012CB5E /* BaraholkaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */; };
 		58C5249319AA24840012CB5E /* Baraholka.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5249219AA24840012CB5E /* Baraholka.m */; };
+		58DB784119B3042D00710188 /* BaraholkaFullTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58DB784019B3042D00710188 /* BaraholkaFullTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -239,6 +240,8 @@
 		58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaraholkaTableViewCell.m; sourceTree = "<group>"; };
 		58C5249119AA24840012CB5E /* Baraholka.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Baraholka.h; sourceTree = "<group>"; };
 		58C5249219AA24840012CB5E /* Baraholka.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Baraholka.m; sourceTree = "<group>"; };
+		58DB783F19B3042D00710188 /* BaraholkaFullTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaraholkaFullTableViewCell.h; sourceTree = "<group>"; };
+		58DB784019B3042D00710188 /* BaraholkaFullTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaraholkaFullTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -547,6 +550,8 @@
 				58C5248C19A926000012CB5E /* BaraholkaTableViewController.m */,
 				58C5248E19A9261A0012CB5E /* BaraholkaTableViewCell.h */,
 				58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */,
+				58DB783F19B3042D00710188 /* BaraholkaFullTableViewCell.h */,
+				58DB784019B3042D00710188 /* BaraholkaFullTableViewCell.m */,
 				58C5249119AA24840012CB5E /* Baraholka.h */,
 				58C5249219AA24840012CB5E /* Baraholka.m */,
 			);
@@ -712,6 +717,7 @@
 				58A110E919A52694002A97F4 /* AFHTTPRequestOperationManager.m in Sources */,
 				58A53D3C1989448600792508 /* TFHppleElement.m in Sources */,
 				58C5248019A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.m in Sources */,
+				58DB784119B3042D00710188 /* BaraholkaFullTableViewCell.m in Sources */,
 				58A110FF19A68EFB002A97F4 /* MyMessagesTableViewCell.m in Sources */,
 				58A1110219A73116002A97F4 /* MyMessage.m in Sources */,
 				58A53D3B1989448600792508 /* TFHpple.m in Sources */,

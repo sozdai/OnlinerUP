@@ -8,10 +8,12 @@
 
 #import "BaraholkaTableViewController.h"
 #import "BaraholkaTableViewCell.h"
+#import "BaraholkaFullTableViewCell.h"
 #import "UIScrollView+SVPullToRefresh.h"
 #import "AFNetworking.h"
 #import "Baraholka.h"
 #import "Network.h"
+#import "TFHpple.h"
 
 @interface BaraholkaTableViewController ()
 {
@@ -33,7 +35,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.isFullCell = NO;
     self.sellType = @{@"1":@"label_important.png",
                       @"2":@"label_sell.png",
                       @"3":@"label_buy.png",
@@ -44,6 +46,7 @@
 
 
     [self.searchDisplayController setDisplaysSearchBarInNavigationBar:NO];
+    [self loadXpath];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -57,12 +60,14 @@
 
 - (void)keyboardWillAppear:(NSNotification *)notification
 {
-    [self.searchDisplayController.searchBar setShowsCancelButton:NO];
+    [self.searchDisplayController.searchBar setShowsCancelButton:YES];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
+
+#pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
@@ -78,81 +83,100 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    BaraholkaTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
     
-    
-    if (tableView == self.tableView) {
-        cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %d Row %d",indexPath.section,indexPath.row];
-    }
-    else if (tableView == self.searchDisplayController.searchResultsTableView) {
-        if ([_objects count] != 0) {
-            Baraholka *myBaraholkaTotic = [Baraholka new];
-            myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
-            
-            cell.titleLabel.text = myBaraholkaTotic.title;
-            cell.cityLabel.text = myBaraholkaTotic.city;
-            cell.priceLabel.text = myBaraholkaTotic.price;
-            cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.type]];
-            cell.torgLabel.text = myBaraholkaTotic.isTorg;
-            [cell setBackgroundColor:[UIColor colorWithRed:255.f green:0.f blue:0.f alpha:0.05]];
+    if (self.isFullCell) {
+        BaraholkaFullTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"FullCell"];
+        if (tableView == self.tableView) {
+            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %d Row %d",indexPath.section,indexPath.row];
         }
-
+        else if (tableView == self.searchDisplayController.searchResultsTableView) {
+            if ([_objects count] != 0) {
+                Baraholka *myBaraholkaTotic = [Baraholka new];
+                myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
+                
+                cell.titleLabel.text = myBaraholkaTotic.title;
+                cell.descriptionLabel.text = myBaraholkaTotic.description;
+                cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.type]];
+                cell.cityLabel.text = myBaraholkaTotic.city;
+                cell.priceLabel.text = [NSString stringWithFormat:@"%@ %@", myBaraholkaTotic.price, myBaraholkaTotic.currency];
+                cell.torgLabel.text = myBaraholkaTotic.isTorg;
+                cell.baraholkaImage.image = [UIImage imageWithData:myBaraholkaTotic.imageData];
+                cell.categoryLabel.text = myBaraholkaTotic.category;
+                if (myBaraholkaTotic.commentsCount) {
+                    
+                    cell.commentsLabel.text = myBaraholkaTotic.commentsCount;
+                }
+                else
+                {
+                    [cell.commentsImage setHidden:YES];
+                    [cell.commentsLabel setHidden:YES];
+                }
+                [cell setBackgroundColor:[UIColor colorWithRed:255.f green:0.f blue:0.f alpha:0.05]];
+            }
+        }
+        return cell;
     }
-    return cell;
+    else {
+        BaraholkaTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
+        if (tableView == self.tableView) {
+            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %d Row %d",indexPath.section,indexPath.row];
+        }
+        else if (tableView == self.searchDisplayController.searchResultsTableView) {
+            if ([_objects count] != 0) {
+                Baraholka *myBaraholkaTotic = [Baraholka new];
+                myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
+            
+                cell.titleLabel.text = myBaraholkaTotic.title;
+                cell.cityLabel.text = myBaraholkaTotic.city;
+                cell.priceLabel.text = myBaraholkaTotic.price;
+                cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.type]];
+                cell.torgLabel.text = myBaraholkaTotic.isTorg;
+//                [cell setBackgroundColor:[UIColor colorWithRed:255.f green:0.f blue:0.f alpha:0.05]];
+            }
+        }
+            return cell;
+    }
+
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    int height;
+    if (tableView == self.tableView) {
+        height = 60;
+    }
+    else if (tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
+        NSString* subject = myBaraholka.title;
+        NSString* description = myBaraholka.description;
+        UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
+        UIFont *descriptionFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
+        CGSize constraintSize;
+        if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationPortrait) {
+            constraintSize = CGSizeMake(304.0f,MAXFLOAT);
+        } else
+        {
+            constraintSize = CGSizeMake(465.0f,MAXFLOAT);
+        }
+        CGSize textSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+        height = textSize.height+34;
+    }
+    
+    
+    return height;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
 {
     [_objects removeAllObjects];
-    switch(selectedScope)
-    {
-        case 0:
-            /* do something */
-            break;
-            
-        case 1:
-            [self baraholkaQuickSearch:searchBar.text];
-            break;
-            
-        case 2:
-            /* do something else */
-            break;
-            
-        case 3:
-            /* do something else */
-            break;
-            
-        default:
-            /* do some default thing for unknown unit */
-            break;
-    };
+    [self baraholkaQuickSearch:searchBar.text];
 }
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     [_objects removeAllObjects];
-    switch(searchBar.selectedScopeButtonIndex)
-    {
-        case 0:
-            /* do something */
-            break;
-            
-        case 1:
-            [self baraholkaQuickSearch:searchBar.text];
-            break;
-            
-        case 2:
-            /* do something else */
-            break;
-            
-        case 3:
-            /* do something else */
-            break;
-            
-        default:
-            /* do some default thing for unknown unit */
-            break;
-    };
+    [self baraholkaQuickSearch:searchBar.text];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -160,19 +184,34 @@
     [self baraholkaFullSearch:searchBar.text];
 }
 
--(void) baraholkaFullSearch: (NSString*) searchText
+- (void) loadXpath
 {
-    if (![searchText isEqualToString:@""])
-    {
-        [Network getUrl:@"http://baraholka.onliner.by/search.php" withParams:@{@"charset":@"utf-8",@"q":searchText} andHeaders:nil andSerializer:@"HTTP" :^(NSArray* responseObject, NSString *responseString, NSError *error) {
-            NSLog(@"%@",responseString);
-        }];
-    }
+    self.xpathQueryString=@"//td[@class='frst ph colspan']/..";
+    self.topicTypeXpath=@"m-imp";
+    
+    self.titleXpath=@"//h2[@class='wraptxt']/a";
+    self.descriptionXpath=@"//*[@class='wraptxt']/../p[2]";
+    self.categoryXpath=@"//a[@class='gray-link']";
+    self.sellTypeXpath=@"//div[@class='txt-i']/div";
+    self.cityXpath=@"//p[@class='ba-signature']/strong";
+    self.topicIDXpath=@"href";
+    self.urlXpath=@"href";
+    
+    self.topicPriceXpath=@"//td[@class='cost']/big/strong";
+    self.topicCurrencyXpath=@"//td[@class='cost']/big";
+    
+    self.topicAuthorXpath=@"//a[@class='gray']";
+    self.imageUrlXpath=@"http://content.onliner.by/baraholka/icon_large/";
+    self.commentsCountXpath=@"//p[@class='ba-post-coms']/a/span";
+    
+    self.upTopicTime=@"//p[@class='ba-post-up']";
 }
+
 
 -(void) baraholkaQuickSearch: (NSString*) searchText
 {
     if (![searchText isEqualToString:@""]) {
+        self.isFullCell = NO;
         [Network getUrl:@"http://baraholka.onliner.by/gapi/search/baraholka/topic.json" withParams:@{@"s":searchText} andHeaders:nil andSerializer:@"JSON" :^(NSArray* responseObject,NSString *responseString, NSError *error) {
             NSMutableArray *newBaraholkaTopic= [[NSMutableArray alloc] initWithCapacity:0];
             NSMutableArray* responseArray = [[NSArray arrayWithArray:responseObject] mutableCopy];
@@ -184,7 +223,7 @@
                 [newBaraholkaTopic addObject:myBaraholkaTotic];
                 
                 NSString* link = [key valueForKey:@"link"];
-                myBaraholkaTotic.title = [[self findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"] stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+                myBaraholkaTotic.title = [[[self findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]  stringByReplacingOccurrencesOfString:@"amp;" withString:@""] stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
                 myBaraholkaTotic.topicID = [self findTextIn:link fromStart:@"?t=" toEnd:@"\""];
                 myBaraholkaTotic.city = [self findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
                 myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
@@ -203,33 +242,73 @@
     }
 }
 
-#pragma mark - Table view data source
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    int height;
-    if (tableView == self.tableView) {
-        height = 60;
-    }
-    else if (tableView == self.searchDisplayController.searchResultsTableView)
-    {
-        Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
-        NSString *subject = myBaraholka.title;
-        UIFont *cellFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
-        CGSize constraintSize;
-        if ([UIApplication sharedApplication].statusBarOrientation == UIDeviceOrientationPortrait) {
-            constraintSize = CGSizeMake(304.0f,MAXFLOAT);
-        } else
-        {
-            constraintSize = CGSizeMake(465.0f,MAXFLOAT);
-        }
-        CGSize textSize = [subject sizeWithFont:cellFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-        height = textSize.height+34;
-    }
+-(void) baraholkaFullSearch:(NSString*)searchText {
     
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        
+        // 1
+        self.isFullCell = YES;
+        NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@",searchText];
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+        
+        // 2
+        TFHpple *parser = [TFHpple hppleWithHTMLData:data];
+        
+        // 3
+        NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
+        
+        // 4
+        NSMutableArray *newBaraholka = [[NSMutableArray alloc] initWithCapacity:0];
+        for (TFHppleElement *element in nodes) {
+            // 5
+            Baraholka *myBaraholka = [Baraholka new];
+            [newBaraholka addObject:myBaraholka];
+            
+            // 7
+            NSString* type = [NSString stringWithFormat:@"%@",[element objectForKey:@"class"]];
+            myBaraholka.isHighlighted = NO;
+            if ([type isEqualToString:@"m-imp"]) {
+                [myBaraholka setIsHighlighted:YES];
+            };
+            
+            myBaraholka.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
+            if ([[element searchWithXPathQuery:self.descriptionXpath] count]) {
+                myBaraholka.description = [[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text];
 
-    return height;
+            }
+            myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
+            myBaraholka.sellType = [self findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
+            myBaraholka.city = [[[element searchWithXPathQuery:self.cityXpath] objectAtIndex:0] text];
+            myBaraholka.topicID = [self findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
+            if ([[element searchWithXPathQuery:self.topicPriceXpath] count]) {
+                myBaraholka.price = [[[element searchWithXPathQuery:self.topicPriceXpath] objectAtIndex:0] text];
+                myBaraholka.currency = [[[element searchWithXPathQuery:self.topicCurrencyXpath] objectAtIndex:0] text];
+            }
+            myBaraholka.authorName = [[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] text];
+            myBaraholka.authorID = [self findTextIn:[[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] objectForKey:self.urlXpath] fromStart:@"/user/" toEnd:@"#"];
+            
+            myBaraholka.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myBaraholka.topicID];
+            myBaraholka.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myBaraholka.imageUrl]];
+            
+           if ([[element searchWithXPathQuery:self.commentsCountXpath] count]) {
+                myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
+            }
+        }
+        
+        // 8
+        
+        _objects = [[[newBaraholka objectEnumerator] allObjects] mutableCopy];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.searchDisplayController.searchResultsTableView reloadData];
+            NSLog(@"Success");
+        });
+    });
+    
+    
 }
-
 
 - (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText {
     NSString* value;
