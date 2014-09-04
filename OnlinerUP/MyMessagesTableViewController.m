@@ -33,7 +33,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.tableView.separatorColor = [UIColor redColor];
     NSDate *past = [NSDate date];
     NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
     NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
@@ -139,9 +140,6 @@
     static NSString *CellIdentifier = @"Cell";
     
     MyMessagesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell.leftUtilityButtons = [self leftButtons];
-    cell.rightUtilityButtons = [self rightButtons];
-    cell.delegate = self;
     
     MyMessage *myMessage = [_objects objectAtIndex: indexPath.section];
     cell.subjectTextField.text = myMessage.subject;

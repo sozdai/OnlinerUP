@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		581B47EE19B91017004A8BFE /* UITabBarMostViewed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 581B47EC19B91017004A8BFE /* UITabBarMostViewed@2x.png */; };
+		581B47EF19B91017004A8BFE /* UITabBarSearch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 581B47ED19B91017004A8BFE /* UITabBarSearch@2x.png */; };
+		58249FC319B660B000B23D70 /* TPKeyboardAvoidingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 58249FC219B660B000B23D70 /* TPKeyboardAvoidingScrollView.m */; };
+		58249FC719B660DB00B23D70 /* UIScrollView+TPKeyboardAvoidingAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 58249FC619B660DB00B23D70 /* UIScrollView+TPKeyboardAvoidingAdditions.m */; };
+		58249FCA19B6690D00B23D70 /* message_group@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58249FC819B6690D00B23D70 /* message_group@2x.png */; };
+		58249FCB19B6690D00B23D70 /* message@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58249FC919B6690D00B23D70 /* message@2x.png */; };
+		58249FCE19B669A500B23D70 /* message_group.png in Resources */ = {isa = PBXBuildFile; fileRef = 58249FCC19B669A500B23D70 /* message_group.png */; };
+		58249FCF19B669A500B23D70 /* message.png in Resources */ = {isa = PBXBuildFile; fileRef = 58249FCD19B669A500B23D70 /* message.png */; };
 		5862329A19AE10F80016418C /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = 5862329919AE10F80016418C /* Network.m */; };
 		589FE21E199504A300CBB57C /* ModalWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 589FE21D199504A300CBB57C /* ModalWebViewController.m */; };
 		589FE22119989A8D00CBB57C /* 10385417.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 589FE22019989A8D00CBB57C /* 10385417.jpeg */; };
@@ -107,6 +115,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		581B47EC19B91017004A8BFE /* UITabBarMostViewed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UITabBarMostViewed@2x.png"; sourceTree = "<group>"; };
+		581B47ED19B91017004A8BFE /* UITabBarSearch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UITabBarSearch@2x.png"; sourceTree = "<group>"; };
+		58249FC119B660B000B23D70 /* TPKeyboardAvoidingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPKeyboardAvoidingScrollView.h; sourceTree = "<group>"; };
+		58249FC219B660B000B23D70 /* TPKeyboardAvoidingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPKeyboardAvoidingScrollView.m; sourceTree = "<group>"; };
+		58249FC519B660DB00B23D70 /* UIScrollView+TPKeyboardAvoidingAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+TPKeyboardAvoidingAdditions.h"; sourceTree = "<group>"; };
+		58249FC619B660DB00B23D70 /* UIScrollView+TPKeyboardAvoidingAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+TPKeyboardAvoidingAdditions.m"; sourceTree = "<group>"; };
+		58249FC819B6690D00B23D70 /* message_group@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message_group@2x.png"; sourceTree = "<group>"; };
+		58249FC919B6690D00B23D70 /* message@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message@2x.png"; sourceTree = "<group>"; };
+		58249FCC19B669A500B23D70 /* message_group.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = message_group.png; sourceTree = "<group>"; };
+		58249FCD19B669A500B23D70 /* message.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = message.png; sourceTree = "<group>"; };
 		5862329819AE10F80016418C /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		5862329919AE10F80016418C /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		589FE21C199504A300CBB57C /* ModalWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalWebViewController.h; sourceTree = "<group>"; };
@@ -272,6 +290,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		58249FC419B660B800B23D70 /* TPKeyboardAvoiding */ = {
+			isa = PBXGroup;
+			children = (
+				58249FC519B660DB00B23D70 /* UIScrollView+TPKeyboardAvoidingAdditions.h */,
+				58249FC619B660DB00B23D70 /* UIScrollView+TPKeyboardAvoidingAdditions.m */,
+				58249FC119B660B000B23D70 /* TPKeyboardAvoidingScrollView.h */,
+				58249FC219B660B000B23D70 /* TPKeyboardAvoidingScrollView.m */,
+			);
+			name = TPKeyboardAvoiding;
+			sourceTree = "<group>";
+		};
 		5862329B19AE11080016418C /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -491,6 +520,12 @@
 		58C5246C19A733B30012CB5E /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				581B47EC19B91017004A8BFE /* UITabBarMostViewed@2x.png */,
+				581B47ED19B91017004A8BFE /* UITabBarSearch@2x.png */,
+				58249FCC19B669A500B23D70 /* message_group.png */,
+				58249FCD19B669A500B23D70 /* message.png */,
+				58249FC819B6690D00B23D70 /* message_group@2x.png */,
+				58249FC919B6690D00B23D70 /* message@2x.png */,
 				58C5248219A8D9DB0012CB5E /* check@2x.png */,
 				58C5248319A8D9DB0012CB5E /* clock@2x.png */,
 				58C5248419A8D9DB0012CB5E /* cross@2x.png */,
@@ -561,6 +596,7 @@
 		58D7EF80199B9E8100601D09 /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
+				58249FC419B660B800B23D70 /* TPKeyboardAvoiding */,
 				58C5246F19A8D7280012CB5E /* SWTableViewCell */,
 				58A11098199E8F80002A97F4 /* SVPullToRefresh */,
 			);
@@ -649,13 +685,16 @@
 				58A53D361989448600792508 /* Main.storyboard in Resources */,
 				58A53D4D198944D600792508 /* logo.png in Resources */,
 				589FE22D19989A9F00CBB57C /* label_important.png in Resources */,
+				58249FCF19B669A500B23D70 /* message.png in Resources */,
 				58C5246B19A733A60012CB5E /* envelope_read.png in Resources */,
 				58A53D48198944D600792508 /* btn-up-0.png in Resources */,
 				58C5246E19A7EB2E0012CB5E /* icon_comment_unread.png in Resources */,
 				58A53D4A198944D600792508 /* icon-selected-green-25x25@2x.png in Resources */,
 				589FE22C19989A9F00CBB57C /* label_close.png in Resources */,
+				581B47EE19B91017004A8BFE /* UITabBarMostViewed@2x.png in Resources */,
 				589FE23019989A9F00CBB57C /* label_service.png in Resources */,
 				58A53CFC1989438300792508 /* InfoPlist.strings in Resources */,
+				581B47EF19B91017004A8BFE /* UITabBarSearch@2x.png in Resources */,
 				589FE22A19989A9F00CBB57C /* label_buy.png in Resources */,
 				589FE22E19989A9F00CBB57C /* label_rent.png in Resources */,
 				589FE22119989A8D00CBB57C /* 10385417.jpeg in Resources */,
@@ -669,11 +708,14 @@
 				58C5248819A8D9DB0012CB5E /* cross@2x.png in Resources */,
 				58C5248619A8D9DB0012CB5E /* check@2x.png in Resources */,
 				58C5246A19A733A60012CB5E /* envelope_unread.png in Resources */,
+				58249FCB19B6690D00B23D70 /* message@2x.png in Resources */,
 				58A53D47198944D600792508 /* btn-up-1.png in Resources */,
 				58A110B919A39E54002A97F4 /* email_unread.png in Resources */,
 				58A110B819A39E54002A97F4 /* email_read.png in Resources */,
+				58249FCE19B669A500B23D70 /* message_group.png in Resources */,
 				58C5248719A8D9DB0012CB5E /* clock@2x.png in Resources */,
 				589FE23119989A9F00CBB57C /* icon_comment.png in Resources */,
+				58249FCA19B6690D00B23D70 /* message_group@2x.png in Resources */,
 				589FE22F19989A9F00CBB57C /* label_sell.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -714,6 +756,7 @@
 				58A53CFE1989438300792508 /* main.m in Sources */,
 				58A110F419A52694002A97F4 /* UIButton+AFNetworking.m in Sources */,
 				58A53D3D1989448600792508 /* XPathQuery.m in Sources */,
+				58249FC319B660B000B23D70 /* TPKeyboardAvoidingScrollView.m in Sources */,
 				58A110E919A52694002A97F4 /* AFHTTPRequestOperationManager.m in Sources */,
 				58A53D3C1989448600792508 /* TFHppleElement.m in Sources */,
 				58C5248019A8D7280012CB5E /* SWUtilityButtonTapGestureRecognizer.m in Sources */,
@@ -724,6 +767,7 @@
 				58C5247D19A8D7280012CB5E /* SWCellScrollView.m in Sources */,
 				58A110F319A52694002A97F4 /* UIAlertView+AFNetworking.m in Sources */,
 				58A53D391989448600792508 /* MyAdTableViewController.m in Sources */,
+				58249FC719B660DB00B23D70 /* UIScrollView+TPKeyboardAvoidingAdditions.m in Sources */,
 				58A53D381989448600792508 /* MyAdTableViewCell.m in Sources */,
 				58A53D021989438300792508 /* OnlinerUPAppDelegate.m in Sources */,
 				58A1109E199E8F80002A97F4 /* UIScrollView+SVInfiniteScrolling.m in Sources */,

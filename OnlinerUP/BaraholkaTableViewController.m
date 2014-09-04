@@ -10,10 +10,12 @@
 #import "BaraholkaTableViewCell.h"
 #import "BaraholkaFullTableViewCell.h"
 #import "UIScrollView+SVPullToRefresh.h"
+#import "UIScrollView+SVInfiniteScrolling.h"
 #import "AFNetworking.h"
 #import "Baraholka.h"
 #import "Network.h"
 #import "TFHpple.h"
+#import "ModalWebViewController.h"
 
 @interface BaraholkaTableViewController ()
 {
@@ -35,9 +37,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.searchDisplayController.searchResultsTableView.separatorColor = [UIColor redColor];
-
     self.isFullCell = NO;
+    self.currentBaraholkaPage = 0;
     self.sellType = @{@"1":@"label_important.png",
                       @"2":@"label_sell.png",
                       @"3":@"label_buy.png",
@@ -45,9 +46,13 @@
                       @"5":@"label_service.png",
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
-
-
     [self.searchDisplayController setDisplaysSearchBarInNavigationBar:NO];
+    [self.searchDisplayController.searchResultsTableView addInfiniteScrollingWithActionHandler:^{
+        if (self.isFullCell) {
+            [self performInfinityScroll];
+        }
+    }];
+    
     [self loadXpath];
 }
 
@@ -58,6 +63,7 @@
                                              selector:@selector(keyboardWillAppear:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
+    [self.searchDisplayController.searchResultsTableView reloadData];
 }
 
 - (void)keyboardWillAppear:(NSNotification *)notification
@@ -89,7 +95,7 @@
     if (self.isFullCell) {
         BaraholkaFullTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"FullCell"];
         if (tableView == self.tableView) {
-            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %d Row %d",indexPath.section,indexPath.row];
+            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %ld Row %ld",(long)indexPath.section,(long)indexPath.row];
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView) {
             if ([_objects count] != 0) {
@@ -122,7 +128,7 @@
     else {
         BaraholkaTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
         if (tableView == self.tableView) {
-            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %d Row %d",indexPath.section,indexPath.row];
+            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %ld Row %ld",(long)indexPath.section,(long)indexPath.row];
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView) {
             if ([_objects count] != 0) {
@@ -169,7 +175,7 @@
             CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
             CGSize descriptionSize = [description sizeWithFont:descriptionFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
             
-            height = titleSize.height+descriptionSize.height+64;
+            height = titleSize.height+descriptionSize.height+53;
         }
         
         
@@ -199,22 +205,33 @@
     return height;
 }
 
-- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [_objects removeAllObjects];
-    [self baraholkaQuickSearch:searchBar.text];
+    ModalWebViewController *controller = (ModalWebViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ModalWebViewController"];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self presentViewController:navigationController animated:YES completion:nil];
+    
+    Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
+    
+    controller.title = @"Объявление";
+    controller.url = [NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID];
 }
+
+#pragma mark - SearchBar
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    [_objects removeAllObjects];
+    self.currentBaraholkaPage = 0;
     [self baraholkaQuickSearch:searchBar.text];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    self.currentBaraholkaPage = 0;
     [self baraholkaFullSearch:searchBar.text];
 }
+
+#pragma mark - load data
 
 - (void) loadXpath
 {
@@ -240,10 +257,12 @@
     self.upTopicTime=@"//p[@class='ba-post-up']";
 }
 
-
+#pragma mark - Search
 -(void) baraholkaQuickSearch: (NSString*) searchText
 {
+    [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
     if (![searchText isEqualToString:@""]) {
+        [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
         self.isFullCell = NO;
         [Network getUrl:@"http://baraholka.onliner.by/gapi/search/baraholka/topic.json" withParams:@{@"s":searchText} andHeaders:nil andSerializer:@"JSON" :^(NSArray* responseObject,NSString *responseString, NSError *error) {
             NSMutableArray *newBaraholkaTopic= [[NSMutableArray alloc] initWithCapacity:0];
@@ -270,7 +289,9 @@
             }
             [_objects removeAllObjects];
             _objects = [newBaraholkaTopic mutableCopy];
+            [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
             [self.searchDisplayController.searchResultsTableView reloadData];
+            
         }];
     }
 }
@@ -281,7 +302,14 @@
         
         // 1
         self.isFullCell = YES;
-        NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@",searchText];
+        
+        NSString* currPage = @"";
+        if (self.currentBaraholkaPage != 0)
+        {
+            currPage=[NSString stringWithFormat:@"&start=%d",self.currentBaraholkaPage*25];
+        }
+            
+        NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@%@",searchText,currPage];
         NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
         NSData *data = [NSData dataWithContentsOfURL:url];
         self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
@@ -335,17 +363,35 @@
         }
         
         // 8
+        if (self.currentBaraholkaPage == 0) {
+            [_objects removeAllObjects];
+        }
         
-        _objects = [[[newBaraholka objectEnumerator] allObjects] mutableCopy];
+        [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.currentBaraholkaPage == 0) {
+                [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+            }
             [self.searchDisplayController.searchResultsTableView reloadData];
+            [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
             NSLog(@"Success");
         });
     });
     
     
 }
+
+- (void) performInfinityScroll
+{
+    if ([_objects count] >= 25) {
+        self.currentBaraholkaPage++;
+        [self baraholkaFullSearch:self.searchDisplayController.searchBar.text];
+    } else [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
+}
+
+
+#pragma mark - help
 
 - (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText {
     NSString* value;
