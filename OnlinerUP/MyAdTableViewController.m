@@ -11,7 +11,6 @@
 #import "MyAd.h"
 #import "MyAdTableViewCell.h"
 #import "ModalWebViewController.h"
-#import "LoginViewController.h"
 #import "OnlinerUPAppDelegate.h"
 #import "UIScrollView+SVPullToRefresh.h"
 #import "AFNetworking/AFNetworking.h"
@@ -38,20 +37,15 @@
 {
     [super viewDidLoad];
     [self loadXpath];
-    if (![self isAuthorizated]) {
-        LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-        
-        [self presentViewController:controller animated:YES completion:nil];
-    } else
-    {
-        self.sellTypeDictionary = @{@"ba-label ba-label-1":@"label_important.png",
+    
+    self.sellTypeDictionary = @{@"ba-label ba-label-1":@"label_important.png",
                                     @"ba-label ba-label-2":@"label_sell.png",
                                     @"ba-label ba-label-3":@"label_buy.png",
                                     @"ba-label ba-label-4":@"label_change.png",
                                     @"ba-label ba-label-5":@"label_service.png",
                                     @"ba-label ba-label-6":@"label_rent.png",
                                     @"ba-label ba-label-7":@"label_close.png"};
-    }
+    
     __weak typeof(self) weakSelf = self;
     [self.tableView addPullToRefreshWithActionHandler:^{
         [weakSelf loadAd];
@@ -162,10 +156,10 @@
     if (headerView == nil){
         [NSException raise:@"headerView == nil.." format:@"No cells with matching CellIdentifier loaded from your storyboard"];
     }
-    NSString* countText = [self findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
+    NSString* countText = [Network findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
     [countText length]?[headerView.adCountLabel setText:countText]:[headerView.adCountLabel setText:@"Нет объявлений"];
     
-    self.navigationItem.title = [self findTextIn:self.htmlString fromStart:@"onliner__user__name\"><a href=\"https://profile.onliner.by/\">" toEnd:@"</a>"];
+    self.navigationItem.title = [Network findTextIn:self.htmlString fromStart:@"onliner__user__name\"><a href=\"https://profile.onliner.by/\">" toEnd:@"</a>"];
     [headerView.envelopeButton setTitle:[NSString stringWithFormat:@" %@",self.messagesCount] forState:UIControlStateNormal];
     headerView.accountAmountLabel.text = [NSString stringWithFormat:@"%@ руб. на счету", [self getBallance] ];
     return headerView;
@@ -194,19 +188,6 @@
 }
 
 #pragma mark - Load data
-- (void) logout
-{
-    NSString *dataString=[NSString stringWithFormat:@"&key=%@",[self getHash]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://profile.onliner.by/logout?redirect=http://profile.onliner.by"]];
-
-    NSMutableData *body = [NSMutableData data];
-    [body appendData:[[NSString stringWithString:dataString] dataUsingEncoding:NSUTF8StringEncoding]];
-    request.HTTPBody = body;
-    request.HTTPMethod = @"POST";
-//    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    if (!theConnection) NSLog(@"No connection");
-}
 
 - (void) getMessCount
 {
@@ -255,10 +236,10 @@
                 NSString* tl = [NSString stringWithFormat:@"s%@", [[[element searchWithXPathQuery:self.timeLeftXpath] objectAtIndex:0] text]];
                 if ([tl rangeOfString:@"час" options:NSCaseInsensitiveSearch].location != NSNotFound)
                 {
-                    myAd.timeLeft = [NSString stringWithFormat:@"%@ ч", [self findTextIn:tl fromStart:@"s" toEnd:@" час"]];
+                    myAd.timeLeft = [NSString stringWithFormat:@"%@ ч", [Network findTextIn:tl fromStart:@"s" toEnd:@" час"]];
                 } else
                 {
-                    myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [self findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
+                    myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
                 }
                 //[self findTextIn:tl fromStart:@"" toEnd:@" "];
             }
@@ -334,17 +315,6 @@
     }
 }
 
-- (IBAction)logoutButtonClicked:(UIBarButtonItem *)sender {
-    
-    
-    [self logout];
-    [_objects removeAllObjects];
-    [self.tableView reloadData];
-    [LoginViewController cookiesStorageClearing];
-    LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-    [self presentViewController:controller animated:YES completion:nil];
-}
-
 - (NSArray*) getIDsWithType0
 {
     MyAd *currentAd = [MyAd new];
@@ -362,7 +332,7 @@
     //1 create separate thread
         
         //2 Get token
-        NSString* token = [self getHash];
+        NSString* token = [Network getHash];
         
         //3 generate ajax token using date
         NSDate *past = [NSDate date];
@@ -410,7 +380,7 @@
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
         //2 Get token
-        NSString* token = [self getHash];
+        NSString* token = [Network getHash];
         
         //3 generate ajax token using date
         NSDate *past = [NSDate date];
@@ -469,41 +439,14 @@
 
 #pragma mark - Parse data
 
-- (NSString*) getHash
-{
-    NSURL *pageUrl = [NSURL URLWithString:@"http://baraholka.onliner.by/search.php?type=ufleamarket"];
-    NSString *webData= [NSString stringWithContentsOfURL:pageUrl encoding:NSUTF8StringEncoding error:nil];
-    return [self findTextIn: webData fromStart:@"AdvertUp.token = \"" toEnd: @"\""];
-}
-
 - (NSString*) getBallance
 {
     NSURL *pageUrl = [NSURL URLWithString:@"http://baraholka.onliner.by/search.php?type=ufleamarket"];
     NSString *webData= [NSString stringWithContentsOfURL:pageUrl encoding:NSUTF8StringEncoding error:nil];
-    return [[self findTextIn: webData fromStart:@"<span id=\"user-balance\">" toEnd: @"</span>"] stringByReplacingOccurrencesOfString:@" " withString:@""];
-}
-
-- (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText {
-    NSString* value;
-    NSRange start = [text rangeOfString:startText];
-    if (start.location != NSNotFound)
-    {
-        value = [text substringFromIndex:start.location + start.length];
-        NSRange end = [value rangeOfString:endText];
-        if (end.location != NSNotFound)
-        {
-            value = [value substringToIndex:end.location];
-        }
-    }
-    return value;
+    return [[Network findTextIn: webData fromStart:@"<span id=\"user-balance\">" toEnd: @"</span>"] stringByReplacingOccurrencesOfString:@" " withString:@""];
 }
 
 #pragma mark - Connection
-
--(BOOL)isAuthorizated{
-    BOOL isAuth=[[NSUserDefaults standardUserDefaults] boolForKey:KeyForUserDefaultsAuthorisationInfo];
-    return isAuth;
-}
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     self.task = [NSString stringWithFormat:@"%@",response];

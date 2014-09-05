@@ -8,6 +8,7 @@
 
 #import "Network.h"
 #import "AFNetworking.h"
+#import "OnlinerUPAppDelegate.h"
 
 @implementation Network
 
@@ -89,6 +90,32 @@
     }];
 }
 
++ (NSString*) getHash
+{
+    NSURL *pageUrl = [NSURL URLWithString:@"http://baraholka.onliner.by/search.php?type=ufleamarket"];
+    NSString *webData= [NSString stringWithContentsOfURL:pageUrl encoding:NSUTF8StringEncoding error:nil];
+    return [self findTextIn: webData fromStart:@"AdvertUp.token = \"" toEnd: @"\""];
+}
+
++ (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText {
+    NSString* value;
+    NSRange start = [text rangeOfString:startText];
+    if (start.location != NSNotFound)
+    {
+        value = [text substringFromIndex:start.location + start.length];
+        NSRange end = [value rangeOfString:endText];
+        if (end.location != NSNotFound)
+        {
+            value = [value substringToIndex:end.location];
+        }
+    }
+    return value;
+}
+
++ (BOOL)isAuthorizated{
+    BOOL isAuth=[[NSUserDefaults standardUserDefaults] boolForKey:KeyForUserDefaultsAuthorisationInfo];
+    return isAuth;
+}
 
 
 @end

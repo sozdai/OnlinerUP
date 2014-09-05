@@ -11,11 +11,13 @@
 #import "BaraholkaFullTableViewCell.h"
 #import "UIScrollView+SVPullToRefresh.h"
 #import "UIScrollView+SVInfiniteScrolling.h"
+#import "LoginViewController.h"
 #import "AFNetworking.h"
 #import "Baraholka.h"
 #import "Network.h"
 #import "TFHpple.h"
 #import "ModalWebViewController.h"
+#import "OnlinerUPAppDelegate.h"
 
 @interface BaraholkaTableViewController ()
 {
@@ -37,6 +39,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if (![Network isAuthorizated]) {
+        LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+        
+        [self presentViewController:controller animated:YES completion:nil];
+    }
     self.isFullCell = NO;
     self.currentBaraholkaPage = 0;
     self.sellType = @{@"1":@"label_important.png",
@@ -46,13 +53,12 @@
                       @"5":@"label_service.png",
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
-    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:NO];
+    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:YES];
     [self.searchDisplayController.searchResultsTableView addInfiniteScrollingWithActionHandler:^{
         if (self.isFullCell) {
             [self performInfinityScroll];
         }
     }];
-    
     [self loadXpath];
 }
 
@@ -231,6 +237,11 @@
     [self baraholkaFullSearch:searchBar.text];
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar
+{
+    [self.searchDisplayController.searchBar setShowsCancelButton:NO];
+}
+
 #pragma mark - load data
 
 - (void) loadXpath
@@ -275,9 +286,9 @@
                 [newBaraholkaTopic addObject:myBaraholkaTotic];
                 
                 NSString* link = [key valueForKey:@"link"];
-                myBaraholkaTotic.title = [[[self findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]  stringByReplacingOccurrencesOfString:@"amp;" withString:@""] stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
-                myBaraholkaTotic.topicID = [self findTextIn:link fromStart:@"?t=" toEnd:@"\""];
-                myBaraholkaTotic.city = [self findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
+                myBaraholkaTotic.title = [[[Network findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]  stringByReplacingOccurrencesOfString:@"amp;" withString:@""] stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
+                myBaraholkaTotic.topicID = [Network findTextIn:link fromStart:@"?t=" toEnd:@"\""];
+                myBaraholkaTotic.city = [Network findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
                 myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
                 NSString* price = [NSString stringWithFormat:@"%@",[key valueForKey:@"price"]];
                 if (![price isEqualToString:@"<null>"]) {
@@ -340,15 +351,15 @@
 
             }
             myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
-            myBaraholka.sellType = [self findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
+            myBaraholka.sellType = [Network findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
             myBaraholka.city = [[[element searchWithXPathQuery:self.cityXpath] objectAtIndex:0] text];
-            myBaraholka.topicID = [self findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
+            myBaraholka.topicID = [Network findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
             if ([[element searchWithXPathQuery:self.topicPriceXpath] count]) {
                 myBaraholka.price = [[[element searchWithXPathQuery:self.topicPriceXpath] objectAtIndex:0] text];
                 myBaraholka.currency = [[[element searchWithXPathQuery:self.topicCurrencyXpath] objectAtIndex:0] text];
             }
             myBaraholka.authorName = [[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] text];
-            myBaraholka.authorID = [self findTextIn:[[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] objectForKey:self.urlXpath] fromStart:@"/user/" toEnd:@"#"];
+            myBaraholka.authorID = [Network findTextIn:[[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] objectForKey:self.urlXpath] fromStart:@"/user/" toEnd:@"#"];
             
             myBaraholka.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myBaraholka.topicID];
             myBaraholka.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myBaraholka.imageUrl]];
@@ -390,22 +401,31 @@
     } else [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
 }
 
+#pragma mark - Button Actions
 
-#pragma mark - help
+- (IBAction)loginButtonClicked:(UIBarButtonItem *)sender {
+    LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
 
-- (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText {
-    NSString* value;
-    NSRange start = [text rangeOfString:startText];
-    if (start.location != NSNotFound)
-    {
-        value = [text substringFromIndex:start.location + start.length];
-        NSRange end = [value rangeOfString:endText];
-        if (end.location != NSNotFound)
-        {
-            value = [value substringToIndex:end.location];
-        }
-    }
-    return value;
+- (IBAction)logoutButtonClicked:(UIBarButtonItem *)sender {
+    [self logout];
+    [LoginViewController cookiesStorageClearing];
+}
+
+- (void) logout
+{
+    NSString *dataString=[NSString stringWithFormat:@"&key=%@",[Network getHash]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://profile.onliner.by/logout?redirect=http://profile.onliner.by"]];
+    
+    NSMutableData *body = [NSMutableData data];
+    [body appendData:[[NSString stringWithString:dataString] dataUsingEncoding:NSUTF8StringEncoding]];
+    request.HTTPBody = body;
+    request.HTTPMethod = @"POST";
+    //    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    if (!theConnection) NSLog(@"No connection");
 }
 
 

@@ -172,7 +172,7 @@
             <objects>
                 <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="rYi-pd-BGv" customClass="MyAdTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="103" sectionHeaderHeight="22" sectionFooterHeight="22" id="Smt-XS-qdp">
-                        <rect key="frame" x="0.0" y="64" width="320" height="372"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -332,16 +332,10 @@
                             <outlet property="delegate" destination="rYi-pd-BGv" id="Xl7-sb-s8O"/>
                         </connections>
                     </tableView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Мистер Грин" id="Zxi-w1-L82">
                         <barButtonItem key="backBarButtonItem" title=" " id="mBF-VD-Ioi"/>
-                        <barButtonItem key="rightBarButtonItem" title="Выход" id="QfX-id-FMV">
-                            <color key="tintColor" red="1" green="0.43137258290000002" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
-                            <connections>
-                                <action selector="logoutButtonClicked:" destination="rYi-pd-BGv" id="v2a-DD-Xz7"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
@@ -474,18 +468,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Поиск по барахолке" showsCancelButton="YES" id="XSS-Ur-hTi">
-                            <rect key="frame" x="0.0" y="64" width="320" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
-                            <textInputTraits key="textInputTraits" autocorrectionType="no"/>
-                            <connections>
-                                <outlet property="delegate" destination="iz0-uE-9V2" id="ziN-2h-htU"/>
-                            </connections>
-                        </searchBar>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="52" id="1Uj-Rp-Yaw" customClass="BaraholkaTableViewCell">
-                                <rect key="frame" x="0.0" y="130" width="320" height="52"/>
+                                <rect key="frame" x="0.0" y="86" width="320" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Uj-Rp-Yaw" id="anX-iV-MHG">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
@@ -556,7 +541,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FullCell" rowHeight="188" id="ieB-CT-6wa" customClass="BaraholkaFullTableViewCell">
-                                <rect key="frame" x="0.0" y="182" width="320" height="188"/>
+                                <rect key="frame" x="0.0" y="138" width="320" height="188"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ieB-CT-6wa" id="6tj-yO-we2">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="187"/>
@@ -694,6 +679,16 @@
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1oS-rr-Frj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchBar contentMode="redraw" searchBarStyle="prominent" placeholder="Поиск по барахолке" showsCancelButton="YES" id="XSS-Ur-hTi">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
+                    <color key="barTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                    <connections>
+                        <outlet property="delegate" destination="iz0-uE-9V2" id="ziN-2h-htU"/>
+                    </connections>
+                </searchBar>
                 <searchDisplayController id="Q3a-MF-IcW">
                     <connections>
                         <outlet property="delegate" destination="iz0-uE-9V2" id="MhO-ub-1A6"/>

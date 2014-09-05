@@ -14,4 +14,10 @@
 
 + (void)postUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*)headers andSerializer:(NSString*)serializer :(void (^)(NSArray *responseObject, NSString* responseString, NSError *error))block;
 
++ (NSString*) getHash;
+
++ (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText;
+
++ (BOOL)isAuthorizated;
+
 @end

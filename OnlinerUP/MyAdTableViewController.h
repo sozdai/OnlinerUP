@@ -11,7 +11,6 @@
 @interface MyAdTableViewController : UITableViewController <UIAlertViewDelegate>
 - (IBAction)buttonUPClick:(UIButton *)sender;
 
-- (IBAction)logoutButtonClicked:(UIBarButtonItem *)sender;
 @property (strong,nonatomic) NSMutableData * responseData;
 @property (strong,nonatomic) NSString* task;
 @property (strong,nonatomic) NSString *xpathQueryString;

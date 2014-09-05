@@ -19,6 +19,7 @@ NSString* const KeyForUserDefaultUserName=@"UserName";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self.window setTintColor:[UIColor redColor]];
     return YES;
 }
 
