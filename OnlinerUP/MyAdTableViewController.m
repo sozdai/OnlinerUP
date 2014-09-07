@@ -343,10 +343,10 @@
     
     if ([currentAd.topicPrice isEqualToString:@"0"])
     {
-        [params setValue:currentAd.topicID forKey:@"topics[1][]"];
+        [params setValue:currentAd.topicID forKey:@"topics[0][]"];
     } else
     {
-        [params setValue:currentAd.topicID forKey:@"topics[0][]"];
+        [params setValue:currentAd.topicID forKey:@"topics[1][]"];
     }
     [params setValue:token forKey:@"t"];
     
