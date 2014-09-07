@@ -97,6 +97,13 @@
     return [self findTextIn: webData fromStart:@"AdvertUp.token = \"" toEnd: @"\""];
 }
 
++ (NSString*) getBallance
+{
+    NSURL *pageUrl = [NSURL URLWithString:@"http://baraholka.onliner.by/search.php?type=ufleamarket"];
+    NSString *webData= [NSString stringWithContentsOfURL:pageUrl encoding:NSUTF8StringEncoding error:nil];
+    return [[Network findTextIn: webData fromStart:@"<span id=\"user-balance\">" toEnd: @"</span>"] stringByReplacingOccurrencesOfString:@" " withString:@""];
+}
+
 + (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText {
     NSString* value;
     NSRange start = [text rangeOfString:startText];

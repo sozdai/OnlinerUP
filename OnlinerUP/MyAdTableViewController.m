@@ -15,6 +15,7 @@
 #import "UIScrollView+SVPullToRefresh.h"
 #import "AFNetworking/AFNetworking.h"
 #import "Network.h"
+#import "LoginViewController.h"
 
 @interface MyAdTableViewController (){
     NSMutableArray *_objects;
@@ -55,11 +56,12 @@
     [self.tableView triggerPullToRefresh];
 }
 
-- (void) viewDidAppear:(BOOL)animated
+-(void)viewDidAppear:(BOOL)animated
 {
-    [self.tableView reloadData];
+    if (![_objects count]) {
+        [self.tableView triggerPullToRefresh];
+    } else [self.tableView reloadData];
 }
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -151,18 +153,16 @@
 }
 
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    static NSString *CellIdentifier = @"Section";
-    MyAdTableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (headerView == nil){
-        [NSException raise:@"headerView == nil.." format:@"No cells with matching CellIdentifier loaded from your storyboard"];
-    }
-    NSString* countText = [Network findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
-    [countText length]?[headerView.adCountLabel setText:countText]:[headerView.adCountLabel setText:@"Нет объявлений"];
-    
-    self.navigationItem.title = [Network findTextIn:self.htmlString fromStart:@"onliner__user__name\"><a href=\"https://profile.onliner.by/\">" toEnd:@"</a>"];
-    [headerView.envelopeButton setTitle:[NSString stringWithFormat:@" %@",self.messagesCount] forState:UIControlStateNormal];
-    headerView.accountAmountLabel.text = [NSString stringWithFormat:@"%@ руб. на счету", [self getBallance] ];
-    return headerView;
+    if ([_objects count]) {
+        MyAdTableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:@"Section"];
+        NSString* countText = [Network findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
+        [countText length]?[headerView.adCountLabel setText:countText]:[headerView.adCountLabel setText:@"Нет объявлений"];
+        
+        self.navigationItem.title = [Network findTextIn:self.htmlString fromStart:@"onliner__user__name\"><a href=\"https://profile.onliner.by/\">" toEnd:@"</a>"];
+        [headerView.envelopeButton setTitle:[NSString stringWithFormat:@" %@",self.messagesCount] forState:UIControlStateNormal];
+        headerView.accountAmountLabel.text = [NSString stringWithFormat:@"%@ руб. на счету", [Network getBallance] ];
+        return headerView;
+    } else return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -263,11 +263,11 @@
         
         // 8
         _objects = [[[newAd reverseObjectEnumerator] allObjects] mutableCopy];
-        [self.tableView reloadData];
+        [self getMessCount];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView.pullToRefreshView stopAnimating];
-            [self getMessCount];
+            [self.tableView reloadData];
         });
     });
     
@@ -298,7 +298,7 @@
 {
 
     MyAd *currentAd = [_objects objectAtIndex: sender.tag];
-    int ballance = [[self getBallance] intValue];
+    int ballance = [[Network getBallance] intValue];
     int type = [currentAd.topicType intValue];
     
     if (type == 0) {
@@ -329,93 +329,69 @@
 
 - (void) upAd: (UIButton*) sender withParams: (MyAd*) currentAd
 {
-    //1 create separate thread
+    NSString* token = [Network getHash];
+    //3 generate ajax token using date
+    NSDate *past = [NSDate date];
+    NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
+    NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
+    
+    NSString* url = [NSString stringWithFormat:@"http://baraholka.onliner.by/topics-up.php?t=%@", t];
+    
+    NSMutableDictionary* params = [NSMutableDictionary dictionary];
+    [params setValue:currentAd.topicPrice forKey:@"expectedPrice"];
+    
+    if ([currentAd.topicPrice isEqualToString:@"0"])
+    {
+        [params setValue:currentAd.topicID forKey:@"topics[0][]"];
+    } else
+    {
+        [params setValue:currentAd.topicID forKey:@"topics[1][]"];
+    }
+    [params setValue:token forKey:@"t"];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+    [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        //2 Get token
-        NSString* token = [Network getHash];
+        [sender setBackgroundImage:[UIImage imageNamed: [NSString stringWithFormat: @"btn-up-1.png"]] forState:(UIControlStateNormal)];
+        [sender setTitleColor: [UIColor whiteColor] forState:UIControlStateNormal];
+        [sender setTitle:@"20 ч" forState:UIControlStateNormal];
+        currentAd.timeLeft = @"20 ч";
+        currentAd.topicType = @"1";
+        currentAd.topicPrice = @"3000";
+        [_objects replaceObjectAtIndex:sender.tag withObject:currentAd];
         
-        //3 generate ajax token using date
-        NSDate *past = [NSDate date];
-        NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
-        NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
-        
-        //4 perform request
-        self.responseData = [NSMutableData data];
-        NSString *dataString=[NSString stringWithFormat:@"expectedPrice=%@&topics[0][]=%@&t=%@",currentAd.topicPrice,currentAd.topicID,token];
-        NSString* requestUrl = [NSString stringWithFormat: @"http://baraholka.onliner.by/topics-up.php?t=%@",t];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:requestUrl]];
-        
-        NSMutableData *body = [NSMutableData data];
-        [body appendData:[[NSString stringWithString:dataString] dataUsingEncoding:NSUTF8StringEncoding]];
-        request.HTTPBody = body;
-        request.HTTPMethod = @"POST";
-        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-        NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-        
-        if (!theConnection)
-            NSLog(@"No connection");
-        else
-        {
-            static NSString *CellIdentifier = @"Section";
-            MyAdTableViewCell *headerView = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-            [sender setBackgroundImage:[UIImage imageNamed: [NSString stringWithFormat: @"btn-up-1.png"]] forState:(UIControlStateNormal)];
-            [sender setTitleColor: [UIColor whiteColor] forState:UIControlStateNormal];
-            [sender setTitle:@"20 ч" forState:UIControlStateNormal];
-            currentAd.timeLeft = @"20 ч";
-            currentAd.topicType = @"1";
-            currentAd.topicPrice = @"3000";
-            [_objects replaceObjectAtIndex:sender.tag withObject:currentAd];
-            
-        }
-        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@, %@",error, error.userInfo);
+    }];
         
 }
 
 - (void) upAllFreeAds: (NSArray*) paramsArray
 {
-    //1 check if button not clicked (type = 0)
+    NSString* token = [Network getHash];
+    //3 generate ajax token using date
+    NSDate *past = [NSDate date];
+    NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
+    NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
     
-    [self.tableView.pullToRefreshView startAnimating];
-    self.view.userInteractionEnabled = NO;
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    NSString* url = [NSString stringWithFormat:@"http://baraholka.onliner.by/topics-up.php?t=%@",t];
+    NSMutableDictionary* params = [NSMutableDictionary new];
+    
+    [params setValue:@"0" forKey:@"expectedPrice"];
+    [params setObject:paramsArray forKey:@"topics[0][]"];
+    [params setValue:token forKey:@"t"];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+    [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [self.tableView triggerPullToRefresh];
         
-        //2 Get token
-        NSString* token = [Network getHash];
-        
-        //3 generate ajax token using date
-        NSDate *past = [NSDate date];
-        NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
-        NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
-        
-        //4 perform request
-        self.responseData = [NSMutableData data];
-        NSMutableString* paramString = [NSMutableString string];
-        for (NSString* par in paramsArray) {
-            [paramString appendString:[NSString stringWithFormat:@"&topics[0][]=%@",par]];
-        }
-        NSString *dataString=[NSString stringWithFormat:@"expectedPrice=0%@&t=%@",paramString,token];
-        NSString* requestUrl = [NSString stringWithFormat: @"http://baraholka.onliner.by/topics-up.php?t=%@",t];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:requestUrl]];
-        
-        NSMutableData *body = [NSMutableData data];
-        [body appendData:[[NSString stringWithString:dataString] dataUsingEncoding:NSUTF8StringEncoding]];
-        request.HTTPBody = body;
-        request.HTTPMethod = @"POST";
-        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-        NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-        
-        if (!theConnection)
-            NSLog(@"No connection");
-        else
-        {
-            [self.tableView triggerPullToRefresh];
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView.pullToRefreshView stopAnimating];
-            self.view.userInteractionEnabled = NO;
-        });
-    });
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@, %@",error, error.userInfo);
+    }];
     
 }
 
@@ -435,15 +411,6 @@
     {
         
     }
-}
-
-#pragma mark - Parse data
-
-- (NSString*) getBallance
-{
-    NSURL *pageUrl = [NSURL URLWithString:@"http://baraholka.onliner.by/search.php?type=ufleamarket"];
-    NSString *webData= [NSString stringWithContentsOfURL:pageUrl encoding:NSUTF8StringEncoding error:nil];
-    return [[Network findTextIn: webData fromStart:@"<span id=\"user-balance\">" toEnd: @"</span>"] stringByReplacingOccurrencesOfString:@" " withString:@""];
 }
 
 #pragma mark - Connection

@@ -41,11 +41,12 @@
 }
 
 - (IBAction)login:(id)sender {
-   
-    
-    
     [self loginToApp];
     
+}
+
+- (IBAction)closeButtonClick:(UIBarButtonItem *)sender {
+    [self dismissViewControllerAnimated:self completion:nil];
 }
 
 - (void) loginToApp

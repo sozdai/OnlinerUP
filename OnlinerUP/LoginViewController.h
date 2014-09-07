@@ -17,5 +17,6 @@
 
 +(void) cookiesStorageClearing;
 - (IBAction)login:(id)sender;
+- (IBAction)closeButtonClick:(UIBarButtonItem *)sender;
 
 @end

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BaraholkaFullTableViewCell : UITableViewCell
+@interface BaraholkaFullTableViewCell : UITableViewCell <UITabBarControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;

@@ -12,6 +12,8 @@
 #import "UIScrollView+SVPullToRefresh.h"
 #import "MyMessage.h"
 #import "ModalWebViewController.h"
+#import "Network.h"
+#import "LoginViewController.h"
 
 @interface MyMessagesTableViewController (){
     NSMutableArray *_objects;
@@ -33,8 +35,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    self.tableView.separatorColor = [UIColor redColor];
     NSDate *past = [NSDate date];
     NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
     NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
@@ -49,13 +49,13 @@
                         andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     }];
     [self.tableView.pullToRefreshView setTitle:@"" forState:SVPullToRefreshStateAll];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [self.tableView triggerPullToRefresh];
+    if (![_objects count]) {
+        [self.tableView triggerPullToRefresh];
+    } else [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning

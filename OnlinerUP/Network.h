@@ -16,6 +16,8 @@
 
 + (NSString*) getHash;
 
++ (NSString*) getBallance;
+
 + (NSString*) findTextIn:(NSString*) text fromStart:(NSString*) startText toEnd:(NSString*) endText;
 
 + (BOOL)isAuthorizated;

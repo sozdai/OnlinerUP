@@ -39,11 +39,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (![Network isAuthorizated]) {
-        LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-        
-        [self presentViewController:controller animated:YES completion:nil];
-    }
     self.isFullCell = NO;
     self.currentBaraholkaPage = 0;
     self.sellType = @{@"1":@"label_important.png",
@@ -53,7 +48,7 @@
                       @"5":@"label_service.png",
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
-    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:YES];
+    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:NO];
     [self.searchDisplayController.searchResultsTableView addInfiniteScrollingWithActionHandler:^{
         if (self.isFullCell) {
             [self performInfinityScroll];
@@ -70,6 +65,14 @@
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
     [self.searchDisplayController.searchResultsTableView reloadData];
+    if (![Network isAuthorizated]) {
+        [self.loginButton setTitle:@"Вход"];
+        [[self.tabBarController tabBar] setHidden:YES];
+    } else
+    {
+        [self.loginButton setTitle:@"Выход"];
+        [[self.tabBarController tabBar] setHidden:NO];
+    }
 }
 
 - (void)keyboardWillAppear:(NSNotification *)notification
@@ -101,7 +104,7 @@
     if (self.isFullCell) {
         BaraholkaFullTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"FullCell"];
         if (tableView == self.tableView) {
-            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %ld Row %ld",(long)indexPath.section,(long)indexPath.row];
+            cell.titleLabel.text = [NSString stringWithFormat:@"Ленка Карандашева %ld Строчка %ld",(long)indexPath.section,(long)indexPath.row];
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView) {
             if ([_objects count] != 0) {
@@ -134,7 +137,7 @@
     else {
         BaraholkaTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
         if (tableView == self.tableView) {
-            cell.titleLabel.text = [NSString stringWithFormat:@"Table Content Section %ld Row %ld",(long)indexPath.section,(long)indexPath.row];
+            cell.titleLabel.text = [NSString stringWithFormat:@"Ленка Карандашева %ld Строчка %ld",(long)indexPath.section,(long)indexPath.row];
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView) {
             if ([_objects count] != 0) {
@@ -181,7 +184,7 @@
             CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
             CGSize descriptionSize = [description sizeWithFont:descriptionFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
             
-            height = titleSize.height+descriptionSize.height+53;
+            height = titleSize.height+descriptionSize.height+54;
         }
         
         
@@ -284,9 +287,13 @@
             for (id key in responseArray) {
                 Baraholka *myBaraholkaTotic = [Baraholka new];
                 [newBaraholkaTopic addObject:myBaraholkaTotic];
-                
                 NSString* link = [key valueForKey:@"link"];
-                myBaraholkaTotic.title = [[[Network findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]  stringByReplacingOccurrencesOfString:@"amp;" withString:@""] stringByReplacingOccurrencesOfString:@"&quot;" withString:@""];
+                myBaraholkaTotic.title = [[[[[[Network findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]
+                                              stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]
+                                             stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""]
+                                            stringByReplacingOccurrencesOfString:@"&#39;" withString:@"'"]
+                                           stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"]
+                                          stringByReplacingOccurrencesOfString:@"lt;" withString:@"<"];
                 myBaraholkaTotic.topicID = [Network findTextIn:link fromStart:@"?t=" toEnd:@"\""];
                 myBaraholkaTotic.city = [Network findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
                 myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
@@ -401,17 +408,20 @@
     } else [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
 }
 
+
 #pragma mark - Button Actions
 
 - (IBAction)loginButtonClicked:(UIBarButtonItem *)sender {
-    LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self presentViewController:navigationController animated:YES completion:nil];
-}
+    if (![Network isAuthorizated]) {
+        LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+        [self presentViewController:navigationController animated:YES completion:nil];
+    } else
+    {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Выход" message:@"Вы действительно хотите выйти?" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Выйти", nil];
+        [alert show];
+    }
 
-- (IBAction)logoutButtonClicked:(UIBarButtonItem *)sender {
-    [self logout];
-    [LoginViewController cookiesStorageClearing];
 }
 
 - (void) logout
@@ -426,6 +436,22 @@
     //    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     if (!theConnection) NSLog(@"No connection");
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+    
+    if([title isEqualToString:@"Выйти"])
+    {
+        [self.loginButton setTitle:@"Вход"];
+        [self logout];
+        [LoginViewController cookiesStorageClearing];
+        [[self.tabBarController tabBar] setHidden:YES];
+    }
+    else if([title isEqualToString:@"Поднять"])
+    {
+        
+    }
 }
 
 
