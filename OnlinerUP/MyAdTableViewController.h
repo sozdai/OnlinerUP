@@ -30,6 +30,7 @@
 @property (strong,nonatomic) NSDictionary* sellTypeDictionary;
 @property (strong,nonatomic) NSString* messagesCountXpath;
 @property (strong,nonatomic) NSString* messagesCount;
+@property (strong,nonatomic) UIButton* sender;
 
 -(void)loadAd;
 

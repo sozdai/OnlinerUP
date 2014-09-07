@@ -296,7 +296,7 @@
 
 - (IBAction)buttonUPClick:(UIButton *)sender
 {
-
+    self.sender = sender;
     MyAd *currentAd = [_objects objectAtIndex: sender.tag];
     int ballance = [[Network getBallance] intValue];
     int type = [currentAd.topicType intValue];
@@ -311,7 +311,8 @@
         [alert show];
     } else
     {
-        [self upAd:sender withParams:currentAd];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Внимание услуга платная!" message:@"Стоимость 3000 рублей" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Поднять", nil];
+        [alert show];
     }
 }
 
@@ -342,10 +343,10 @@
     
     if ([currentAd.topicPrice isEqualToString:@"0"])
     {
-        [params setValue:currentAd.topicID forKey:@"topics[0][]"];
+        [params setValue:currentAd.topicID forKey:@"topics[1][]"];
     } else
     {
-        [params setValue:currentAd.topicID forKey:@"topics[1][]"];
+        [params setValue:currentAd.topicID forKey:@"topics[0][]"];
     }
     [params setValue:token forKey:@"t"];
     
@@ -361,6 +362,7 @@
         currentAd.topicType = @"1";
         currentAd.topicPrice = @"3000";
         [_objects replaceObjectAtIndex:sender.tag withObject:currentAd];
+        [self.tableView reloadData];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@, %@",error, error.userInfo);
@@ -409,7 +411,7 @@
     }
     else if([title isEqualToString:@"Поднять"])
     {
-        
+        [self upAd:self.sender withParams:[_objects objectAtIndex:self.sender.tag]];
     }
 }
 

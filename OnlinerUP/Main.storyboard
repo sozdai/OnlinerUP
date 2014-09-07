@@ -620,12 +620,14 @@
                                                 <constraint firstItem="dgR-pc-d9Z" firstAttribute="leading" secondItem="xdZ-EU-Jir" secondAttribute="trailing" priority="250" constant="8" id="HHb-v4-pxy"/>
                                                 <constraint firstAttribute="trailing" secondItem="TYh-wy-hFV" secondAttribute="trailing" id="Ic7-Xh-KW4"/>
                                                 <constraint firstItem="xdZ-EU-Jir" firstAttribute="leading" secondItem="6lP-L6-zyP" secondAttribute="trailing" constant="7" id="LrO-7f-F6f"/>
+                                                <constraint firstItem="TYh-wy-hFV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="BuT-NE-g52" secondAttribute="top" constant="4" id="Mft-Qz-Yn0"/>
                                                 <constraint firstAttribute="trailing" secondItem="Pac-vF-6c4" secondAttribute="trailing" constant="36" id="OoC-Nk-duu"/>
                                                 <constraint firstAttribute="trailing" secondItem="s3b-NW-QJh" secondAttribute="trailing" id="TKl-Vw-hjb"/>
                                                 <constraint firstItem="TYh-wy-hFV" firstAttribute="top" secondItem="BuT-NE-g52" secondAttribute="top" constant="2" id="cYk-Q0-NmE"/>
                                                 <constraint firstAttribute="height" constant="39" id="h8X-5v-K8h"/>
                                                 <constraint firstItem="TYh-wy-hFV" firstAttribute="leading" secondItem="dgR-pc-d9Z" secondAttribute="trailing" priority="750" constant="8" id="jic-j2-eo2"/>
                                                 <constraint firstItem="xdZ-EU-Jir" firstAttribute="leading" secondItem="6lP-L6-zyP" secondAttribute="trailing" constant="7" id="jju-MJ-muu"/>
+                                                <constraint firstItem="dgR-pc-d9Z" firstAttribute="top" relation="lessThanOrEqual" secondItem="BuT-NE-g52" secondAttribute="top" constant="4" id="p9t-K3-OHB"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZkD-4P-scl">
