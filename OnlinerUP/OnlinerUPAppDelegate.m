@@ -7,6 +7,7 @@
 //
 
 #import "OnlinerUPAppDelegate.h"
+#import "AFNetworking.h"
 
 NSString* const KeyForUserDefaultsAuthorisationInfo=@"Authorizated";
 NSString* const KeyForUserDefaultUserName=@"UserName";
@@ -21,6 +22,7 @@ NSString* const KeyForUserDefaultUserName=@"UserName";
 {
     [self.window setTintColor:[UIColor redColor]];
     return YES;
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

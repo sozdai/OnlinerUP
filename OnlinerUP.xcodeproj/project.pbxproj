@@ -102,6 +102,7 @@
 		58C5249019A9261A0012CB5E /* BaraholkaTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5248F19A9261A0012CB5E /* BaraholkaTableViewCell.m */; };
 		58C5249319AA24840012CB5E /* Baraholka.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C5249219AA24840012CB5E /* Baraholka.m */; };
 		58DB784119B3042D00710188 /* BaraholkaFullTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58DB784019B3042D00710188 /* BaraholkaFullTableViewCell.m */; };
+		58F679CD19BCA0DD005A128D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F679CC19BCA0DD005A128D /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -195,7 +196,6 @@
 		58A53CF31989438300792508 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		58A53CF51989438300792508 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		58A53CF91989438300792508 /* OnlinerUP-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OnlinerUP-Info.plist"; sourceTree = "<group>"; };
-		58A53CFB1989438300792508 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		58A53CFD1989438300792508 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		58A53CFF1989438300792508 /* OnlinerUP-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OnlinerUP-Prefix.pch"; sourceTree = "<group>"; };
 		58A53D001989438300792508 /* OnlinerUPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OnlinerUPAppDelegate.h; sourceTree = "<group>"; };
@@ -205,7 +205,6 @@
 		58A53D0C1989438400792508 /* OnlinerUPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OnlinerUPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		58A53D0D1989438400792508 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		58A53D161989438400792508 /* OnlinerUPTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OnlinerUPTests-Info.plist"; sourceTree = "<group>"; };
-		58A53D181989438400792508 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		58A53D1A1989438400792508 /* OnlinerUPTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OnlinerUPTests.m; sourceTree = "<group>"; };
 		58A53D241989448600792508 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		58A53D251989448600792508 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
@@ -260,6 +259,10 @@
 		58C5249219AA24840012CB5E /* Baraholka.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Baraholka.m; sourceTree = "<group>"; };
 		58DB783F19B3042D00710188 /* BaraholkaFullTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaraholkaFullTableViewCell.h; sourceTree = "<group>"; };
 		58DB784019B3042D00710188 /* BaraholkaFullTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaraholkaFullTableViewCell.m; sourceTree = "<group>"; };
+		58F679C919BC9F60005A128D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		58F679CA19BC9F60005A128D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		58F679CB19BCA0C6005A128D /* OnlinerUP.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = OnlinerUP.entitlements; sourceTree = "<group>"; };
+		58F679CC19BCA0DD005A128D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,6 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				58A110A1199E8FA6002A97F4 /* QuartzCore.framework in Frameworks */,
+				58F679CD19BCA0DD005A128D /* StoreKit.framework in Frameworks */,
 				58A53D521989462500792508 /* libxml2.2.dylib in Frameworks */,
 				58A53CF21989438300792508 /* CoreGraphics.framework in Frameworks */,
 				58A53CF61989438300792508 /* CoreData.framework in Frameworks */,
@@ -416,6 +420,7 @@
 		58A53CEE1989438300792508 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				58F679CC19BCA0DD005A128D /* StoreKit.framework */,
 				58A110A0199E8FA6002A97F4 /* QuartzCore.framework */,
 				58A53D511989462500792508 /* libxml2.2.dylib */,
 				58A53CEF1989438300792508 /* Foundation.framework */,
@@ -430,6 +435,7 @@
 		58A53CF71989438300792508 /* OnlinerUP */ = {
 			isa = PBXGroup;
 			children = (
+				58F679CB19BCA0C6005A128D /* OnlinerUP.entitlements */,
 				58A53D261989448600792508 /* Main.storyboard */,
 				5862329B19AE11080016418C /* Network */,
 				58C5248A19A925D90012CB5E /* Baraholka */,
@@ -652,6 +658,14 @@
 				TargetAttributes = {
 					58A53CEB1989438300792508 = {
 						DevelopmentTeam = TE7YE2BF9Z;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 0;
+							};
+						};
 					};
 					58A53D0B1989438400792508 = {
 						TestTargetID = 58A53CEB1989438300792508;
@@ -664,6 +678,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ru,
 			);
 			mainGroup = 58A53CE31989438300792508;
 			productRefGroup = 58A53CED1989438300792508 /* Products */;
@@ -807,7 +822,7 @@
 		58A53CFA1989438300792508 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				58A53CFB1989438300792508 /* en */,
+				58F679C919BC9F60005A128D /* ru */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -815,7 +830,7 @@
 		58A53D171989438400792508 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				58A53D181989438400792508 /* en */,
+				58F679CA19BC9F60005A128D /* ru */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -855,7 +870,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -888,7 +903,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -901,12 +916,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OnlinerUP/OnlinerUP-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = "OnlinerUP/OnlinerUP-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -918,12 +935,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OnlinerUP/OnlinerUP-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				INFOPLIST_FILE = "OnlinerUP/OnlinerUP-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

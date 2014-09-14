@@ -189,22 +189,9 @@
 
 #pragma mark - Load data
 
-- (void) getMessCount
-{
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://baraholka.onliner.by/gapi/messages/unread/"]];
-    
-    NSMutableData *body = [NSMutableData data];
-    request.HTTPBody = body;
-    request.HTTPMethod = @"GET";
-    [request setValue:@"text/plain, */*; q=0.01" forHTTPHeaderField:@"Accept"];
-    NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    if (!theConnection) NSLog(@"No connection");
-}
-
 -(void)loadAd {
     
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        
         // 1
         NSURL *url = [NSURL URLWithString:@"http://baraholka.onliner.by/search.php?type=ufleamarket"];
         NSData *htmlData = [NSData dataWithContentsOfURL:url];
@@ -258,12 +245,10 @@
             }
             
             myAd.sellType = [[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"];
-            
         }
         
         // 8
         _objects = [[[newAd reverseObjectEnumerator] allObjects] mutableCopy];
-        [self getMessCount];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView.pullToRefreshView stopAnimating];
@@ -378,11 +363,14 @@
     NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
     NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
     
-    NSString* url = [NSString stringWithFormat:@"http://baraholka.onliner.by/topics-up.php?t=%@",t];
-    NSMutableDictionary* params = [NSMutableDictionary new];
+    NSMutableString* url = [NSMutableString new];
+    url = [[NSString stringWithFormat:@"http://baraholka.onliner.by/topics-up.php?t=%@",t] mutableCopy];
     
+    NSMutableDictionary* params = [NSMutableDictionary new];
     [params setValue:@"0" forKey:@"expectedPrice"];
-    [params setObject:paramsArray forKey:@"topics[0][]"];
+    for (NSString* topicID in paramsArray) {
+        [url appendString:[NSString stringWithFormat:@"&topics[0][]=%@",topicID]];
+    }
     [params setValue:token forKey:@"t"];
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -390,6 +378,7 @@
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         [self.tableView triggerPullToRefresh];
+        NSLog(@"%@",operation.responseObject);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@, %@",error, error.userInfo);

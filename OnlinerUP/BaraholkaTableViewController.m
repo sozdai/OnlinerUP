@@ -55,6 +55,16 @@
         }
     }];
     [self loadXpath];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [manager GET:@"http://kardash.by/config.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSLog(@"%@",responseObject);
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@, %@",error, error.userInfo);
+    }];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -110,7 +120,9 @@
             if ([_objects count] != 0) {
                 Baraholka *myBaraholkaTotic = [Baraholka new];
                 myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
-                
+                if (myBaraholkaTotic.isHighlighted) {
+                    [cell.titleLabel setTextColor:[UIColor redColor]];
+                }
                 cell.titleLabel.text = myBaraholkaTotic.title;
                 cell.descriptionLabel.text = myBaraholkaTotic.description;
                 cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.sellType]];
