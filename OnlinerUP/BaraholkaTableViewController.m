@@ -22,6 +22,7 @@
 @interface BaraholkaTableViewController ()
 {
     NSMutableArray *_objects;
+    NSMutableArray *_categories;
 }
 
 @end
@@ -40,6 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.isFullCell = NO;
+    [self loadCategories];
     self.currentBaraholkaPage = 0;
     self.sellType = @{@"1":@"label_important.png",
                       @"2":@"label_sell.png",
@@ -90,17 +92,25 @@
     [self.searchDisplayController.searchBar setShowsCancelButton:YES];
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
 #pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    int count;
+    if (tableView == self.tableView) {
+        count = [_categories count];
+    }
+    else if (tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        count = 1;
+    }
+    return count;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     int count;
     if (tableView == self.tableView) {
-        count = 3;
+        count = [[[[[_categories objectAtIndex:section] allValues] objectAtIndex:0] valueForKey:@"items"] count];
     }
     else if (tableView == self.searchDisplayController.searchResultsTableView)
     {
@@ -113,10 +123,7 @@
     
     if (self.isFullCell) {
         BaraholkaFullTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"FullCell"];
-        if (tableView == self.tableView) {
-            cell.titleLabel.text = [NSString stringWithFormat:@"Ленка Карандашева %ld Строчка %ld",(long)indexPath.section,(long)indexPath.row];
-        }
-        else if (tableView == self.searchDisplayController.searchResultsTableView) {
+        if (tableView == self.searchDisplayController.searchResultsTableView) {
             if ([_objects count] != 0) {
                 Baraholka *myBaraholkaTotic = [Baraholka new];
                 myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
@@ -147,11 +154,13 @@
         return cell;
     }
     else {
-        BaraholkaTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
+        BaraholkaTableViewCell *cell;
         if (tableView == self.tableView) {
-            cell.titleLabel.text = [NSString stringWithFormat:@"Ленка Карандашева %ld Строчка %ld",(long)indexPath.section,(long)indexPath.row];
+            cell = [self.tableView dequeueReusableCellWithIdentifier:@"CategoryCell"];
+            cell.titleLabel.text = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView) {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
             if ([_objects count] != 0) {
                 Baraholka *myBaraholkaTotic = [Baraholka new];
                 myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
@@ -169,13 +178,22 @@
 
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    NSString* title = @"";
+    if ([_categories count]) {
+        title = [[[_categories objectAtIndex:section] allKeys] objectAtIndex:0];
+    }
+    return title;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height;
     if (self.isFullCell) {
         
         if (tableView == self.tableView) {
-            height = 60;
+            
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView)
         {
@@ -204,7 +222,11 @@
     }
     else {
         if (tableView == self.tableView) {
-            height = 60;
+            UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:15.0f];
+            CGSize constraintSize = CGSizeMake(304.0f,MAXFLOAT);
+            NSString* subject = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
+            CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+            height = titleSize.height+10;
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView)
         {
@@ -228,14 +250,23 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ModalWebViewController *controller = (ModalWebViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ModalWebViewController"];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self presentViewController:navigationController animated:YES completion:nil];
-    
-    Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
-    
-    controller.title = @"Объявление";
-    controller.url = [NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID];
+    if (tableView == self.tableView)
+    {
+        NSString* categoryName = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
+        [self.searchDisplayController setActive: YES animated: YES];
+        self.category = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] valueForKey:categoryName] valueForKey:@"f"];
+        [self baraholkaFullSearch:self.searchDisplayController.searchBar.text];
+    }
+    else {
+        ModalWebViewController *controller = (ModalWebViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ModalWebViewController"];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+        [self presentViewController:navigationController animated:YES completion:nil];
+        
+        Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
+        
+        controller.title = @"Объявление";
+        controller.url = [NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID];
+    }
 }
 
 #pragma mark - SearchBar
@@ -261,9 +292,16 @@
 
 - (void) loadXpath
 {
-    self.xpathQueryString=@"//td[@class='frst ph colspan']/..";
-    self.topicTypeXpath=@"m-imp";
     
+    self.xpathQueryString=@"//td[@class='frst ph colspan']/..";
+    
+    self.listCategoryXpath=@"//div[@class='cm-onecat']";
+    self.listCategoryLinkXpath=@"//small/a";
+    self.listItemXpath=@"//li";
+    self.listItemLinkXpath=@"//a";
+    self.listItemCount=@"//sup";
+    
+    self.topicTypeXpath=@"m-imp";
     self.titleXpath=@"//h2[@class='wraptxt']/a";
     self.descriptionXpath=@"//*[@class='wraptxt']/../p[2]";
     self.categoryXpath=@"//a[@class='gray-link']";
@@ -339,7 +377,7 @@
             currPage=[NSString stringWithFormat:@"&start=%d",self.currentBaraholkaPage*25];
         }
             
-        NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@%@",searchText,currPage];
+        NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@%@%@",searchText,currPage,self.category];
         NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
         NSData *data = [NSData dataWithContentsOfURL:url];
         self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
@@ -408,8 +446,7 @@
             NSLog(@"Success");
         });
     });
-    
-    
+
 }
 
 - (void) performInfinityScroll
@@ -420,6 +457,56 @@
     } else [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
 }
 
+- (void) loadCategories
+{
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        
+        
+        _categories = [NSMutableArray new];
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://baraholka.onliner.by"]];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        
+        // 2
+        TFHpple *parser = [TFHpple hppleWithHTMLData:data];
+        
+        // 3
+        NSArray *nodes = [parser searchWithXPathQuery:self.listCategoryXpath];
+        
+        // 4
+        for (TFHppleElement *element in nodes) {
+            
+            NSMutableDictionary* itemDict = [[NSMutableDictionary alloc] init];
+            NSString* categoryName = [[[element children] objectAtIndex:1] text ];
+            
+            NSString* r = [Network findTextIn:[[[element  searchWithXPathQuery:self.listCategoryLinkXpath] objectAtIndex:0] objectForKey:@"href"] fromStart:@"&r=" toEnd:@"\""] ;
+            
+            
+            // 7
+            NSArray* items = [element searchWithXPathQuery:self.listItemXpath];
+            
+            for (TFHppleElement* item in items) {
+                NSString* itemName = [[[item searchWithXPathQuery:self.listItemLinkXpath] objectAtIndex:0] text];
+                NSString* f = [Network findTextIn:[[[item searchWithXPathQuery:self.listItemLinkXpath] objectAtIndex:0] objectForKey:@"href"] fromStart:@"?f=" toEnd:@"\""];
+                NSString* count = [[[[[item searchWithXPathQuery:self.listItemCount] objectAtIndex:0] text] stringByReplacingOccurrencesOfString:@"\n" withString:@""]
+                stringByReplacingOccurrencesOfString:@" " withString:@""];
+                NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:@{@"f":f,
+                                                                                            @"count":count}];
+                [itemDict setValue:dict forKey:itemName];
+                
+            }
+            NSMutableDictionary* catDict = [NSMutableDictionary dictionaryWithDictionary:@{categoryName:@{@"r":r,
+                                                                                             @"items":itemDict}}];
+            
+            [_categories addObject:catDict];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+            NSLog(@"Success");
+        });
+    });
+    
+}
 
 #pragma mark - Button Actions
 

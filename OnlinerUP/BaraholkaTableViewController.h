@@ -12,6 +12,13 @@
 
 @property (strong, nonatomic) NSDictionary* sellType;
 @property (strong, nonatomic) NSString* htmlString;
+@property (strong, nonatomic) NSString* category;
+
+@property (strong,nonatomic) NSString* listCategoryXpath;
+@property (strong,nonatomic) NSString* listCategoryLinkXpath;
+@property (strong,nonatomic) NSString* listItemXpath;
+@property (strong,nonatomic) NSString* listItemLinkXpath;
+@property (strong,nonatomic) NSString* listItemCount;
 
 @property (strong,nonatomic) NSString *xpathQueryString;
 @property (strong,nonatomic) NSString* topicTypeXpath;

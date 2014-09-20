@@ -669,6 +669,30 @@
                                     <outlet property="torgLabel" destination="dgR-pc-d9Z" id="F0K-vA-GIy"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CategoryCell" rowHeight="52" id="ut8-qW-1cF" customClass="BaraholkaFullTableViewCell">
+                                <rect key="frame" x="0.0" y="370" width="320" height="52"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ut8-qW-1cF" id="HSi-hS-Jip">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="gQD-9G-V1K" userLabel="title">
+                                            <rect key="frame" x="8" y="4" width="304" height="43"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="gQD-9G-V1K" secondAttribute="trailing" constant="8" id="0fe-ko-vyW"/>
+                                        <constraint firstAttribute="bottom" secondItem="gQD-9G-V1K" secondAttribute="bottom" constant="4" id="AAU-nm-wvg"/>
+                                        <constraint firstItem="gQD-9G-V1K" firstAttribute="leading" secondItem="HSi-hS-Jip" secondAttribute="leading" constant="8" id="RcX-of-su1"/>
+                                        <constraint firstItem="gQD-9G-V1K" firstAttribute="top" secondItem="HSi-hS-Jip" secondAttribute="top" constant="4" id="RlQ-PS-mj6"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="titleLabel" destination="gQD-9G-V1K" id="e9G-SA-Nhj"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                     </tableView>
                     <navigationItem key="navigationItem" title="Барахолка" id="IQ3-ju-Uyz">
