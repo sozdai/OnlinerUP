@@ -19,7 +19,7 @@
 #import "ModalWebViewController.h"
 #import "OnlinerUPAppDelegate.h"
 
-@interface BaraholkaTableViewController ()
+@interface BaraholkaTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
 {
     NSMutableArray *_objects;
     NSMutableArray *_categories;
@@ -41,6 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.isFullCell = NO;
+    self.category = @"";
     [self loadCategories];
     self.currentBaraholkaPage = 0;
     self.sellType = @{@"1":@"label_important.png",
@@ -50,13 +51,17 @@
                       @"5":@"label_service.png",
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
-    [self.searchDisplayController setDisplaysSearchBarInNavigationBar:NO];
+    
+    self.searchDisplayController.displaysSearchBarInNavigationBar = NO;
+
+    
     [self.searchDisplayController.searchResultsTableView addInfiniteScrollingWithActionHandler:^{
-        if (self.isFullCell) {
-            [self performInfinityScroll];
-        }
+        
+    [self performInfinityScroll];
+        
     }];
     [self loadXpath];
+    [self.searchDisplayController.searchBar setShowsCancelButton:NO];
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -71,7 +76,6 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [self.searchDisplayController.searchBar setShowsCancelButton:NO];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillAppear:)
                                                  name:UIKeyboardWillShowNotification
@@ -129,6 +133,8 @@
                 myBaraholkaTotic = [_objects objectAtIndex:indexPath.row];
                 if (myBaraholkaTotic.isHighlighted) {
                     [cell.titleLabel setTextColor:[UIColor redColor]];
+                    [cell.contentView.layer setBorderColor:[UIColor orangeColor].CGColor];
+                    [cell.contentView.layer setBorderWidth:1.0f];
                 }
                 cell.titleLabel.text = myBaraholkaTotic.title;
                 cell.descriptionLabel.text = myBaraholkaTotic.description;
@@ -181,10 +187,38 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString* title = @"";
-    if ([_categories count]) {
-        title = [[[_categories objectAtIndex:section] allKeys] objectAtIndex:0];
+    if (tableView == self.tableView) {
+        if ([_categories count]) {
+            title = [[[_categories objectAtIndex:section] allKeys] objectAtIndex:0];
+        }
     }
-    return title;
+    else if (tableView == self.searchDisplayController.searchResultsTableView) {
+        if (!self.isFullCell)
+        {
+           title = @"Быстрый поиск";
+        } else if ([self.category length]) {
+            title = self.categoryTitle;
+        } else
+        {
+            title = @"Все категории";
+        }
+    }
+        return title;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    UILabel *myLabel = [[UILabel alloc] init];
+    
+    
+    myLabel.frame = CGRectMake(8, 0, 312, 20);
+    myLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:17];
+    myLabel.textColor = [UIColor darkGrayColor];
+    myLabel.text = [self tableView:tableView titleForHeaderInSection:section];
+    UIView *headerView = [[UIView alloc] init];
+    [headerView addSubview:myLabel];
+    headerView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    return headerView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -214,7 +248,7 @@
             CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
             CGSize descriptionSize = [description sizeWithFont:descriptionFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
             
-            height = titleSize.height+descriptionSize.height+54;
+            height = titleSize.height+descriptionSize.height+58;
         }
         
         
@@ -254,8 +288,11 @@
     {
         NSString* categoryName = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
         [self.searchDisplayController setActive: YES animated: YES];
-        self.category = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] valueForKey:categoryName] valueForKey:@"f"];
-        [self baraholkaFullSearch:self.searchDisplayController.searchBar.text];
+        self.searchDisplayController.searchBar.hidden = NO;
+        [self.searchDisplayController.searchBar becomeFirstResponder];
+        self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] valueForKey:categoryName] valueForKey:@"f"]];
+        self.categoryTitle = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
+        [self baraholkaFullSearch:@""];
     }
     else {
         ModalWebViewController *controller = (ModalWebViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ModalWebViewController"];
@@ -273,8 +310,11 @@
 
 -(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    self.currentBaraholkaPage = 0;
-    [self baraholkaQuickSearch:searchBar.text];
+    if (![self.category length]) {
+        self.currentBaraholkaPage = 0;
+        [self baraholkaQuickSearch:searchBar.text];
+
+    }
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -285,8 +325,54 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar
 {
-    [self.searchDisplayController.searchBar setShowsCancelButton:NO];
+    self.category = @"";
+    self.categoryTitle = @"";
+    self.isFullCell = NO;
+    [_objects removeAllObjects];
+    [searchBar setShowsCancelButton:NO];
+    [self.tableView reloadData];
 }
+
+-(void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
+//    // We need to prevent the resultsTable from hiding if the search is still active
+    if (self.searchDisplayController.active == YES) {
+        tableView.hidden = NO;
+    }
+    if (self.isFullCell && [self.category length]) {
+        [self baraholkaFullSearch:@""];
+    } else [_objects removeAllObjects];
+    [tableView reloadData];
+}
+
+- (void)searchDisplayControllerDidBeginSearch:(UISearchDisplayController *)controller {
+    
+    controller.searchResultsTableView.hidden = NO;
+    [controller.searchResultsTableView setContentInset:UIEdgeInsetsMake(64,
+                                                                        controller.searchResultsTableView.contentInset.left,
+                                                                        controller.searchResultsTableView.contentInset.bottom+48,
+                                                                        controller.searchResultsTableView.contentInset.right)];
+    [self.searchDisplayController.searchResultsTableView reloadData];
+    
+    // Then we need to remove the semi transparent overlay which is here
+    for (UIView *v in [[[controller.searchResultsTableView superview] superview] subviews]) {
+        
+        if (v.frame.origin.y == 64) {
+            [v setHidden:YES];
+        }
+    }
+    
+}
+
+- (void) searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
+{
+    [controller.searchResultsTableView setContentInset:UIEdgeInsetsMake(64,
+                                                                        controller.searchResultsTableView.contentInset.left,
+                                                                        controller.searchResultsTableView.contentInset.bottom-48,
+                                                                        controller.searchResultsTableView.contentInset.right)];
+}
+
+
+
 
 #pragma mark - load data
 
@@ -398,7 +484,7 @@
             // 7
             NSString* type = [NSString stringWithFormat:@"%@",[element objectForKey:@"class"]];
             myBaraholka.isHighlighted = NO;
-            if ([type isEqualToString:@"m-imp"]) {
+            if ([type isEqualToString:@"m-imp"] || [type isEqualToString:@"m-imp last-tr"]) {
                 [myBaraholka setIsHighlighted:YES];
             };
             
@@ -432,6 +518,7 @@
         
         // 8
         if (self.currentBaraholkaPage == 0) {
+            _objects = [NSMutableArray array];
             [_objects removeAllObjects];
         }
         
@@ -439,7 +526,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.currentBaraholkaPage == 0) {
-                [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+                [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             }
             [self.searchDisplayController.searchResultsTableView reloadData];
             [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
@@ -451,10 +538,16 @@
 
 - (void) performInfinityScroll
 {
-    if ([_objects count] >= 25) {
-        self.currentBaraholkaPage++;
+    
+    if (![_objects count]) {
+        [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
+    } else
+    {
+        if ([_objects count] >= 25) {
+            self.currentBaraholkaPage++;
+        }
         [self baraholkaFullSearch:self.searchDisplayController.searchBar.text];
-    } else [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
+    }
 }
 
 - (void) loadCategories

@@ -6,16 +6,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "OnlinerUP/BaraholkaTableViewController.m"
-            timestampString = "432937836.06317"
+            timestampString = "433122090.236886"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
-            landmarkName = "-tableView:heightForRowAtIndexPath:"
+            startingLineNumber = "528"
+            endingLineNumber = "528"
+            landmarkName = "-baraholkaFullSearch:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

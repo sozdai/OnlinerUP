@@ -455,11 +455,11 @@
         <scene sceneID="3GU-EC-MMk">
             <objects>
                 <tableViewController modalTransitionStyle="flipHorizontal" id="iz0-uE-9V2" customClass="BaraholkaTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="52" sectionHeaderHeight="22" sectionFooterHeight="22" id="i4O-lY-0Pd">
+                    <tableView key="view" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="52" sectionHeaderHeight="22" sectionFooterHeight="22" id="i4O-lY-0Pd">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="Поиск по барахолке" showsCancelButton="YES" id="XSS-Ur-hTi">
+                        <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Поиск по барахолке" showsCancelButton="YES" id="XSS-Ur-hTi">
                             <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <color key="tintColor" red="1" green="0.011764707040000001" blue="0.1294117719" alpha="1" colorSpace="deviceRGB"/>
@@ -540,11 +540,11 @@
                                     <outlet property="torgLabel" destination="wUB-1q-qpp" id="Upe-6T-tqg"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FullCell" rowHeight="188" id="ieB-CT-6wa" customClass="BaraholkaFullTableViewCell">
-                                <rect key="frame" x="0.0" y="182" width="320" height="188"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FullCell" rowHeight="192" id="ieB-CT-6wa" customClass="BaraholkaFullTableViewCell">
+                                <rect key="frame" x="0.0" y="182" width="320" height="192"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ieB-CT-6wa" id="6tj-yO-we2">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="187"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="191"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="НОВЫЕ ВЕЛОСИПЕДЫ по низким ценам! Скидки!  WWW.CRONUSBIKE.BY" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="fhN-Qr-wdf">
@@ -556,7 +556,7 @@
                                             <size key="shadowOffset" width="0.0" height="0.0"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="WYU-Av-hzi">
-                                            <rect key="frame" x="8" y="107" width="304" height="76"/>
+                                            <rect key="frame" x="8" y="104" width="304" height="79"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <string key="text">Самые низкие цены на велосипеды в Минске, Лучшие модели 2014 г , велосипеды в Минске CRONUS COUPE 2.0 Cronus Tornado , Meteor , Explosion , Elite 2.0, Cronus Extreme Nakxus SYMBOL 26М021 Велосипеды по самым низким ценам , скидки на велосипеды
 </string>
@@ -590,23 +590,23 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Все что не вошло в другие категории" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pac-vF-6c4" userLabel="date">
-                                                    <rect key="frame" x="2" y="22" width="230" height="14"/>
+                                                    <rect key="frame" x="2" y="22" width="225" height="14"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s3b-NW-QJh">
-                                                    <rect key="frame" x="238" y="21" width="30" height="15"/>
+                                                    <rect key="frame" x="226" y="20" width="42" height="15"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <subviews>
                                                         <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="12" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wXb-tx-idI" userLabel="date">
-                                                            <rect key="frame" x="0.0" y="1" width="19" height="14"/>
+                                                            <rect key="frame" x="0.0" y="1" width="31" height="14"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView userInteractionEnabled="NO" contentMode="bottomLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon_comment.png" translatesAutoresizingMaskIntoConstraints="NO" id="2zR-JJ-3tS">
-                                                            <rect key="frame" x="20" y="4" width="10" height="9"/>
+                                                            <rect key="frame" x="32" y="4" width="10" height="9"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </imageView>
                                                     </subviews>
@@ -621,7 +621,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="TYh-wy-hFV" secondAttribute="trailing" id="Ic7-Xh-KW4"/>
                                                 <constraint firstItem="xdZ-EU-Jir" firstAttribute="leading" secondItem="6lP-L6-zyP" secondAttribute="trailing" constant="7" id="LrO-7f-F6f"/>
                                                 <constraint firstItem="TYh-wy-hFV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="BuT-NE-g52" secondAttribute="top" constant="4" id="Mft-Qz-Yn0"/>
-                                                <constraint firstAttribute="trailing" secondItem="Pac-vF-6c4" secondAttribute="trailing" constant="36" id="OoC-Nk-duu"/>
+                                                <constraint firstAttribute="trailing" secondItem="Pac-vF-6c4" secondAttribute="trailing" constant="41" id="OoC-Nk-duu"/>
                                                 <constraint firstAttribute="trailing" secondItem="s3b-NW-QJh" secondAttribute="trailing" id="TKl-Vw-hjb"/>
                                                 <constraint firstItem="TYh-wy-hFV" firstAttribute="top" secondItem="BuT-NE-g52" secondAttribute="top" constant="2" id="cYk-Q0-NmE"/>
                                                 <constraint firstAttribute="height" constant="39" id="h8X-5v-K8h"/>
@@ -645,7 +645,7 @@
                                     <constraints>
                                         <constraint firstItem="fhN-Qr-wdf" firstAttribute="leading" secondItem="6tj-yO-we2" secondAttribute="leading" constant="8" id="2uv-2M-xyA"/>
                                         <constraint firstItem="ZkD-4P-scl" firstAttribute="leading" secondItem="6tj-yO-we2" secondAttribute="leading" constant="8" id="85P-fF-teC"/>
-                                        <constraint firstAttribute="bottom" secondItem="WYU-Av-hzi" secondAttribute="bottom" constant="4" id="BMW-xy-whm"/>
+                                        <constraint firstAttribute="bottom" secondItem="WYU-Av-hzi" secondAttribute="bottom" constant="8" id="BMW-xy-whm"/>
                                         <constraint firstItem="fhN-Qr-wdf" firstAttribute="top" secondItem="6tj-yO-we2" secondAttribute="top" constant="44" id="Jg4-nQ-7Fn"/>
                                         <constraint firstItem="ZkD-4P-scl" firstAttribute="top" secondItem="6tj-yO-we2" secondAttribute="top" constant="6" id="Kh1-SW-Sbo"/>
                                         <constraint firstAttribute="trailing" secondItem="fhN-Qr-wdf" secondAttribute="trailing" constant="8" id="MRe-Lb-NAa"/>
@@ -670,13 +670,13 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CategoryCell" rowHeight="52" id="ut8-qW-1cF" customClass="BaraholkaFullTableViewCell">
-                                <rect key="frame" x="0.0" y="370" width="320" height="52"/>
+                                <rect key="frame" x="0.0" y="374" width="320" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ut8-qW-1cF" id="HSi-hS-Jip">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="gQD-9G-V1K" userLabel="title">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="gQD-9G-V1K" userLabel="title">
                                             <rect key="frame" x="8" y="4" width="304" height="43"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                             <nil key="highlightedColor"/>

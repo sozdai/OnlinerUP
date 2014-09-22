@@ -13,6 +13,7 @@
 @property (strong, nonatomic) NSDictionary* sellType;
 @property (strong, nonatomic) NSString* htmlString;
 @property (strong, nonatomic) NSString* category;
+@property (strong, nonatomic) NSString* categoryTitle;
 
 @property (strong,nonatomic) NSString* listCategoryXpath;
 @property (strong,nonatomic) NSString* listCategoryLinkXpath;
