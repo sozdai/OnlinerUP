@@ -112,7 +112,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    int count;
+    long count;
     if (tableView == self.tableView) {
         count = [[[[[_categories objectAtIndex:section] allValues] objectAtIndex:0] valueForKey:@"items"] count];
     }
@@ -134,7 +134,8 @@
                 if (myBaraholkaTotic.isHighlighted) {
                     [cell.titleLabel setTextColor:[UIColor redColor]];
                     [cell.contentView.layer setBorderColor:[UIColor orangeColor].CGColor];
-                    [cell.contentView.layer setBorderWidth:1.0f];
+                    [cell.contentView.layer setBorderWidth:0.5f];
+
                 }
                 cell.titleLabel.text = myBaraholkaTotic.title;
                 cell.descriptionLabel.text = myBaraholkaTotic.description;

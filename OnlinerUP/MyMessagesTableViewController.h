@@ -10,5 +10,9 @@
 
 @interface MyMessagesTableViewController : UITableViewController
 - (IBAction)authorButtonClick:(UIButton *)sender;
+- (IBAction)actionButtonClick:(UIBarButtonItem *)sender;
+@property (strong, nonatomic) NSString* url;
+@property (strong, nonatomic) NSString* folder;
+@property (assign, nonatomic) int page;
 
 @end
