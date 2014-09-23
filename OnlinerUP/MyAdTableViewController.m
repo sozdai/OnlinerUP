@@ -10,12 +10,13 @@
 #import "TFHpple.h"
 #import "MyAd.h"
 #import "MyAdTableViewCell.h"
-#import "ModalWebViewController.h"
 #import "OnlinerUPAppDelegate.h"
 #import "UIScrollView+SVPullToRefresh.h"
 #import "AFNetworking/AFNetworking.h"
 #import "Network.h"
 #import "LoginViewController.h"
+#import "SVWebViewController.h"
+#import "MBProgressHUD.h"
 
 @interface MyAdTableViewController (){
     NSMutableArray *_objects;
@@ -53,13 +54,16 @@
         [weakSelf getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     }];
     [self.tableView.pullToRefreshView setTitle:@"" forState:SVPullToRefreshStateAll];
-    [self.tableView triggerPullToRefresh];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     if (![_objects count]) {
-        [self.tableView triggerPullToRefresh];
+        {
+            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            [self loadAd];
+            [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
+        }
     } else [self.tableView reloadData];
 }
 - (void)didReceiveMemoryWarning
@@ -177,14 +181,9 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ModalWebViewController *controller = (ModalWebViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ModalWebViewController"];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self presentViewController:navigationController animated:YES completion:nil];
-    
     MyAd* ad = [_objects objectAtIndex:indexPath.row];
-    
-    controller.title = @"Объявление";
-    controller.url = [NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", ad.topicID];
+    SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", ad.topicID]];
+    [self.navigationController pushViewController:webViewController animated:YES];
 }
 
 #pragma mark - Load data
@@ -252,6 +251,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView.pullToRefreshView stopAnimating];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self.tableView reloadData];
         });
     });
@@ -265,6 +265,7 @@
     
     NSArray* params = [self getIDsWithType0];
     if (![params count] == 0) {
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         [self upAllFreeAds:params];
     }
     else
@@ -377,7 +378,8 @@
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [self.tableView triggerPullToRefresh];
+        [self loadAd];
+        [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
         NSLog(@"%@",operation.responseObject);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -391,12 +393,8 @@
     
     if([title isEqualToString:@"Пополнить"])
     {
-        ModalWebViewController *controller = (ModalWebViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ModalWebViewController"];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-        [self presentViewController:navigationController animated:YES completion:nil];
-    
-        controller.title = @"Пополнить счет";
-        controller.url = @"https://profile.onliner.by/account";
+        SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:@"https://profile.onliner.by/account"];
+        [self.navigationController pushViewController:webViewController animated:YES];
     }
     else if([title isEqualToString:@"Поднять"])
     {

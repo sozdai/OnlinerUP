@@ -9,15 +9,15 @@
 #import "BaraholkaTableViewController.h"
 #import "BaraholkaTableViewCell.h"
 #import "BaraholkaFullTableViewCell.h"
-#import "UIScrollView+SVPullToRefresh.h"
 #import "UIScrollView+SVInfiniteScrolling.h"
 #import "LoginViewController.h"
 #import "AFNetworking.h"
 #import "Baraholka.h"
 #import "Network.h"
 #import "TFHpple.h"
-#import "ModalWebViewController.h"
 #import "OnlinerUPAppDelegate.h"
+#import "MBProgressHUD.h"
+#import "SVWebViewController.h"
 
 @interface BaraholkaTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
 {
@@ -56,9 +56,7 @@
 
     
     [self.searchDisplayController.searchResultsTableView addInfiniteScrollingWithActionHandler:^{
-        
-    [self performInfinityScroll];
-        
+        [self performInfinityScroll];
     }];
     [self loadXpath];
     [self.searchDisplayController.searchBar setShowsCancelButton:NO];
@@ -99,7 +97,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    int count;
+    long count;
     if (tableView == self.tableView) {
         count = [_categories count];
     }
@@ -134,6 +132,7 @@
                 if (myBaraholkaTotic.isHighlighted) {
                     [cell.titleLabel setTextColor:[UIColor redColor]];
                     [cell.contentView.layer setBorderColor:[UIColor orangeColor].CGColor];
+                    [cell.contentView.layer setBackgroundColor:[UIColor whiteColor].CGColor];
                     [cell.contentView.layer setBorderWidth:0.5f];
 
                 }
@@ -213,8 +212,8 @@
     
     
     myLabel.frame = CGRectMake(8, 0, 312, 20);
-    myLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:17];
-    myLabel.textColor = [UIColor darkGrayColor];
+    myLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:17];
+    myLabel.textColor = [UIColor redColor];
     myLabel.text = [self tableView:tableView titleForHeaderInSection:section];
     UIView *headerView = [[UIView alloc] init];
     [headerView addSubview:myLabel];
@@ -287,23 +286,21 @@
 {
     if (tableView == self.tableView)
     {
+        
         NSString* categoryName = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
         [self.searchDisplayController setActive: YES animated: YES];
         self.searchDisplayController.searchBar.hidden = NO;
-        [self.searchDisplayController.searchBar becomeFirstResponder];
+        self.searchDisplayController.searchBar.placeholder = @"Поиск по категории";
+//        [self.searchDisplayController.searchBar becomeFirstResponder];
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] valueForKey:categoryName] valueForKey:@"f"]];
         self.categoryTitle = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
         [self baraholkaFullSearch:@""];
     }
     else {
-        ModalWebViewController *controller = (ModalWebViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"ModalWebViewController"];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-        [self presentViewController:navigationController animated:YES completion:nil];
-        
         Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
-        
-        controller.title = @"Объявление";
-        controller.url = [NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID];
+        SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID]];
+        [self.navigationController pushViewController:webViewController animated:YES];
     }
 }
 
@@ -321,6 +318,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     self.currentBaraholkaPage = 0;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [self baraholkaFullSearch:searchBar.text];
 }
 
@@ -329,6 +327,8 @@
     self.category = @"";
     self.categoryTitle = @"";
     self.isFullCell = NO;
+    self.currentBaraholkaPage = 0;
+    self.searchDisplayController.searchBar.placeholder = @"Поиск по барахолке";
     [_objects removeAllObjects];
     [searchBar setShowsCancelButton:NO];
     [self.tableView reloadData];
@@ -531,6 +531,7 @@
             }
             [self.searchDisplayController.searchResultsTableView reloadData];
             [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
             NSLog(@"Success");
         });
     });
@@ -539,7 +540,6 @@
 
 - (void) performInfinityScroll
 {
-    
     if (![_objects count]) {
         [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
     } else
@@ -553,6 +553,7 @@
 
 - (void) loadCategories
 {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
         
@@ -590,12 +591,12 @@
             }
             NSMutableDictionary* catDict = [NSMutableDictionary dictionaryWithDictionary:@{categoryName:@{@"r":r,
                                                                                              @"items":itemDict}}];
-            
             [_categories addObject:catDict];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
             NSLog(@"Success");
         });
     });
