@@ -23,6 +23,7 @@
 {
     NSMutableArray *_objects;
     NSMutableArray *_categories;
+    NSMutableDictionary* _config;
 }
 
 @end
@@ -42,7 +43,6 @@
     [super viewDidLoad];
     self.isFullCell = NO;
     self.category = @"";
-    [self loadCategories];
     self.currentBaraholkaPage = 0;
     self.sellType = @{@"1":@"label_important.png",
                       @"2":@"label_sell.png",
@@ -54,6 +54,7 @@
     
     self.searchDisplayController.displaysSearchBarInNavigationBar = NO;
 
+    [self loadConfig];
     
     [self.searchDisplayController.searchResultsTableView addInfiniteScrollingWithActionHandler:^{
         [self performInfinityScroll];
@@ -65,7 +66,7 @@
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
     [manager GET:@"http://kardash.by/config.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        NSLog(@"%@",responseObject);
+//        NSLog(@"%@",responseObject);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@, %@",error, error.userInfo);
@@ -86,6 +87,9 @@
     {
         [self.loginButton setTitle:@"Выход"];
         [[self.tabBarController tabBar] setHidden:NO];
+    }
+    if (![_categories count]) {
+        [self loadCategories];
     }
 }
 
@@ -163,7 +167,7 @@
         BaraholkaTableViewCell *cell;
         if (tableView == self.tableView) {
             cell = [self.tableView dequeueReusableCellWithIdentifier:@"CategoryCell"];
-            cell.titleLabel.text = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
+            cell.titleLabel.text = [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] allKeys] objectAtIndex:0];
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView) {
             cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
@@ -213,7 +217,7 @@
     
     myLabel.frame = CGRectMake(8, 0, 312, 20);
     myLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:17];
-    myLabel.textColor = [UIColor redColor];
+    myLabel.textColor = [UIColor darkTextColor];
     myLabel.text = [self tableView:tableView titleForHeaderInSection:section];
     UIView *headerView = [[UIView alloc] init];
     [headerView addSubview:myLabel];
@@ -258,9 +262,9 @@
         if (tableView == self.tableView) {
             UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:15.0f];
             CGSize constraintSize = CGSizeMake(304.0f,MAXFLOAT);
-            NSString* subject = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
+            NSString* subject = [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] allKeys] objectAtIndex:0];
             CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-            height = titleSize.height+10;
+            height = titleSize.height+12;
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView)
         {
@@ -287,19 +291,18 @@
     if (tableView == self.tableView)
     {
         
-        NSString* categoryName = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
+        self.categoryTitle = [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] allKeys ] objectAtIndex:0];
         [self.searchDisplayController setActive: YES animated: YES];
         self.searchDisplayController.searchBar.hidden = NO;
         self.searchDisplayController.searchBar.placeholder = @"Поиск по категории";
-//        [self.searchDisplayController.searchBar becomeFirstResponder];
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] valueForKey:categoryName] valueForKey:@"f"]];
-        self.categoryTitle = [[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] allKeys ]objectAtIndex:indexPath.row];
+        self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] valueForKey:self.categoryTitle] valueForKey:@"f"]];
         [self baraholkaFullSearch:@""];
     }
     else {
         Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
         SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID]];
+        webViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:webViewController animated:YES];
     }
 }
@@ -416,36 +419,39 @@
         [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
         self.isFullCell = NO;
         [Network getUrl:@"http://baraholka.onliner.by/gapi/search/baraholka/topic.json" withParams:@{@"s":searchText} andHeaders:nil andSerializer:@"JSON" :^(NSArray* responseObject,NSString *responseString, NSError *error) {
-            NSMutableArray *newBaraholkaTopic= [[NSMutableArray alloc] initWithCapacity:0];
-            NSMutableArray* responseArray = [[NSArray arrayWithArray:responseObject] mutableCopy];
-            if (![responseString isEqualToString:@"[]"]) {
-                [responseArray removeObjectAtIndex:0];
-            }
-            for (id key in responseArray) {
-                Baraholka *myBaraholkaTotic = [Baraholka new];
-                [newBaraholkaTopic addObject:myBaraholkaTotic];
-                NSString* link = [key valueForKey:@"link"];
-                myBaraholkaTotic.title = [[[[[[Network findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]
-                                              stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]
-                                             stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""]
-                                            stringByReplacingOccurrencesOfString:@"&#39;" withString:@"'"]
-                                           stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"]
-                                          stringByReplacingOccurrencesOfString:@"lt;" withString:@"<"];
-                myBaraholkaTotic.topicID = [Network findTextIn:link fromStart:@"?t=" toEnd:@"\""];
-                myBaraholkaTotic.city = [Network findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
-                myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
-                NSString* price = [NSString stringWithFormat:@"%@",[key valueForKey:@"price"]];
-                if (![price isEqualToString:@"<null>"]) {
-                    myBaraholkaTotic.price = [NSString stringWithFormat:@"%@ %@", price, [key valueForKey:@"currency"]];
+            if (!error) {
+                NSMutableArray *newBaraholkaTopic= [[NSMutableArray alloc] initWithCapacity:0];
+                NSMutableArray* responseArray = [[NSArray arrayWithArray:responseObject] mutableCopy];
+                if (![responseString isEqualToString:@"[]"]) {
+                    [responseArray removeObjectAtIndex:0];
                 }
-                
-                myBaraholkaTotic.isTorg = [key valueForKey:@"bargain"];
-                
+                for (id key in responseArray) {
+                    Baraholka *myBaraholkaTotic = [Baraholka new];
+                    [newBaraholkaTopic addObject:myBaraholkaTotic];
+                    NSString* link = [key valueForKey:@"link"];
+                    myBaraholkaTotic.title = [[[[[[Network findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]
+                                                  stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]
+                                                 stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""]
+                                                stringByReplacingOccurrencesOfString:@"&#39;" withString:@"'"]
+                                               stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"]
+                                              stringByReplacingOccurrencesOfString:@"lt;" withString:@"<"];
+                    myBaraholkaTotic.topicID = [Network findTextIn:link fromStart:@"?t=" toEnd:@"\""];
+                    myBaraholkaTotic.city = [Network findTextIn:link fromStart:@"region\">" toEnd:@"</span>"];
+                    myBaraholkaTotic.type = [NSString stringWithFormat:@"%@",[key valueForKey:@"category"]];
+                    NSString* price = [NSString stringWithFormat:@"%@",[key valueForKey:@"price"]];
+                    if (![price isEqualToString:@"<null>"]) {
+                        myBaraholkaTotic.price = [NSString stringWithFormat:@"%@ %@", price, [key valueForKey:@"currency"]];
+                    }
+                    
+                    myBaraholkaTotic.isTorg = [key valueForKey:@"bargain"];
+                    
+                }
+                [_objects removeAllObjects];
+                _objects = [newBaraholkaTopic mutableCopy];
+                [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+                [self.searchDisplayController.searchResultsTableView reloadData];
+
             }
-            [_objects removeAllObjects];
-            _objects = [newBaraholkaTopic mutableCopy];
-            [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
-            [self.searchDisplayController.searchResultsTableView reloadData];
             
         }];
     }
@@ -467,63 +473,68 @@
         NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@%@%@",searchText,currPage,self.category];
         NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
         NSData *data = [NSData dataWithContentsOfURL:url];
-        self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
-        
-        // 2
-        TFHpple *parser = [TFHpple hppleWithHTMLData:data];
-        
-        // 3
-        NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
-        
-        // 4
-        NSMutableArray *newBaraholka = [[NSMutableArray alloc] initWithCapacity:0];
-        for (TFHppleElement *element in nodes) {
-            // 5
-            Baraholka *myBaraholka = [Baraholka new];
-            [newBaraholka addObject:myBaraholka];
+//        self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+        if (data) {
+            // 2
+            TFHpple *parser = [TFHpple hppleWithHTMLData:data];
             
-            // 7
-            NSString* type = [NSString stringWithFormat:@"%@",[element objectForKey:@"class"]];
-            myBaraholka.isHighlighted = NO;
-            if ([type isEqualToString:@"m-imp"] || [type isEqualToString:@"m-imp last-tr"]) {
-                [myBaraholka setIsHighlighted:YES];
-            };
+            // 3
+            NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
             
-            myBaraholka.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
-            if ([[element searchWithXPathQuery:self.descriptionXpath] count]) {
-                myBaraholka.description = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
-
+            // 4
+            NSMutableArray *newBaraholka = [[NSMutableArray alloc] initWithCapacity:0];
+            for (TFHppleElement *element in nodes) {
+                // 5
+                Baraholka *myBaraholka = [Baraholka new];
+                [newBaraholka addObject:myBaraholka];
+                
+                // 7
+                NSString* type = [NSString stringWithFormat:@"%@",[element objectForKey:@"class"]];
+                myBaraholka.isHighlighted = NO;
+                if ([type isEqualToString:@"m-imp"] || [type isEqualToString:@"m-imp last-tr"]) {
+                    [myBaraholka setIsHighlighted:YES];
+                };
+                
+                myBaraholka.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
+                if ([[element searchWithXPathQuery:self.descriptionXpath] count]) {
+                    myBaraholka.description = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+                    
+                }
+                myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
+                myBaraholka.sellType = [Network findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
+                myBaraholka.city = [[[element searchWithXPathQuery:self.cityXpath] objectAtIndex:0] text];
+                myBaraholka.topicID = [Network findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
+                if ([[element searchWithXPathQuery:self.topicPriceXpath] count]) {
+                    myBaraholka.price = [[[element searchWithXPathQuery:self.topicPriceXpath] objectAtIndex:0] text];
+                    myBaraholka.currency = [[[element searchWithXPathQuery:self.topicCurrencyXpath] objectAtIndex:0] text];
+                }
+                myBaraholka.authorName = [[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] text];
+                myBaraholka.authorID = [Network findTextIn:[[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] objectForKey:self.urlXpath] fromStart:@"/user/" toEnd:@"#"];
+                
+                myBaraholka.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myBaraholka.topicID];
+                myBaraholka.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myBaraholka.imageUrl]];
+                
+                if ([[element searchWithXPathQuery:self.commentsCountXpath] count]) {
+                    myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
+                }
+                if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
+                    myBaraholka.isTorg = [[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text];
+                }
+                
             }
-            myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
-            myBaraholka.sellType = [Network findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
-            myBaraholka.city = [[[element searchWithXPathQuery:self.cityXpath] objectAtIndex:0] text];
-            myBaraholka.topicID = [Network findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
-            if ([[element searchWithXPathQuery:self.topicPriceXpath] count]) {
-                myBaraholka.price = [[[element searchWithXPathQuery:self.topicPriceXpath] objectAtIndex:0] text];
-                myBaraholka.currency = [[[element searchWithXPathQuery:self.topicCurrencyXpath] objectAtIndex:0] text];
-            }
-            myBaraholka.authorName = [[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] text];
-            myBaraholka.authorID = [Network findTextIn:[[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] objectForKey:self.urlXpath] fromStart:@"/user/" toEnd:@"#"];
             
-            myBaraholka.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myBaraholka.topicID];
-            myBaraholka.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myBaraholka.imageUrl]];
+            // 8
+            if (self.currentBaraholkaPage == 0) {
+                _objects = [NSMutableArray array];
+                [_objects removeAllObjects];
+            }
             
-           if ([[element searchWithXPathQuery:self.commentsCountXpath] count]) {
-                myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
-            }
-            if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
-                myBaraholka.isTorg = [[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text];
-            }
+            [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
+        }
+        else
+        {
             
         }
-        
-        // 8
-        if (self.currentBaraholkaPage == 0) {
-            _objects = [NSMutableArray array];
-            [_objects removeAllObjects];
-        }
-        
-        [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.currentBaraholkaPage == 0) {
@@ -532,7 +543,6 @@
             [self.searchDisplayController.searchResultsTableView reloadData];
             [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-            NSLog(@"Success");
         });
     });
 
@@ -551,6 +561,24 @@
     }
 }
 
+- (void) loadConfig
+{
+    
+    [[AFHTTPRequestOperationManager manager].operationQueue cancelAllOperations];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+    
+    [manager GET:@"http://kardash.by/config.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        _config = [responseObject mutableCopy];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"error connection %@",error);
+       
+    }];
+
+}
+
 - (void) loadCategories
 {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -561,43 +589,51 @@
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://baraholka.onliner.by"]];
         NSData *data = [NSData dataWithContentsOfURL:url];
         
-        // 2
-        TFHpple *parser = [TFHpple hppleWithHTMLData:data];
-        
-        // 3
-        NSArray *nodes = [parser searchWithXPathQuery:self.listCategoryXpath];
-        
-        // 4
-        for (TFHppleElement *element in nodes) {
+        if (data) {
+            // 2
+            TFHpple *parser = [TFHpple hppleWithHTMLData:data];
             
-            NSMutableDictionary* itemDict = [[NSMutableDictionary alloc] init];
-            NSString* categoryName = [[[element children] objectAtIndex:1] text ];
+            // 3
+            NSArray *nodes = [parser searchWithXPathQuery:self.listCategoryXpath];
             
-            NSString* r = [Network findTextIn:[[[element  searchWithXPathQuery:self.listCategoryLinkXpath] objectAtIndex:0] objectForKey:@"href"] fromStart:@"&r=" toEnd:@"\""] ;
-            
-            
-            // 7
-            NSArray* items = [element searchWithXPathQuery:self.listItemXpath];
-            
-            for (TFHppleElement* item in items) {
-                NSString* itemName = [[[item searchWithXPathQuery:self.listItemLinkXpath] objectAtIndex:0] text];
-                NSString* f = [Network findTextIn:[[[item searchWithXPathQuery:self.listItemLinkXpath] objectAtIndex:0] objectForKey:@"href"] fromStart:@"?f=" toEnd:@"\""];
-                NSString* count = [[[[[item searchWithXPathQuery:self.listItemCount] objectAtIndex:0] text] stringByReplacingOccurrencesOfString:@"\n" withString:@""]
-                stringByReplacingOccurrencesOfString:@" " withString:@""];
-                NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:@{@"f":f,
-                                                                                            @"count":count}];
-                [itemDict setValue:dict forKey:itemName];
+            // 4
+            for (TFHppleElement *element in nodes) {
                 
+                NSMutableDictionary* itemDict = [[NSMutableDictionary alloc] init];
+                NSMutableArray* itemArray = [NSMutableArray new];
+                NSString* categoryName = [[[element children] objectAtIndex:1] text ];
+                
+                NSString* r = [Network findTextIn:[[[element  searchWithXPathQuery:self.listCategoryLinkXpath] objectAtIndex:0] objectForKey:@"href"] fromStart:@"&r=" toEnd:@"\""] ;
+                
+                
+                // 7
+                NSArray* items = [element searchWithXPathQuery:self.listItemXpath];
+                
+                for (TFHppleElement* item in items) {
+                    NSString* itemName = [[[item searchWithXPathQuery:self.listItemLinkXpath] objectAtIndex:0] text];
+                    NSString* f = [Network findTextIn:[[[item searchWithXPathQuery:self.listItemLinkXpath] objectAtIndex:0] objectForKey:@"href"] fromStart:@"?f=" toEnd:@"\""];
+                    NSString* count = [[[[[item searchWithXPathQuery:self.listItemCount] objectAtIndex:0] text] stringByReplacingOccurrencesOfString:@"\n" withString:@""]
+                                       stringByReplacingOccurrencesOfString:@" " withString:@""];
+                    NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:@{@"f":f,
+                                                                                                @"count":count}];
+                    [itemArray addObject:@{itemName:dict}];
+                    
+                }
+                
+                NSMutableDictionary* catDict = [NSMutableDictionary dictionaryWithDictionary:@{categoryName:@{@"r":r,
+                                                                                                              @"items":itemArray}}];
+                [_categories addObject:catDict];
             }
-            NSMutableDictionary* catDict = [NSMutableDictionary dictionaryWithDictionary:@{categoryName:@{@"r":r,
-                                                                                             @"items":itemDict}}];
-            [_categories addObject:catDict];
+            
+        }
+        else
+        {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-            NSLog(@"Success");
         });
     });
     
@@ -627,9 +663,11 @@
     [body appendData:[[NSString stringWithString:dataString] dataUsingEncoding:NSUTF8StringEncoding]];
     request.HTTPBody = body;
     request.HTTPMethod = @"POST";
-    //    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    if (!theConnection) NSLog(@"No connection");
+    if (!theConnection)
+    {
+        NSLog(@"error");
+    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {

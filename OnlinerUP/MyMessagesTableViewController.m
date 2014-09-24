@@ -138,15 +138,19 @@
             
             [_objects addObjectsFromArray: [[[newMessage reverseObjectEnumerator] allObjects] mutableCopy]];
             [self.tableView reloadData];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            if (self.page == 1) {
+                [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+            }
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"error connection %@",error);
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView.pullToRefreshView stopAnimating];
             [self.tableView.infiniteScrollingView stopAnimating];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            
         });
     });
     
@@ -221,6 +225,7 @@
 {
     MyMessage* myMessage = _objects[indexPath.section];
     SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://profile.onliner.by/messages#%@/%@",myMessage.folder,myMessage.messageID]];
+    webViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 
@@ -229,6 +234,7 @@
     MyMessage* myMessage = _objects[sender.tag];
     
     SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"https://profile.onliner.by/user/%@",myMessage.authorID]];
+    webViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webViewController animated:YES];
     
 }
@@ -251,19 +257,43 @@
                 case 0:{
                    self.folder = @"0";
                     self.page=1;
-                    [self.tableView triggerPullToRefresh];
+                    NSDate *past = [NSDate date];
+                    NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
+                    NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
+                    
+                    [self getStringFromUrl:self.url
+                                    withParams:@{@"f":self.folder,
+                                                 @"p":[NSString stringWithFormat:@"%d", self.page],
+                                                 @"t":t}
+                                    andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
                     self.navigationItem.title = @"Входящие";
                     break;}
                 case 1:{
                     self.folder = @"-1";
                     self.page=1;
-                    [self.tableView triggerPullToRefresh];
+                    NSDate *past = [NSDate date];
+                    NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
+                    NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
+                    
+                    [self getStringFromUrl:self.url
+                                withParams:@{@"f":self.folder,
+                                             @"p":[NSString stringWithFormat:@"%d", self.page],
+                                             @"t":t}
+                                andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
                     self.navigationItem.title = @"Отправленные";
                     break;}
                 case 2:{
                     self.folder = @"1";
                     self.page=1;
-                    [self.tableView triggerPullToRefresh];
+                    NSDate *past = [NSDate date];
+                    NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
+                    NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
+                    
+                    [self getStringFromUrl:self.url
+                                withParams:@{@"f":self.folder,
+                                             @"p":[NSString stringWithFormat:@"%d", self.page],
+                                             @"t":t}
+                                andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
                     self.navigationItem.title = @"Сохраненные";
                     break;}
                 default:

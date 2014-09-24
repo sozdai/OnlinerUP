@@ -10,8 +10,10 @@
 #import "OnlinerUPAppDelegate.h"
 #import "OnlinerKeyChain.h"
 #import "MyAdTableViewController.h"
+#import "MBProgressHUD.h"
+#import "SVWebViewController.h"
 
-@interface LoginViewController ()
+@interface LoginViewController () <UITextFieldDelegate>
 
 @end
 
@@ -49,9 +51,21 @@
     [self dismissViewControllerAnimated:self completion:nil];
 }
 
+- (IBAction)registerButtonClick:(UIButton *)sender {
+    SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:@"https://profile.onliner.by/reg"];
+    webViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:webViewController animated:YES];
+}
+
+- (IBAction)forgotPasswordClick:(UIButton *)sender {
+    SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:@"https://profile.onliner.by/login/lost"];
+    webViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:webViewController animated:YES];
+}
+
 - (void) loginToApp
 {
-        
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     NSString *dataString=[NSString stringWithFormat:@"username=%@&password=%@&autologin=on&x=306&y=38",self.loginTextField.text,self.self.passwordTextField.text];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://profile.onliner.by/login?redirect=http://baraholka.onliner.by/search.php?type=ufleamarket"]];
     
@@ -62,32 +76,37 @@
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     if (!theConnection) NSLog(@"No connection");
+    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     self.task = [NSString stringWithFormat:@"%@",response];
     [self.responseData setLength:0];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     [self.responseData appendData:data];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-   NSLog(@"Ошбика соединения");
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alert show];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     if([self rightCookiesDidLoad]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForUserDefaultsAuthorisationInfo];
         [OnlinerKeyChain writeNewPassword: self.passwordTextField.text];
-        NSLog(@"Success");
         [self dismissViewControllerAnimated:self completion:nil];
     }		
     else {
-        NSLog( @"Не удалось авторизироваться.\n Проверьте логин и пароль.");
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка авторизации" message:@"Неправильный логин или пароль" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
     }
-    
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
 -(BOOL)isAuthorizated{
@@ -117,6 +136,10 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (IBAction)goButtonClicked:(UITextField *)sender {
+    [self loginToApp];
+    [sender resignFirstResponder];
+}
 
 
 

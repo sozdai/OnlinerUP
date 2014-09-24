@@ -35,6 +35,7 @@
 -(void)loadAd;
 
 - (IBAction)clickUpAllButton:(UIButton *)sender;
+- (IBAction)avatarImageClick:(UIButton *)sender;
 
 
 @end

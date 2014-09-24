@@ -161,7 +161,9 @@
         MyAdTableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:@"Section"];
         NSString* countText = [Network findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
         [countText length]?[headerView.adCountLabel setText:countText]:[headerView.adCountLabel setText:@"Нет объявлений"];
-        
+        NSString* userId = [Network findTextIn:self.htmlString fromStart:@"avatar/48x48/" toEnd:@"\""];
+        NSString* userAvatarUrl = [NSString stringWithFormat:@"https://content.onliner.by/user/avatar/80x80/%@",userId];
+        headerView.avatarImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:userAvatarUrl]]];
         self.navigationItem.title = [Network findTextIn:self.htmlString fromStart:@"onliner__user__name\"><a href=\"https://profile.onliner.by/\">" toEnd:@"</a>"];
         [headerView.envelopeButton setTitle:[NSString stringWithFormat:@" %@",self.messagesCount] forState:UIControlStateNormal];
         headerView.accountAmountLabel.text = [NSString stringWithFormat:@"%@ руб. на счету", [Network getBallance] ];
@@ -183,6 +185,7 @@
 {
     MyAd* ad = [_objects objectAtIndex:indexPath.row];
     SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", ad.topicID]];
+    webViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 
@@ -276,6 +279,12 @@
 
 }
 
+- (IBAction)avatarImageClick:(UIButton *)sender {
+    SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:@"https://profile.onliner.by/"];
+    webViewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:webViewController animated:YES];
+}
+
 - (IBAction)refreshButtonClick:(UIButton *)sender {
     [self loadAd];
 }
@@ -297,7 +306,7 @@
         [alert show];
     } else
     {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Внимание услуга платная!" message:@"Стоимость 3000 рублей" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Поднять", nil];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Внимание, услуга платная!" message:@"Стоимость 3000 рублей" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Поднять", nil];
         [alert show];
     }
 }
@@ -351,7 +360,8 @@
         [self.tableView reloadData];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@, %@",error, error.userInfo);
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
     }];
         
 }
@@ -380,10 +390,10 @@
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         [self loadAd];
         [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-        NSLog(@"%@",operation.responseObject);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@, %@",error, error.userInfo);
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
     }];
     
 }
@@ -394,6 +404,7 @@
     if([title isEqualToString:@"Пополнить"])
     {
         SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:@"https://profile.onliner.by/account"];
+        webViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:webViewController animated:YES];
     }
     else if([title isEqualToString:@"Поднять"])
@@ -414,12 +425,11 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    NSLog(@"Ошибка соединения");
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alert show];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    NSLog(@"Success");
-    
     
 }
 

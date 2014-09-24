@@ -18,5 +18,7 @@
 +(void) cookiesStorageClearing;
 - (IBAction)login:(id)sender;
 - (IBAction)closeButtonClick:(UIBarButtonItem *)sender;
+- (IBAction)registerButtonClick:(UIButton *)sender;
+- (IBAction)forgotPasswordClick:(UIButton *)sender;
 
 @end

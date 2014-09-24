@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *commentsCountIcon;
 @property (weak, nonatomic) IBOutlet UILabel *adCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *accountAmountLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *avatarImage;
 @property (weak, nonatomic) IBOutlet UIButton *upAllButton;
 @property (weak, nonatomic) IBOutlet UIButton *envelopeButton;
 
