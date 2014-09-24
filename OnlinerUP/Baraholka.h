@@ -19,7 +19,7 @@
 @property (strong, nonatomic) NSString* currency;
 @property (strong, nonatomic) NSString* isTorg;
 @property (strong, nonatomic) NSString* city;
-@property (strong, nonatomic) NSString* description;
+@property (strong, nonatomic) NSString* topicDescription;
 @property (strong, nonatomic) NSString* imageUrl;
 @property (strong, nonatomic) NSData* imageData;
 @property (strong, nonatomic) NSString* sellType;

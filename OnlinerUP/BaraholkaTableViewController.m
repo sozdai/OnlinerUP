@@ -141,7 +141,7 @@
 
                 }
                 cell.titleLabel.text = myBaraholkaTotic.title;
-                cell.descriptionLabel.text = myBaraholkaTotic.description;
+                cell.descriptionLabel.text = myBaraholkaTotic.topicDescription;
                 cell.sellTypeImage.image = [UIImage imageNamed:[self.sellType objectForKey:myBaraholkaTotic.sellType]];
                 cell.cityLabel.text = myBaraholkaTotic.city;
                 if (myBaraholkaTotic.price) {
@@ -237,7 +237,7 @@
         {
             Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
             NSString* subject = myBaraholka.title;
-            NSString* description = myBaraholka.description;
+            NSString* description = myBaraholka.topicDescription;
             UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:17.0f];
             UIFont *descriptionFont = [UIFont fontWithName:@"Helvetica Neue" size:12.0f];
             CGSize constraintSize;
@@ -497,7 +497,7 @@
                 
                 myBaraholka.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
                 if ([[element searchWithXPathQuery:self.descriptionXpath] count]) {
-                    myBaraholka.description = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+                    myBaraholka.topicDescription = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
                     
                 }
                 myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
