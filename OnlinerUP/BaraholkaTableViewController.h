@@ -40,6 +40,7 @@
 @property (strong,nonatomic) NSString* commentsUnreadCountXpath;
 @property (strong,nonatomic) NSString* upTopicTime;
 @property (assign,nonatomic) BOOL isFullCell;
+@property (assign,nonatomic) BOOL isQuickCell;
 @property (assign,nonatomic) int currentBaraholkaPage;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *loginButton;
 

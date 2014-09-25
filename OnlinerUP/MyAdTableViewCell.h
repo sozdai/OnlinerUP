@@ -11,7 +11,6 @@
 @interface MyAdTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *textView;
 @property (weak, nonatomic) IBOutlet UIButton *upButton;
-@property (weak, nonatomic) IBOutlet UIImageView *adImage;
 @property (weak, nonatomic) IBOutlet UIImageView *sellTypeImage;
 @property (weak, nonatomic) IBOutlet UILabel *categoryLabel;
 @property (weak, nonatomic) IBOutlet UILabel *commentsCountLabel;

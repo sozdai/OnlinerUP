@@ -216,8 +216,8 @@
     
     
     myLabel.frame = CGRectMake(8, 0, 312, 20);
-    myLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:17];
-    myLabel.textColor = [UIColor darkTextColor];
+    myLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17];
+    myLabel.textColor = [UIColor blackColor];
     myLabel.text = [self tableView:tableView titleForHeaderInSection:section];
     UIView *headerView = [[UIView alloc] init];
     [headerView addSubview:myLabel];
@@ -295,7 +295,7 @@
         [self.searchDisplayController setActive: YES animated: YES];
         self.searchDisplayController.searchBar.hidden = NO;
         self.searchDisplayController.searchBar.placeholder = @"Поиск по категории";
-        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [MBProgressHUD showHUDAddedTo:self.searchDisplayController.searchResultsTableView animated:YES];
         self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] valueForKey:self.categoryTitle] valueForKey:@"f"]];
         [self baraholkaFullSearch:@""];
     }
@@ -321,7 +321,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     self.currentBaraholkaPage = 0;
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [MBProgressHUD showHUDAddedTo:self.searchDisplayController.searchResultsTableView animated:YES];
     [self baraholkaFullSearch:searchBar.text];
 }
 
@@ -415,6 +415,7 @@
 -(void) baraholkaQuickSearch: (NSString*) searchText
 {
     [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
+    self.isQuickCell = YES;
     if (![searchText isEqualToString:@""]) {
         [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
         self.isFullCell = NO;
@@ -458,12 +459,11 @@
 }
 
 -(void) baraholkaFullSearch:(NSString*)searchText {
-    
+    self.isQuickCell = NO;
+    long count = [_objects count];
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
         // 1
-        self.isFullCell = YES;
-        
         NSString* currPage = @"";
         if (self.currentBaraholkaPage != 0)
         {
@@ -485,51 +485,56 @@
             NSMutableArray *newBaraholka = [[NSMutableArray alloc] initWithCapacity:0];
             for (TFHppleElement *element in nodes) {
                 // 5
-                Baraholka *myBaraholka = [Baraholka new];
-                [newBaraholka addObject:myBaraholka];
-                
-                // 7
-                NSString* type = [NSString stringWithFormat:@"%@",[element objectForKey:@"class"]];
-                myBaraholka.isHighlighted = NO;
-                if ([type isEqualToString:@"m-imp"] || [type isEqualToString:@"m-imp last-tr"]) {
-                    [myBaraholka setIsHighlighted:YES];
-                };
-                
-                myBaraholka.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
-                if ([[element searchWithXPathQuery:self.descriptionXpath] count]) {
-                    myBaraholka.topicDescription = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+                if (!self.isQuickCell) {
+                    Baraholka *myBaraholka = [Baraholka new];
+                    [newBaraholka addObject:myBaraholka];
                     
-                }
-                myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
-                myBaraholka.sellType = [Network findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
-                myBaraholka.city = [[[element searchWithXPathQuery:self.cityXpath] objectAtIndex:0] text];
-                myBaraholka.topicID = [Network findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
-                if ([[element searchWithXPathQuery:self.topicPriceXpath] count]) {
-                    myBaraholka.price = [[[element searchWithXPathQuery:self.topicPriceXpath] objectAtIndex:0] text];
-                    myBaraholka.currency = [[[element searchWithXPathQuery:self.topicCurrencyXpath] objectAtIndex:0] text];
-                }
-                myBaraholka.authorName = [[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] text];
-                myBaraholka.authorID = [Network findTextIn:[[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] objectForKey:self.urlXpath] fromStart:@"/user/" toEnd:@"#"];
-                
-                myBaraholka.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myBaraholka.topicID];
-                myBaraholka.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myBaraholka.imageUrl]];
-                
-                if ([[element searchWithXPathQuery:self.commentsCountXpath] count]) {
-                    myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
-                }
-                if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
-                    myBaraholka.isTorg = [[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text];
-                }
-                
+                    // 7
+                    NSString* type = [NSString stringWithFormat:@"%@",[element objectForKey:@"class"]];
+                    myBaraholka.isHighlighted = NO;
+                    if ([type isEqualToString:@"m-imp"] || [type isEqualToString:@"m-imp last-tr"]) {
+                        [myBaraholka setIsHighlighted:YES];
+                    };
+                    
+                    myBaraholka.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
+                    if ([[element searchWithXPathQuery:self.descriptionXpath] count]) {
+                        myBaraholka.topicDescription = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+                        
+                    }
+                    myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
+                    myBaraholka.sellType = [Network findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
+                    myBaraholka.city = [[[element searchWithXPathQuery:self.cityXpath] objectAtIndex:0] text];
+                    myBaraholka.topicID = [Network findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
+                    if ([[element searchWithXPathQuery:self.topicPriceXpath] count]) {
+                        myBaraholka.price = [[[element searchWithXPathQuery:self.topicPriceXpath] objectAtIndex:0] text];
+                        myBaraholka.currency = [[[element searchWithXPathQuery:self.topicCurrencyXpath] objectAtIndex:0] text];
+                    }
+                    myBaraholka.authorName = [[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] text];
+                    myBaraholka.authorID = [Network findTextIn:[[[element searchWithXPathQuery:self.topicAuthorXpath] objectAtIndex:0] objectForKey:self.urlXpath] fromStart:@"/user/" toEnd:@"#"];
+                    
+                    myBaraholka.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myBaraholka.topicID];
+                    myBaraholka.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myBaraholka.imageUrl]];
+                    
+                    if ([[element searchWithXPathQuery:self.commentsCountXpath] count]) {
+                        myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
+                    }
+                    if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
+                        myBaraholka.isTorg = [[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text];
+                    }
+                } else
+                    NSLog(@"Quick");
             }
-            
+            if (!self.isQuickCell)
+            {
+                if (self.currentBaraholkaPage == 0) {
+                    _objects = [NSMutableArray array];
+                    [_objects removeAllObjects];
+                }
+                [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
+
+            } else
+                NSLog(@"Quick");
             // 8
-            if (self.currentBaraholkaPage == 0) {
-                _objects = [NSMutableArray array];
-                [_objects removeAllObjects];
-            }
-            
-            [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
         }
         else
         {
@@ -537,12 +542,18 @@
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.currentBaraholkaPage == 0) {
-                [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-            }
-            [self.searchDisplayController.searchResultsTableView reloadData];
-            [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            if (!self.isQuickCell) {
+                if (self.currentBaraholkaPage == 0) {
+                    if ([_objects count] != count) {
+                        [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+                    }
+                }
+                self.isFullCell = YES;
+                [self.searchDisplayController.searchResultsTableView reloadData];
+                [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
+                [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
+            } else
+                NSLog(@"Quick");
         });
     });
 
@@ -581,7 +592,7 @@
 
 - (void) loadCategories
 {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
         
@@ -628,12 +639,12 @@
         }
         else
         {
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
         });
     });
     

@@ -16,8 +16,6 @@
 @property (strong, nonatomic) NSString* topicPrice;
 @property (strong, nonatomic) NSString* topicType;
 @property (strong, nonatomic) NSString* timeLeft;
-@property (strong, nonatomic) NSString* imageUrl;
-@property (strong, nonatomic) NSData* imageData;
 @property (strong, nonatomic) NSString* category;
 @property (strong, nonatomic) NSString* commentsCount;
 @property (assign, nonatomic) BOOL isRead;

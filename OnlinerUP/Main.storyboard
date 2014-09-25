@@ -331,7 +331,7 @@
                                                     <rect key="frame" x="-1" y="0.0" width="40" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J5K-Fg-gMc">
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J5K-Fg-gMc">
                                                     <rect key="frame" x="-1" y="0.0" width="40" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal">
@@ -371,39 +371,13 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dbl-3b-fuf">
-                                            <rect key="frame" x="44" y="3" width="215" height="44"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="92C-Hd-ng4">
-                                                    <rect key="frame" x="2" y="4" width="40" height="9"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Все остальное, что не вошло в другие категории." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TdS-PJ-7UQ" userLabel="date">
-                                                    <rect key="frame" x="50" y="4" width="136" height="10"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dBA-Xy-BMN" userLabel="title">
-                                                    <rect key="frame" x="2" y="18" width="213" height="21"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="16"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstItem="dBA-Xy-BMN" firstAttribute="leading" secondItem="dbl-3b-fuf" secondAttribute="leading" constant="2" id="8il-DS-c4Y"/>
-                                                <constraint firstItem="92C-Hd-ng4" firstAttribute="top" secondItem="dbl-3b-fuf" secondAttribute="top" constant="4" id="KD7-sC-jwh"/>
-                                                <constraint firstAttribute="trailing" secondItem="dBA-Xy-BMN" secondAttribute="trailing" id="QuW-qk-icW"/>
-                                                <constraint firstItem="92C-Hd-ng4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="dbl-3b-fuf" secondAttribute="leading" constant="2" id="gdJ-F6-orH"/>
-                                                <constraint firstItem="92C-Hd-ng4" firstAttribute="leading" secondItem="dbl-3b-fuf" secondAttribute="leading" constant="2" id="kq6-ew-QhK"/>
-                                                <constraint firstItem="TdS-PJ-7UQ" firstAttribute="leading" secondItem="92C-Hd-ng4" secondAttribute="trailing" constant="8" id="sXu-bv-ei9"/>
-                                                <constraint firstAttribute="trailing" secondItem="TdS-PJ-7UQ" secondAttribute="trailing" constant="29" id="tGQ-f6-ywj"/>
-                                            </constraints>
-                                        </view>
-                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Gz-jR-can">
-                                            <rect key="frame" x="267" y="7" width="48" height="35"/>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="251" translatesAutoresizingMaskIntoConstraints="NO" id="dBA-Xy-BMN" userLabel="title">
+                                            <rect key="frame" x="8" y="20" width="251" height="22"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Gz-jR-can">
+                                            <rect key="frame" x="269" y="7" width="46" height="34"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
                                             <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="6"/>
@@ -414,49 +388,50 @@
                                                 <action selector="buttonUPClick:" destination="rYi-pd-BGv" eventType="touchUpInside" id="bAF-M2-HBt"/>
                                             </connections>
                                         </button>
-                                        <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TnK-au-4tW">
-                                            <rect key="frame" x="234" y="7" width="30" height="15"/>
+                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uen-4x-8x3">
+                                            <rect key="frame" x="8" y="5" width="251" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="12" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cbW-WY-5mm" userLabel="date">
-                                                    <rect key="frame" x="6" y="1" width="13" height="14"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="92C-Hd-ng4">
+                                                    <rect key="frame" x="0.0" y="2" width="40" height="9"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Все остальное, что не вошло в другие категории." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TdS-PJ-7UQ" userLabel="date">
+                                                    <rect key="frame" x="48" y="1" width="167" height="10"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="bottomLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon_comment.png" translatesAutoresizingMaskIntoConstraints="NO" id="VAb-4I-TSx">
-                                                    <rect key="frame" x="20" y="4" width="10" height="9"/>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TnK-au-4tW">
+                                                    <rect key="frame" x="212" y="-1" width="39" height="15"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
+                                                    <subviews>
+                                                        <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1211" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cbW-WY-5mm" userLabel="date">
+                                                            <rect key="frame" x="0.0" y="1" width="28" height="14"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <imageView userInteractionEnabled="NO" contentMode="bottomLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon_comment.png" translatesAutoresizingMaskIntoConstraints="NO" id="VAb-4I-TSx">
+                                                            <rect key="frame" x="29" y="4" width="10" height="9"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                </view>
                                             </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                        </view>
-                                        <view contentMode="scaleAspectFit" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i52-rD-HSw">
-                                            <rect key="frame" x="4" y="5" width="40" height="40"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="10385417.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="ZMh-R9-9ly">
-                                                    <rect key="frame" x="-1" y="0.0" width="40" height="40"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
-                                            </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                         </view>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="dbl-3b-fuf" firstAttribute="leading" secondItem="hJT-pM-SCZ" secondAttribute="leading" constant="44" id="0LJ-eH-Gvs"/>
-                                        <constraint firstAttribute="trailing" secondItem="1Gz-jR-can" secondAttribute="trailing" constant="5" id="Roy-j4-hu1"/>
-                                        <constraint firstAttribute="trailing" secondItem="TnK-au-4tW" secondAttribute="trailing" constant="56" id="TUc-tP-J6E"/>
-                                        <constraint firstAttribute="bottom" secondItem="dbl-3b-fuf" secondAttribute="bottom" constant="3" id="Xp4-a2-D9O"/>
-                                        <constraint firstAttribute="trailing" secondItem="dbl-3b-fuf" secondAttribute="trailing" constant="61" id="eWj-5i-wcr"/>
-                                        <constraint firstItem="TnK-au-4tW" firstAttribute="top" secondItem="hJT-pM-SCZ" secondAttribute="top" constant="7" id="sSy-9N-xAy"/>
-                                        <constraint firstItem="1Gz-jR-can" firstAttribute="top" secondItem="hJT-pM-SCZ" secondAttribute="top" constant="7" id="szG-T4-baD"/>
-                                        <constraint firstItem="dbl-3b-fuf" firstAttribute="top" secondItem="hJT-pM-SCZ" secondAttribute="top" constant="3" id="yLL-v9-5zg"/>
+                                        <constraint firstAttribute="bottom" secondItem="dBA-Xy-BMN" secondAttribute="bottom" constant="8" id="A8T-Js-h7l"/>
+                                        <constraint firstItem="dBA-Xy-BMN" firstAttribute="leading" secondItem="hJT-pM-SCZ" secondAttribute="leading" constant="8" id="AEi-oU-At5"/>
+                                        <constraint firstItem="1Gz-jR-can" firstAttribute="top" secondItem="hJT-pM-SCZ" secondAttribute="top" constant="7" id="Axz-fU-fqa"/>
+                                        <constraint firstAttribute="trailing" secondItem="dBA-Xy-BMN" secondAttribute="trailing" constant="61" id="dc8-YF-A9z"/>
+                                        <constraint firstAttribute="trailing" secondItem="1Gz-jR-can" secondAttribute="trailing" constant="5" id="iwP-ta-Fcd"/>
+                                        <constraint firstItem="dBA-Xy-BMN" firstAttribute="top" secondItem="hJT-pM-SCZ" secondAttribute="top" constant="20" id="njN-6E-H6t"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="adCountLabel" destination="cbW-WY-5mm" id="VRw-OV-b9a"/>
-                                    <outlet property="adImage" destination="ZMh-R9-9ly" id="aGY-db-BnK"/>
                                     <outlet property="categoryLabel" destination="TdS-PJ-7UQ" id="Mc1-4i-Bfz"/>
                                     <outlet property="commentsCountIcon" destination="VAb-4I-TSx" id="Th9-IP-8VK"/>
                                     <outlet property="commentsCountLabel" destination="cbW-WY-5mm" id="LDc-Eo-7Lz"/>
@@ -834,7 +809,7 @@
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Коляска Camarelo Sevilla. Красивая, белая. Состояние новой." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="none" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="304" translatesAutoresizingMaskIntoConstraints="NO" id="gQD-9G-V1K" userLabel="title">
                                             <rect key="frame" x="8" y="4" width="304" height="43"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                            <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -934,11 +909,11 @@
             </objects>
             <point key="canvasLocation" x="603" y="314"/>
         </scene>
-        <!--Navigation Controller - Мои сообщения-->
+        <!--Navigation Controller - Cообщения-->
         <scene sceneID="CXq-51-jWk">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ztA-FT-8dA" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Мои сообщения" image="message.png" id="w4k-O2-5eU"/>
+                    <tabBarItem key="tabBarItem" title="Cообщения" image="message.png" id="w4k-O2-5eU"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="aM3-48-P2S">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

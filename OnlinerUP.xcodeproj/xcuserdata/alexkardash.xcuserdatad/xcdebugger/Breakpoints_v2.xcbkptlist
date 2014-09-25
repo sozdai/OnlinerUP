@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "OnlinerUP/BaraholkaTableViewController.m"
-            timestampString = "433216905.933093"
+            timestampString = "433336106.942205"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "540"
-            endingLineNumber = "540"
+            startingLineNumber = "555"
+            endingLineNumber = "555"
             landmarkName = "-baraholkaFullSearch:"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "OnlinerUP/BaraholkaTableViewController.m"
-            timestampString = "433216905.933093"
+            timestampString = "433334383.299117"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "167"
@@ -42,23 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "OnlinerUP/BaraholkaTableViewController.m"
-            timestampString = "433216905.933093"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "465"
-            endingLineNumber = "465"
-            landmarkName = "-baraholkaFullSearch:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "OnlinerUP/BaraholkaTableViewController.m"
-            timestampString = "433216905.933093"
+            timestampString = "433334383.299117"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "78"
@@ -96,22 +80,6 @@
             startingLineNumber = "311"
             endingLineNumber = "311"
             landmarkName = "-performInfinityScroll"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "OnlinerUP/Network.m"
-            timestampString = "433216956.068635"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "+getUrl:withParams:andHeaders:andSerializer::"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

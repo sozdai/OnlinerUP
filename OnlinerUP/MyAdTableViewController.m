@@ -64,7 +64,7 @@
             [self loadAd];
             [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
         }
-    } else [self.tableView reloadData];
+    }
 }
 - (void)didReceiveMemoryWarning
 {
@@ -139,7 +139,6 @@
         [cell.upButton setTitle: @"UP" forState:UIControlStateNormal];
     }
     
-    cell.adImage.image = [UIImage imageWithData:myAd.imageData];
     cell.categoryLabel.text = myAd.category;
     if ([myAd.commentsCount length] != 0) {
         cell.commentsCountLabel.text = myAd.commentsCount;
@@ -178,7 +177,12 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 51.0f;
+    MyAd* myAd = _objects[indexPath.row];
+    UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:16.0f];
+    CGSize constraintSize = CGSizeMake(251.0f,MAXFLOAT);
+    NSString* subject = myAd.title;
+    CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+    return titleSize.height+29;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -232,8 +236,6 @@
                 }
                 //[self findTextIn:tl fromStart:@"" toEnd:@" "];
             }
-            myAd.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myAd.topicID];
-            myAd.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myAd.imageUrl]];
             myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
             
             if ([[element searchWithXPathQuery:self.commentsCountXpath] count] != 0) {
