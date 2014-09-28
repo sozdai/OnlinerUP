@@ -9,21 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import <StoreKit/StoreKit.h>
+#import "PurchaceViewController.h"
 
-@interface SettingsTableViewController : UITableViewController <MFMailComposeViewControllerDelegate,SKPaymentTransactionObserver, SKProductsRequestDelegate>
+@interface SettingsTableViewController : UITableViewController <MFMailComposeViewControllerDelegate>
+@property (strong, nonatomic) PurchaceViewController *purchaseController;
 
-@property (strong, nonatomic) SKProduct *product;
-@property (strong, nonatomic) NSString *productID;
-
-@property (assign, nonatomic) BOOL adsRemoved;
-@property (assign, nonatomic) BOOL upUnlocked;
-@property (strong, nonatomic) NSString* InappName;
-
-- (void)purchase:(SKProduct *)product;
-- (void)restore;
-- (void)tapsRemoveAdsButton;
-
-
+- (void)purchaseItem:(long) index;
 - (void) sendEmail;
 
 

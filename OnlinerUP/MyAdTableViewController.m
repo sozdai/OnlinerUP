@@ -38,8 +38,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _purchaseController = [[PurchaceViewController alloc]init];
+    
+    [[SKPaymentQueue defaultQueue]
+     addTransactionObserver:_purchaseController];
+    
+    
     [self loadXpath];
     self.adsCount = @" ";
+    
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForAdsPage];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -289,20 +297,42 @@
 }
 
 
+- (void)purchaseItem
+{
+    _purchaseController.productID = @"com.sozdai.OnlinerUP.enableupbutton";
+    
+    [self.navigationController
+     pushViewController:_purchaseController animated:YES];
+    _purchaseController.productName = @"unlockUP";
+    [_purchaseController getProductInfo:_purchaseController.productID];
+}
+
+
+
 #pragma mark - Buttons actions
 
 - (IBAction)clickUpAllButton:(UIButton *)sender {
-    
-    NSArray* params = [self getIDsWithType0];
-    if (![params count] == 0) {
-        [self upAllFreeAds:params];
+    NSInteger clickCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"UpClickCount"];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked] ||  clickCount < 3)
+    {
+       
+        [[NSUserDefaults standardUserDefaults] setInteger:clickCount+1 forKey:@"UpClickCount"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        NSArray* params = [self getIDsWithType0];
+        if (![params count] == 0) {
+            [self upAllFreeAds:params];
+        }
+        else
+        {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Нет объявлений" message:@"Не осталось объявлений чтобы поднять бесплатно" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            [alert show];
+        }
     }
     else
     {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Нет объявлений" message:@"Не осталось объявлений чтобы поднять бесплатно" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Поднимать объявления учень удобно" message:@"Разблокировать 'UP' и 'UP All' кнопки навсегда?" delegate:self cancelButtonTitle:@"Нет, спасибо" otherButtonTitles:@"Использовать", nil];
         [alert show];
     }
-
 }
 
 - (IBAction)avatarImageClick:(UIButton *)sender {
@@ -313,24 +343,36 @@
 
 - (IBAction)buttonUPClick:(UIButton *)sender
 {
-    self.sender = sender;
-    MyAd *currentAd = [_objects objectAtIndex: sender.tag];
-    int ballance = [self.accountAmount intValue];
-    int type = [currentAd.topicType intValue];
+    NSInteger clickCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"UpClickCount"];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked] ||  clickCount < 3)
+    {
+        [[NSUserDefaults standardUserDefaults] setInteger:clickCount+1 forKey:@"UpClickCount"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        self.sender = sender;
+        MyAd *currentAd = [_objects objectAtIndex: sender.tag];
+        int ballance = [self.accountAmount intValue];
+        int type = [currentAd.topicType intValue];
+        
+        if (type == 0) {
+            [self upAd:sender withParams:currentAd];
+        }
+        else if (ballance < 3000)
+        {
+            int needDeposit = 3000 - ballance;
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Вам не хватает %d рублей", needDeposit] message:@"Пополнить счет?" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Пополнить", nil];
+            [alert show];
+        } else
+        {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Внимание, услуга платная!" message:@"Стоимость 3000 рублей" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Поднять", nil];
+            [alert show];
+        }
+    }
+    else
+    {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Поднимать объявления учень удобно" message:@"Разблокировать 'UP' и 'UP All' кнопки навсегда?" delegate:self cancelButtonTitle:@"Нет, спасибо" otherButtonTitles:@"Использовать", nil];
+        [alert show];
+    }
     
-    if (type == 0) {
-        [self upAd:sender withParams:currentAd];
-    }
-    else if (ballance < 3000)
-    {
-        int needDeposit = 3000 - ballance;
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Вам не хватает %d рублей", needDeposit] message:@"Пополнить счет?" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Пополнить", nil];
-        [alert show];
-    } else
-    {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Внимание, услуга платная!" message:@"Стоимость 3000 рублей" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Поднять", nil];
-        [alert show];
-    }
 }
 
 - (NSArray*) getIDsWithType0
@@ -441,6 +483,10 @@
     else if([title isEqualToString:@"Поднять"])
     {
         [self upAd:self.sender withParams:[_objects objectAtIndex:self.sender.tag]];
+    }
+    else if([title isEqualToString:@"Использовать"])
+    {
+        [self purchaseItem];
     }
 }
 

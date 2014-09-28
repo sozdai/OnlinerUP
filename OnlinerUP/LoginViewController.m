@@ -102,6 +102,7 @@
         [OnlinerKeyChain writeNewPassword: self.passwordTextField.text];
         [self dismissViewControllerAnimated:self completion:nil];
         [[NSUserDefaults standardUserDefaults] setValue:self.loginTextField.text forKey:KeyForUserDefaultUserName];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }		
     else {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка авторизации" message:@"Неправильный логин или пароль" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];

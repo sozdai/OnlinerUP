@@ -55,8 +55,9 @@
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
     
+    
     [[NSUserDefaults standardUserDefaults] addObserver:self
-                                            forKeyPath:@"removeAds"
+                                            forKeyPath:KeyForIsAdsRemoved
                                                options:NSKeyValueObservingOptionNew
                                                context:NULL];
     
@@ -101,6 +102,12 @@
         [self loadCategories];
     }
     
+}
+
+-(void)observeValueForKeyPath:(NSString *)aKeyPath ofObject:(id)anObject
+                       change:(NSDictionary *)aChange context:(void *)aContext
+{
+    [bannerView_ removeFromSuperview];
 }
 
 - (void) changeAdsPosition
@@ -684,6 +691,7 @@
     
 }
 
+#pragma mark - AdMob
 
 - (void) adMobAd
 {
@@ -721,9 +729,6 @@
 
 - (void)adViewDidReceiveAd:(GADBannerView *)view
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
-         [bannerView_ removeFromSuperview];
-    } else
     [view setHidden:NO];
 }
 

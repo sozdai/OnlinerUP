@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <StoreKit/StoreKit.h>
+#import "PurchaceViewController.h"
 
 @interface MyAdTableViewController : UITableViewController <UIAlertViewDelegate>
+
+@property (strong, nonatomic) PurchaceViewController *purchaseController;
 - (IBAction)buttonUPClick:(UIButton *)sender;
 
 @property (strong,nonatomic) NSMutableData * responseData;
@@ -40,6 +44,10 @@
 @property (strong,nonatomic) UIButton* sender;
 
 -(void)loadAd;
+
+- (void)purchaseItem;
+- (void)doRemoveAds;
+- (void)doUnlockUp;
 
 - (IBAction)clickUpAllButton:(UIButton *)sender;
 - (IBAction)avatarImageClick:(UIButton *)sender;

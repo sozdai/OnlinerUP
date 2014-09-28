@@ -27,7 +27,6 @@ NSString* const KeyForIsUpUnlocked=@"UpUnlocked";
 {
     [self.window setTintColor:[UIColor redColor]];
     return YES;
-    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
