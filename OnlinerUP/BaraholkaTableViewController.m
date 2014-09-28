@@ -18,8 +18,10 @@
 #import "OnlinerUPAppDelegate.h"
 #import "MBProgressHUD.h"
 #import "SVWebViewController.h"
+#import "GADBannerView.h"
+#import "GADRequest.h"
 
-@interface BaraholkaTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
+@interface BaraholkaTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate, GADBannerViewDelegate>
 {
     NSMutableArray *_objects;
     NSMutableArray *_categories;
@@ -40,6 +42,7 @@
 }
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     self.isFullCell = NO;
     self.category = @"";
@@ -51,6 +54,11 @@
                       @"5":@"label_service.png",
                       @"6":@"label_rent.png",
                       @"7":@"label_close.png"};
+    
+    [[NSUserDefaults standardUserDefaults] addObserver:self
+                                            forKeyPath:@"removeAds"
+                                               options:NSKeyValueObservingOptionNew
+                                               context:NULL];
     
     self.searchDisplayController.displaysSearchBarInNavigationBar = NO;
 
@@ -73,13 +81,14 @@
     }];
 }
 
--(void)viewWillAppear:(BOOL)animated
+-(void)viewDidAppear:(BOOL)animated
 {
+    [self changeAdsPosition];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillAppear:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
-    [self.searchDisplayController.searchResultsTableView reloadData];
+//    [self.searchDisplayController.searchResultsTableView reloadData];
     if (![Network isAuthorizated]) {
         [self.loginButton setTitle:@"Вход"];
         [[self.tabBarController tabBar] setHidden:YES];
@@ -91,11 +100,34 @@
     if (![_categories count]) {
         [self loadCategories];
     }
+    
+}
+
+- (void) changeAdsPosition
+{
+    CGFloat height;
+    if ([Network isAuthorizated]) {
+        height = 99;
+    } else
+    {
+        height = 50;
+    }
+    [bannerView_ setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height-height, bannerView_.bounds.size.width,bannerView_.bounds.size.height)];
+}
+
+
+- (void) closeView
+{
+    [NSTimer scheduledTimerWithTimeInterval:300.0 target:self
+                                   selector:@selector(unhideAds) userInfo:nil repeats:NO];
+    [bannerView_ setHidden:YES];
 }
 
 - (void)keyboardWillAppear:(NSNotification *)notification
 {
-    [self.searchDisplayController.searchBar setShowsCancelButton:YES];
+    if ([self.searchDisplayController.searchBar isFirstResponder]) {
+        [self.searchDisplayController.searchBar setShowsCancelButton:YES];
+    }
 }
 
 #pragma mark - Table view data source
@@ -304,6 +336,8 @@
         SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID]];
         webViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:webViewController animated:YES];
+        [bannerView_ setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height-94, bannerView_.bounds.size.width,bannerView_.bounds.size.height)];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 
@@ -521,8 +555,7 @@
                     if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
                         myBaraholka.isTorg = [[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text];
                     }
-                } else
-                    NSLog(@"Quick");
+                } 
             }
             if (!self.isQuickCell)
             {
@@ -532,8 +565,7 @@
                 }
                 [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
 
-            } else
-                NSLog(@"Quick");
+            }
             // 8
         }
         else
@@ -552,8 +584,7 @@
                 [self.searchDisplayController.searchResultsTableView reloadData];
                 [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
                 [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
-            } else
-                NSLog(@"Quick");
+            }
         });
     });
 
@@ -643,12 +674,71 @@
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
             [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+            [self.tableView reloadData];
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
+                [self adMobAd];
+            }
         });
     });
     
 }
+
+
+- (void) adMobAd
+{
+    
+    bannerView_.translatesAutoresizingMaskIntoConstraints = YES;  //This part hung me up
+    
+    // Создание представления стандартного размера вверху экрана.
+    // Доступные константы AdSize см. в GADAdSize.h.
+    bannerView_ = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner];
+    bannerView_.delegate=self;
+    // Указание идентификатора рекламного блока.
+    bannerView_.adUnitID = @"ca-app-pub-7869340624965568/3928217339";
+    
+    
+    // Укажите, какой UIViewController необходимо восстановить
+    // после перехода пользователя по объявлению и добавить в иерархию представлений.
+    bannerView_.rootViewController = self;
+    
+    GADRequest* request = [GADRequest request];
+    request.testDevices = @[ GAD_SIMULATOR_ID, @"MY_TEST_DEVICE_ID" ];
+    
+    // Инициирование общего запроса на загрузку с объявлением.
+    [bannerView_ loadRequest:request];
+    [self.navigationController.parentViewController.view addSubview:bannerView_];
+    [self changeAdsPosition];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame: CGRectMake(0,0,18,18)];
+    [closeButton setBackgroundColor:[UIColor colorWithWhite:0.33 alpha:0.5]];
+    [closeButton addTarget:self action:@selector(closeView) forControlEvents:UIControlEventTouchUpInside];
+    [closeButton setBackgroundImage:[UIImage imageNamed:@"x.png"] forState:UIControlStateNormal];
+    [bannerView_ addSubview:closeButton];
+    [bannerView_ setHidden:YES];
+
+    
+}
+
+- (void)adViewDidReceiveAd:(GADBannerView *)view
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
+         [bannerView_ removeFromSuperview];
+    } else
+    [view setHidden:NO];
+}
+
+- (void) adView:(GADBannerView *)banner didFailToReceiveAdWithError:(GADRequestError *)error{
+
+}
+
+- (void) unhideAds
+{
+    if (bannerView_.isHidden) {
+        [bannerView_ setHidden:NO];
+    }
+}
+
+
 
 #pragma mark - Button Actions
 
@@ -667,6 +757,9 @@
 
 - (void) logout
 {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForAdsPage];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForMessagesPage];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     NSString *dataString=[NSString stringWithFormat:@"&key=%@",[Network getHash]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://profile.onliner.by/logout?redirect=http://profile.onliner.by"]];
     
@@ -679,6 +772,7 @@
     {
         NSLog(@"error");
     }
+    
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -690,6 +784,7 @@
         [self logout];
         [LoginViewController cookiesStorageClearing];
         [[self.tabBarController tabBar] setHidden:YES];
+        [self changeAdsPosition];
     }
     else if([title isEqualToString:@"Поднять"])
     {

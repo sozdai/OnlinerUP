@@ -22,4 +22,6 @@
 
 + (BOOL)isAuthorizated;
 
++ (BOOL) rightCookiesDidLoad;
+
 @end

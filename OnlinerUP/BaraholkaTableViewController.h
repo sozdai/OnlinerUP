@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GADBannerView.h"
 
-@interface BaraholkaTableViewController : UITableViewController
+@interface BaraholkaTableViewController : UITableViewController{
+    GADBannerView *bannerView_;
+}
 
 @property (strong, nonatomic) NSDictionary* sellType;
 @property (strong, nonatomic) NSString* htmlString;
@@ -43,9 +46,7 @@
 @property (assign,nonatomic) BOOL isQuickCell;
 @property (assign,nonatomic) int currentBaraholkaPage;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *loginButton;
-
-
-
+@property(nonatomic, strong) UIView *adsView;
 
 -(void) baraholkaQuickSearch:(NSString*)searchText;
 -(void) baraholkaFullSearch:(NSString*)searchText;

@@ -16,6 +16,7 @@
 #import "LoginViewController.h"
 #import "MBProgressHUD.h"
 #import "SVWebViewController.h"
+#import "OnlinerUPAppDelegate.h"
 
 
 @interface MyMessagesTableViewController (){
@@ -43,6 +44,7 @@
     self.url = @"http://profile.onliner.by/messages/load/";
     self.folder = @"0";
     self.page = 1;
+    self.shouldMoveUp = YES;
     [self.tableView addPullToRefreshWithActionHandler:^{
         weakSelf.page = 1;
         NSDate *past = [NSDate date];
@@ -63,13 +65,24 @@
     [self.tableView.pullToRefreshView setTitle:@"" forState:SVPullToRefreshStateAll];
 }
 
+-(void) viewWillAppear:(BOOL)animated
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForMessagesPage])
+    {
+        [_objects removeAllObjects];
+        [self.tableView reloadData];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForNeedReloadForMessagesPage];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
 -(void)viewDidAppear:(BOOL)animated
 {
     if (![_objects count]) {
         NSDate *past = [NSDate date];
         NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
         NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
-        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
         [self getStringFromUrl:self.url
                     withParams:@{@"f":self.folder,
                                  @"p":[NSString stringWithFormat:@"%d", self.page],
@@ -138,13 +151,18 @@
             
             [_objects addObjectsFromArray: [[[newMessage reverseObjectEnumerator] allObjects] mutableCopy]];
             [self.tableView reloadData];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            if (self.page == 1) {
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+            if (self.page == 1 && self.shouldMoveUp) {
                 [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             }
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            if (self.page == 1)
+            {
+            _objects = [NSMutableArray array];
+                [self.tableView reloadData];
+            }
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -227,6 +245,7 @@
     SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://profile.onliner.by/messages#%@/%@",myMessage.folder,myMessage.messageID]];
     webViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webViewController animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (IBAction)authorButtonClick:(UIButton *)sender {
@@ -257,6 +276,7 @@
                 case 0:{
                    self.folder = @"0";
                     self.page=1;
+                    self.shouldMoveUp = YES;
                     NSDate *past = [NSDate date];
                     NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
                     NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
@@ -271,6 +291,7 @@
                 case 1:{
                     self.folder = @"-1";
                     self.page=1;
+                    self.shouldMoveUp = YES;
                     NSDate *past = [NSDate date];
                     NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
                     NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
@@ -285,6 +306,7 @@
                 case 2:{
                     self.folder = @"1";
                     self.page=1;
+                    self.shouldMoveUp = YES;
                     NSDate *past = [NSDate date];
                     NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
                     NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
@@ -308,6 +330,7 @@
 
 - (void) performInfinityScroll
 {
+    self.shouldMoveUp = NO;
     if (![_objects count]) {
         [self.tableView.infiniteScrollingView stopAnimating];
     } else

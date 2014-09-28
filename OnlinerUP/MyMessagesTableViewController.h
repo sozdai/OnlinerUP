@@ -14,5 +14,7 @@
 @property (strong, nonatomic) NSString* url;
 @property (strong, nonatomic) NSString* folder;
 @property (assign, nonatomic) int page;
+@property (assign, nonatomic) BOOL shouldMoveUp;
+
 
 @end

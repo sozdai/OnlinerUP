@@ -20,6 +20,7 @@
     NSDictionary *loginAndPassword=@{@"login" : userName, @"password": password};
     return loginAndPassword;
 }
+
 +(void) writeNewPassword:(NSString*) password{
     [OnlinerKeyChain deleteKeychainValue:@"password" ];
     [OnlinerKeyChain createKeychainValue:password forIdentifier:@"password"];

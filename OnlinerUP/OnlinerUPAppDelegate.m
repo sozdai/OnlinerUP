@@ -8,9 +8,14 @@
 
 #import "OnlinerUPAppDelegate.h"
 #import "AFNetworking.h"
+#import "Network.h"
 
 NSString* const KeyForUserDefaultsAuthorisationInfo=@"Authorizated";
 NSString* const KeyForUserDefaultUserName=@"UserName";
+NSString* const KeyForNeedReloadForAdsPage=@"AdsNeedReload";
+NSString* const KeyForNeedReloadForMessagesPage=@"MessagesNeedReload";
+NSString* const KeyForIsAdsRemoved=@"AdsRemoved";
+NSString* const KeyForIsUpUnlocked=@"UpUnlocked";
 
 @implementation OnlinerUPAppDelegate
 
@@ -44,7 +49,8 @@ NSString* const KeyForUserDefaultUserName=@"UserName";
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

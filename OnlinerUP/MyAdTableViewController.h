@@ -26,10 +26,17 @@
 @property (strong,nonatomic) NSString* commentsCountXpath;
 @property (strong,nonatomic) NSString* commentsUnreadCountXpath;
 @property (strong,nonatomic) NSString* sellTypeXpath;
+
 @property (strong,nonatomic) NSString* htmlString;
+@property (strong,nonatomic) NSString* accountAmount;
+@property (strong,nonatomic) NSString* loginName;
+@property (strong,nonatomic) NSString* adsCount;
+@property (strong,nonatomic) UIImage* userAvatrarImage;
+
 @property (strong,nonatomic) NSDictionary* sellTypeDictionary;
 @property (strong,nonatomic) NSString* messagesCountXpath;
 @property (strong,nonatomic) NSString* messagesCount;
+@property (assign,nonatomic) BOOL isAdsFound;
 @property (strong,nonatomic) UIButton* sender;
 
 -(void)loadAd;

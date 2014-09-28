@@ -7,9 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GADBannerView.h"
 
 extern NSString* const KeyForUserDefaultsAuthorisationInfo;
 extern NSString* const KeyForUserDefaultUserName;
+extern NSString* const KeyForNeedReloadForAdsPage;
+extern NSString* const KeyForNeedReloadForMessagesPage;
+extern NSString* const KeyForIsAdsRemoved;
+extern NSString* const KeyForIsUpUnlocked;
+
 
 @interface OnlinerUPAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -18,6 +24,8 @@ extern NSString* const KeyForUserDefaultUserName;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
+@property (strong, nonatomic) UIView* adsView;
 
 
 - (void)saveContext;

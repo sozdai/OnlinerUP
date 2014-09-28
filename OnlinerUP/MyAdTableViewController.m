@@ -39,6 +39,9 @@
 {
     [super viewDidLoad];
     [self loadXpath];
+    self.adsCount = @" ";
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForAdsPage];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
     self.sellTypeDictionary = @{@"ba-label ba-label-1":@"label_important.png",
                                     @"ba-label ba-label-2":@"label_sell.png",
@@ -51,19 +54,32 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView addPullToRefreshWithActionHandler:^{
         [weakSelf loadAd];
-        [weakSelf getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
+//        [weakSelf getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     }];
     [self.tableView.pullToRefreshView setTitle:@"" forState:SVPullToRefreshStateAll];
+}
+
+-(void) viewWillAppear:(BOOL)animated
+{
+    self.navigationItem.title = [[NSUserDefaults standardUserDefaults] valueForKey:KeyForUserDefaultUserName];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForAdsPage])
+    {
+        [_objects removeAllObjects];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     if (![_objects count]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForAdsPage])
         {
-            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            [MBProgressHUD hideHUDForView:self.tableView animated:NO];
+            [MBProgressHUD showHUDAddedTo:self.tableView animated:NO];
             [self loadAd];
-            [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-        }
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForNeedReloadForAdsPage];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        } else [self.tableView reloadData];
+//            [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     }
 }
 - (void)didReceiveMemoryWarning
@@ -156,18 +172,12 @@
 }
 
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if ([_objects count]) {
-        MyAdTableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:@"Section"];
-        NSString* countText = [Network findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
-        [countText length]?[headerView.adCountLabel setText:countText]:[headerView.adCountLabel setText:@"Нет объявлений"];
-        NSString* userId = [Network findTextIn:self.htmlString fromStart:@"avatar/48x48/" toEnd:@"\""];
-        NSString* userAvatarUrl = [NSString stringWithFormat:@"https://content.onliner.by/user/avatar/80x80/%@",userId];
-        headerView.avatarImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:userAvatarUrl]]];
-        self.navigationItem.title = [Network findTextIn:self.htmlString fromStart:@"onliner__user__name\"><a href=\"https://profile.onliner.by/\">" toEnd:@"</a>"];
-        [headerView.envelopeButton setTitle:[NSString stringWithFormat:@" %@",self.messagesCount] forState:UIControlStateNormal];
-        headerView.accountAmountLabel.text = [NSString stringWithFormat:@"%@ руб. на счету", [Network getBallance] ];
-        return headerView;
-    } else return nil;
+    
+    MyAdTableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:@"Section"];
+    [headerView.adCountLabel setText:self.adsCount];
+    headerView.avatarImage.image = self.userAvatrarImage;
+    headerView.accountAmountLabel.text = self.accountAmount?[NSString stringWithFormat:@"%@ руб. на счету", self.accountAmount]:@"";
+    return headerView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -191,73 +201,88 @@
     SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", ad.topicID]];
     webViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webViewController animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
 }
 
 #pragma mark - Load data
 
 -(void)loadAd {
-    
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         // 1
         NSURL *url = [NSURL URLWithString:@"http://baraholka.onliner.by/search.php?type=ufleamarket"];
         NSData *htmlData = [NSData dataWithContentsOfURL:url];
         self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
-        
-        // 2
-        TFHpple *parser = [TFHpple hppleWithHTMLData:htmlData];
-        
-        // 3
-        NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
-        
-        // 4
-        NSMutableArray *newAd = [[NSMutableArray alloc] initWithCapacity:0];
-        for (TFHppleElement *element in nodes) {
-            // 5
-            MyAd *myAd = [MyAd new];
-            [newAd addObject:myAd];
+        if (htmlData) {
             
-            // 7
-            TFHppleElement* elementUP = [[element searchWithXPathQuery:self.upButtonXpath] objectAtIndex:0];
+            NSString* adsCount = [Network findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
+            self.adsCount = adsCount?adsCount:@"Нет объявлений";
+            NSString* userId = [Network findTextIn:self.htmlString fromStart:@"avatar/48x48/" toEnd:@"\""];
+            NSString* userAvatarUrl = [NSString stringWithFormat:@"https://content.onliner.by/user/avatar/80x80/%@",userId];
+            self.userAvatrarImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:userAvatarUrl]]];
+            NSString* amount = [[Network findTextIn:self.htmlString fromStart:@"<span id=\"user-balance\">" toEnd: @"</span>"] stringByReplacingOccurrencesOfString:@" " withString:@""];
+            self.accountAmount = amount?amount:@"";
             
-            myAd.url = [elementUP objectForKey:self.urlXpath];
-            myAd.topicID = [elementUP objectForKey:self.topicIDXpath];
-            myAd.topicPrice = [elementUP objectForKey:self.topicPriceXpath];
-            myAd.topicType = [elementUP objectForKey:self.topicTypeXpath];
-            // 6
-            myAd.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
-            if ([myAd.topicType isEqualToString:@"1"]) {
-                NSString* tl = [NSString stringWithFormat:@"s%@", [[[element searchWithXPathQuery:self.timeLeftXpath] objectAtIndex:0] text]];
-                if ([tl rangeOfString:@"час" options:NSCaseInsensitiveSearch].location != NSNotFound)
-                {
-                    myAd.timeLeft = [NSString stringWithFormat:@"%@ ч", [Network findTextIn:tl fromStart:@"s" toEnd:@" час"]];
-                } else
-                {
-                    myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
+            if (![[Network findTextIn:self.htmlString fromStart:@"На данный " toEnd:@" у вас нет объявлений"] isEqualToString: @"момент"]) {
+                // 2
+                TFHpple *parser = [TFHpple hppleWithHTMLData:htmlData];
+                
+                // 3
+                NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
+                
+                // 4
+                NSMutableArray *newAd = [[NSMutableArray alloc] initWithCapacity:0];
+                for (TFHppleElement *element in nodes) {
+                    // 5
+                    MyAd *myAd = [MyAd new];
+                    [newAd addObject:myAd];
+                    
+                    // 7
+                    TFHppleElement* elementUP = [[element searchWithXPathQuery:self.upButtonXpath] objectAtIndex:0];
+                    
+                    myAd.url = [elementUP objectForKey:self.urlXpath];
+                    myAd.topicID = [elementUP objectForKey:self.topicIDXpath];
+                    myAd.topicPrice = [elementUP objectForKey:self.topicPriceXpath];
+                    myAd.topicType = [elementUP objectForKey:self.topicTypeXpath];
+                    // 6
+                    myAd.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
+                    if ([myAd.topicType isEqualToString:@"1"]) {
+                        NSString* tl = [NSString stringWithFormat:@"s%@", [[[element searchWithXPathQuery:self.timeLeftXpath] objectAtIndex:0] text]];
+                        if ([tl rangeOfString:@"час" options:NSCaseInsensitiveSearch].location != NSNotFound)
+                        {
+                            myAd.timeLeft = [NSString stringWithFormat:@"%@ ч", [Network findTextIn:tl fromStart:@"s" toEnd:@" час"]];
+                        } else
+                        {
+                            myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
+                        }
+                        //[self findTextIn:tl fromStart:@"" toEnd:@" "];
+                    }
+                    myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
+                    
+                    if ([[element searchWithXPathQuery:self.commentsCountXpath] count] != 0) {
+                        myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
+                        myAd.isRead = YES;
+                    }
+                    
+                    if ([[element searchWithXPathQuery:self.commentsUnreadCountXpath] count] != 0) {
+                        myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsUnreadCountXpath] objectAtIndex:0] text];
+                        myAd.isRead = NO;
+                    }
+                    
+                    myAd.sellType = [[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"];
                 }
-                //[self findTextIn:tl fromStart:@"" toEnd:@" "];
-            }
-            myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
-            
-            if ([[element searchWithXPathQuery:self.commentsCountXpath] count] != 0) {
-                myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
-                myAd.isRead = YES;
+                
+                // 8
+                _objects = [[[newAd reverseObjectEnumerator] allObjects] mutableCopy];
             }
             
-            if ([[element searchWithXPathQuery:self.commentsUnreadCountXpath] count] != 0) {
-                myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsUnreadCountXpath] objectAtIndex:0] text];
-                myAd.isRead = NO;
-            }
-            
-            myAd.sellType = [[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"];
+            [self.tableView reloadData];
+
         }
-        
-        // 8
-        _objects = [[[newAd reverseObjectEnumerator] allObjects] mutableCopy];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView.pullToRefreshView stopAnimating];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [self.tableView reloadData];
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
         });
     });
     
@@ -270,7 +295,6 @@
     
     NSArray* params = [self getIDsWithType0];
     if (![params count] == 0) {
-        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         [self upAllFreeAds:params];
     }
     else
@@ -287,15 +311,11 @@
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 
-- (IBAction)refreshButtonClick:(UIButton *)sender {
-    [self loadAd];
-}
-
 - (IBAction)buttonUPClick:(UIButton *)sender
 {
     self.sender = sender;
     MyAd *currentAd = [_objects objectAtIndex: sender.tag];
-    int ballance = [[Network getBallance] intValue];
+    int ballance = [self.accountAmount intValue];
     int type = [currentAd.topicType intValue];
     
     if (type == 0) {
@@ -327,49 +347,58 @@
 
 - (void) upAd: (UIButton*) sender withParams: (MyAd*) currentAd
 {
-    NSString* token = [Network getHash];
-    //3 generate ajax token using date
-    NSDate *past = [NSDate date];
-    NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
-    NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
-    
-    NSString* url = [NSString stringWithFormat:@"http://baraholka.onliner.by/topics-up.php?t=%@", t];
-    
-    NSMutableDictionary* params = [NSMutableDictionary dictionary];
-    [params setValue:currentAd.topicPrice forKey:@"expectedPrice"];
-    
-    if ([currentAd.topicPrice isEqualToString:@"0"])
-    {
-        [params setValue:currentAd.topicID forKey:@"topics[0][]"];
-    } else
-    {
-        [params setValue:currentAd.topicID forKey:@"topics[1][]"];
-    }
-    [params setValue:token forKey:@"t"];
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
-    [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSString* token = [Network getHash];
+        //3 generate ajax token using date
+        NSDate *past = [NSDate date];
+        NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
+        NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
         
-        [sender setBackgroundImage:[UIImage imageNamed: [NSString stringWithFormat: @"btn-up-1.png"]] forState:(UIControlStateNormal)];
-        [sender setTitleColor: [UIColor whiteColor] forState:UIControlStateNormal];
-        [sender setTitle:@"20 ч" forState:UIControlStateNormal];
-        currentAd.timeLeft = @"20 ч";
-        currentAd.topicType = @"1";
-        currentAd.topicPrice = @"3000";
-        [_objects replaceObjectAtIndex:sender.tag withObject:currentAd];
-        [self.tableView reloadData];
+        NSString* url = [NSString stringWithFormat:@"http://baraholka.onliner.by/topics-up.php?t=%@", t];
         
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
-    }];
+        NSMutableDictionary* params = [NSMutableDictionary dictionary];
+        [params setValue:currentAd.topicPrice forKey:@"expectedPrice"];
+        
+        if ([currentAd.topicPrice isEqualToString:@"0"])
+        {
+            [params setValue:currentAd.topicID forKey:@"topics[0][]"];
+        } else
+        {
+            [params setValue:currentAd.topicID forKey:@"topics[1][]"];
+        }
+        [params setValue:token forKey:@"t"];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+        [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            [sender setBackgroundImage:[UIImage imageNamed: [NSString stringWithFormat: @"btn-up-1.png"]] forState:(UIControlStateNormal)];
+            [sender setTitleColor: [UIColor whiteColor] forState:UIControlStateNormal];
+            [sender setTitle:@"20 ч" forState:UIControlStateNormal];
+            currentAd.timeLeft = @"20 ч";
+            currentAd.topicType = @"1";
+            currentAd.topicPrice = @"3000";
+            [_objects replaceObjectAtIndex:sender.tag withObject:currentAd];
+            [self.tableView reloadData];
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            [alert show];
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+        }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+        });
+    });
         
 }
 
 - (void) upAllFreeAds: (NSArray*) paramsArray
 {
+    [MBProgressHUD showHUDAddedTo:self.tableView animated:NO];
     NSString* token = [Network getHash];
     //3 generate ajax token using date
     NSDate *past = [NSDate date];
@@ -391,11 +420,11 @@
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         [self loadAd];
-        [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-        
+//        [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
+        [MBProgressHUD hideHUDForView:self.tableView animated:NO];
     }];
     
 }

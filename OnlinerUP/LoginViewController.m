@@ -44,7 +44,6 @@
 
 - (IBAction)login:(id)sender {
     [self loginToApp];
-    
 }
 
 - (IBAction)closeButtonClick:(UIBarButtonItem *)sender {
@@ -99,8 +98,10 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     if([self rightCookiesDidLoad]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForUserDefaultsAuthorisationInfo];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         [OnlinerKeyChain writeNewPassword: self.passwordTextField.text];
         [self dismissViewControllerAnimated:self completion:nil];
+        [[NSUserDefaults standardUserDefaults] setValue:self.loginTextField.text forKey:KeyForUserDefaultUserName];
     }		
     else {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка авторизации" message:@"Неправильный логин или пароль" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
@@ -110,7 +111,10 @@
 }
 
 -(BOOL)isAuthorizated{
-    BOOL isAuth=[[NSUserDefaults standardUserDefaults] boolForKey:KeyForUserDefaultsAuthorisationInfo];
+    BOOL isAuth=NO;
+    if ([self rightCookiesDidLoad]) {
+        isAuth=[[NSUserDefaults standardUserDefaults] boolForKey:KeyForUserDefaultsAuthorisationInfo];
+    }
     return isAuth;
 }
 
@@ -130,9 +134,8 @@
     NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     for (cookie in [storage cookies]) {
         [storage deleteCookie:cookie];
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForUserDefaultsAuthorisationInfo ];
-        
     }
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForUserDefaultsAuthorisationInfo ];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

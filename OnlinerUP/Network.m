@@ -120,9 +120,22 @@
 }
 
 + (BOOL)isAuthorizated{
-    BOOL isAuth=[[NSUserDefaults standardUserDefaults] boolForKey:KeyForUserDefaultsAuthorisationInfo];
+    BOOL isAuth=NO;
+    if ([self rightCookiesDidLoad]) {
+        isAuth=[[NSUserDefaults standardUserDefaults] boolForKey:KeyForUserDefaultsAuthorisationInfo];
+    }
     return isAuth;
 }
 
++ (BOOL) rightCookiesDidLoad{
+    NSHTTPCookieStorage *cookieStorage=[NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray *cookies=[cookieStorage cookies];
+    NSHTTPCookie *cookie;
+    for (cookie in cookies) {
+        if ([cookie.name isEqualToString:@"onl_session"]) return true;
+        
+    }
+    return false;
+}
 
 @end
