@@ -130,12 +130,10 @@
             if(SKPaymentTransactionStateRestored){
                 NSLog(@"Transaction state -> Restored");
                 //called when the user successfully restores a purchase
-                if ([self.productName isEqualToString:@"removeAds"]) {
-                    [self doRemoveAds];
-                } else [self doUnlockUp];
+//                if ([self.productName isEqualToString:@"removeAds"]) {
+//                    [self doRemoveAds];
+//                } else [self doUnlockUp];
                 [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Спасибо" message:@"Покупка успешно осуществлена" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                [alert show];
                 break;
             }
         }
@@ -150,6 +148,7 @@
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions{
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Спасибо" message:@"Покупка успешно осуществлена" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     self.buyButton.enabled = YES;
     self.restoreButton.enabled = YES;
     for(SKPaymentTransaction *transaction in transactions){
@@ -177,6 +176,7 @@
                 if ([self.productName isEqualToString:@"removeAds"]) {
                     [self doRemoveAds];
                 } else [self doUnlockUp];
+                [alert show];
                 break;
             case SKPaymentTransactionStateFailed:
                 //called when the transaction does not finnish
