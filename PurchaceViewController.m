@@ -139,7 +139,7 @@
         }
     } else
     {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка" message:@"Услуга не была куплена ранее" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка" message:@"Услуга не была куплена ранее." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
         self.buyButton.enabled = YES;
         self.restoreButton.enabled = YES;
@@ -148,7 +148,7 @@
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions{
-    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Спасибо" message:@"Покупка успешно осуществлена" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Спасибо" message:@"Покупка успешно осуществлена." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     self.buyButton.enabled = YES;
     self.restoreButton.enabled = YES;
     for(SKPaymentTransaction *transaction in transactions){
