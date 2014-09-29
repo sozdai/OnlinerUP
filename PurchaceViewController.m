@@ -150,9 +150,9 @@
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions{
+    self.buyButton.enabled = YES;
+    self.restoreButton.enabled = YES;
     for(SKPaymentTransaction *transaction in transactions){
-        self.buyButton.enabled = YES;
-        self.restoreButton.enabled = YES;
         switch (transaction.transactionState){
             case SKPaymentTransactionStatePurchasing: NSLog(@"Transaction state -> Purchasing");
                 

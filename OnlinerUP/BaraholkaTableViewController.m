@@ -127,6 +127,7 @@
 {
     [NSTimer scheduledTimerWithTimeInterval:300.0 target:self
                                    selector:@selector(unhideAds) userInfo:nil repeats:NO];
+    self.didBannerClosed = YES;
     [bannerView_ setHidden:YES];
 }
 
@@ -729,7 +730,9 @@
 
 - (void)adViewDidReceiveAd:(GADBannerView *)view
 {
-    [view setHidden:NO];
+    if (!self.didBannerClosed) {
+        [view setHidden:NO];
+    }
 }
 
 - (void) adView:(GADBannerView *)banner didFailToReceiveAdWithError:(GADRequestError *)error{

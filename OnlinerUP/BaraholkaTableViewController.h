@@ -47,6 +47,7 @@
 @property (assign,nonatomic) int currentBaraholkaPage;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *loginButton;
 @property(nonatomic, strong) UIView *adsView;
+@property (assign, nonatomic) BOOL didBannerClosed;
 
 -(void) baraholkaQuickSearch:(NSString*)searchText;
 -(void) baraholkaFullSearch:(NSString*)searchText;
