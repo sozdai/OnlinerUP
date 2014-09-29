@@ -31,8 +31,6 @@
     [super viewDidLoad];
     _buyButton.enabled = NO;
     _restoreButton.enabled = NO;
-    [[SKPaymentQueue defaultQueue]
-     addTransactionObserver:self];
 //    [self getProductInfo:self.productName];
     // Do any additional setup after loading the view from its nib.
 }
@@ -110,6 +108,8 @@
 }
 
 - (void)purchase:(SKProduct *)product{
+    [[SKPaymentQueue defaultQueue]
+     addTransactionObserver:self];
     SKPayment *payment = [SKPayment paymentWithProduct:product];
     [[SKPaymentQueue defaultQueue] addPayment:payment];
 }
@@ -117,7 +117,7 @@
 - (void)restore
 {
     //this is called when the user restores purchases, you should hook this up to a button
-//    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
