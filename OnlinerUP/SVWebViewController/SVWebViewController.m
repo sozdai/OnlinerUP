@@ -92,13 +92,14 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.navigationController setToolbarHidden:YES animated:animated];
-    }
-}
+   }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.navigationController setToolbarHidden:YES animated:animated];
+    }
+
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
@@ -189,11 +190,11 @@
                           self.actionBarButtonItem,
                           nil];
         
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, toolbarWidth, 44.0f)];
-        toolbar.items = items;
-        toolbar.barStyle = self.navigationController.navigationBar.barStyle;
-        toolbar.tintColor = self.navigationController.navigationBar.tintColor;
-        self.navigationItem.rightBarButtonItems = items.reverseObjectEnumerator.allObjects;
+//        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, toolbarWidth, 44.0f)];
+//        toolbar.items = items;
+//        toolbar.barStyle = self.navigationController.navigationBar.barStyle;
+//        toolbar.tintColor = self.navigationController.navigationBar.tintColor;
+//        self.navigationItem.rightBarButtonItems = items.reverseObjectEnumerator.allObjects;
     }
     
     else {
