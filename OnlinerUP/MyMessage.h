@@ -16,6 +16,6 @@
 @property (strong, nonatomic) NSString* authorName;
 @property (strong, nonatomic) NSString* messageID;
 @property (assign, nonatomic) NSTimeInterval date;
-@property (assign, nonatomic) BOOL isRead;
+@property (assign, nonatomic) BOOL isUnRead;
 
 @end

@@ -45,17 +45,10 @@
     self.folder = @"0";
     self.page = 1;
     self.shouldMoveUp = YES;
+    self.title = @"Входящие";
     [self.tableView addPullToRefreshWithActionHandler:^{
         weakSelf.page = 1;
-        NSDate *past = [NSDate date];
-        NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
-        NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
-        
-        [weakSelf getStringFromUrl:weakSelf.url
-                        withParams:@{@"f":weakSelf.folder,
-                                     @"p":[NSString stringWithFormat:@"%d", weakSelf.page],
-                                     @"t":t}
-                        andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
+        [weakSelf loadMessages];
     }];
     
     [self.tableView addInfiniteScrollingWithActionHandler:^{
@@ -78,17 +71,11 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    if (![_objects count]) {
-        NSDate *past = [NSDate date];
-        NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
-        NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
-        [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
-        [self getStringFromUrl:self.url
-                    withParams:@{@"f":self.folder,
-                                 @"p":[NSString stringWithFormat:@"%d", self.page],
-                                 @"t":t}
-                    andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-    } else [self.tableView reloadData];
+    self.shouldMoveUp = NO;
+    self.page = 1;
+    [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
+    [self loadMessages];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -100,7 +87,14 @@
 #pragma mark - Load data
 - (void) loadMessages
 {
-    
+    NSDate *past = [NSDate date];
+    NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
+    NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
+    [self getStringFromUrl:self.url
+                withParams:@{@"f":self.folder,
+                             @"p":[NSString stringWithFormat:@"%d", self.page],
+                             @"t":t}
+                andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
 }
 
 - (void) getStringFromUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*) headers
@@ -118,6 +112,7 @@
         
         [manager GET:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             
+            self.newMessagesCount = 0;
             NSMutableArray *newMessage = [[NSMutableArray alloc] initWithCapacity:0];
             
             NSDictionary* messages = [responseObject objectForKey:@"messages"];
@@ -140,9 +135,14 @@
                     myMessage.authorID = [keyMessage valueForKey:@"authorId"];
                     myMessage.authorName = [keyMessage valueForKey:@"authorName"];
                 }
+                
                 myMessage.messageID = [keyMessage valueForKey:@"id"];
                 myMessage.date = [[keyMessage valueForKey:@"time"] doubleValue] ;
-                myMessage.isRead = [[keyMessage valueForKey:@"unread"] boolValue];
+                myMessage.isUnRead = [[keyMessage valueForKey:@"unread"] boolValue];
+                
+                if ([self.folder isEqualToString:@"0"] && myMessage.isUnRead) {
+                    self.newMessagesCount++;
+                }
             }
             if (self.page == 1) {
                 _objects = [NSMutableArray array];
@@ -155,8 +155,12 @@
             if (self.page == 1 && self.shouldMoveUp) {
                 [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             }
+
+            if (self.newMessagesCount) {
+                self.navigationItem.title = [NSString stringWithFormat:@"%@ (%d)", self.title, self.newMessagesCount];
+            } else self.navigationItem.title = self.title;
             
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             if (self.page == 1)
             {
             _objects = [NSMutableArray array];
@@ -211,7 +215,7 @@
         [NSException raise:@"headerView == nil.." format:@"No cells with matching CellIdentifier loaded from your storyboard"];
     }
     
-    [headerView.envelopeImage setImage:[UIImage imageNamed:myMessage.isRead?@"envelope_unread":@"envelope_read"]];
+    [headerView.envelopeImage setImage:[UIImage imageNamed:myMessage.isUnRead?@"envelope_unread":@"envelope_read"]];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"dd-MMM-yy HH:mm"];
@@ -286,7 +290,7 @@
                                                  @"p":[NSString stringWithFormat:@"%d", self.page],
                                                  @"t":t}
                                     andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-                    self.navigationItem.title = @"Входящие";
+                    self.title = @"Входящие";
                     break;}
                 case 1:{
                     self.folder = @"-1";
@@ -301,7 +305,7 @@
                                              @"p":[NSString stringWithFormat:@"%d", self.page],
                                              @"t":t}
                                 andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-                    self.navigationItem.title = @"Отправленные";
+                    self.title = @"Отправленные";
                     break;}
                 case 2:{
                     self.folder = @"1";
@@ -316,7 +320,7 @@
                                              @"p":[NSString stringWithFormat:@"%d", self.page],
                                              @"t":t}
                                 andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-                    self.navigationItem.title = @"Сохраненные";
+                    self.title = @"Сохраненные";
                     break;}
                 default:
                     break;
@@ -338,16 +342,7 @@
         if ([_objects count] >= 50) {
             self.page++;
         }
-        NSDate *past = [NSDate date];
-        NSTimeInterval oldTime = [past timeIntervalSince1970] * 1000;
-        NSString *t = [NSString stringWithFormat:@"%0.0f", oldTime];
-        //        self.navigationItem.leftBarButtonItem.title = @"";
-        
-        [self getStringFromUrl:self.url
-                        withParams:@{@"f":self.folder,
-                                     @"p":[NSString stringWithFormat:@"%d", self.page],
-                                     @"t":t}
-                        andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
+        [self loadMessages];
     }
 }
 @end

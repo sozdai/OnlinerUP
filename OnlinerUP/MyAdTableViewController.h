@@ -35,6 +35,7 @@
 @property (strong,nonatomic) NSString* accountAmount;
 @property (strong,nonatomic) NSString* loginName;
 @property (strong,nonatomic) NSString* adsCount;
+@property (strong,nonatomic) NSString* adsCountFull;
 @property (strong,nonatomic) UIImage* userAvatrarImage;
 
 @property (strong,nonatomic) NSDictionary* sellTypeDictionary;

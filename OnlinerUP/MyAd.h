@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSString* timeLeft;
 @property (strong, nonatomic) NSString* category;
 @property (strong, nonatomic) NSString* commentsCount;
-@property (assign, nonatomic) BOOL isRead;
+@property (assign, nonatomic) BOOL isUnRead;
 @property (strong, nonatomic) NSString* sellType;
 
 @end

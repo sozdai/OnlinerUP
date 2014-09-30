@@ -279,7 +279,7 @@
                                             </connections>
                                         </button>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Загрузка..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0nW-Iq-l8e" userLabel="title">
-                                            <rect key="frame" x="77" y="5" width="167" height="21"/>
+                                            <rect key="frame" x="77" y="9" width="167" height="21"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -355,25 +355,25 @@
                                             </connections>
                                         </button>
                                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uen-4x-8x3">
-                                            <rect key="frame" x="8" y="7" width="251" height="14"/>
+                                            <rect key="frame" x="8" y="4" width="251" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="label_sell.png" translatesAutoresizingMaskIntoConstraints="NO" id="92C-Hd-ng4">
-                                                    <rect key="frame" x="0.0" y="0.0" width="40" height="9"/>
+                                                    <rect key="frame" x="0.0" y="3" width="40" height="9"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Все остальное, что не вошло в другие категории." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TdS-PJ-7UQ" userLabel="date">
-                                                    <rect key="frame" x="48" y="-1" width="167" height="10"/>
+                                                    <rect key="frame" x="48" y="0.0" width="167" height="14"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TnK-au-4tW">
-                                                    <rect key="frame" x="212" y="-3" width="39" height="15"/>
+                                                    <rect key="frame" x="212" y="0.0" width="39" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <subviews>
                                                         <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1211" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cbW-WY-5mm" userLabel="date">
-                                                            <rect key="frame" x="0.0" y="1" width="28" height="14"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="28" height="14"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
@@ -387,6 +387,7 @@
                                             </subviews>
                                         </view>
                                     </subviews>
+                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                     <constraints>
                                         <constraint firstAttribute="bottom" secondItem="dBA-Xy-BMN" secondAttribute="bottom" constant="8" id="A8T-Js-h7l"/>
                                         <constraint firstItem="dBA-Xy-BMN" firstAttribute="leading" secondItem="hJT-pM-SCZ" secondAttribute="leading" constant="8" id="AEi-oU-At5"/>
@@ -972,6 +973,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="13x-E3-uRJ"/>
+        <segue reference="jPp-Fw-jcw"/>
     </inferredMetricsTieBreakers>
 </document>

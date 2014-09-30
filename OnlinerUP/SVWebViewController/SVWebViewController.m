@@ -78,7 +78,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     NSAssert(self.navigationController, @"SVWebViewController needs to be contained in a UINavigationController. If you are presenting SVWebViewController modally, use SVModalWebViewController instead.");
-    
+    [self.navigationController setNavigationBarHidden:NO];
 	[super viewWillAppear:animated];
 	
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
@@ -89,17 +89,22 @@
     }
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+    if (self.navigationItem.title == nil) {
+        self.navigationItem.title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self.navigationController setToolbarHidden:YES animated:animated];
+    }
    }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.navigationController setToolbarHidden:YES animated:animated];
-    }
-
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 

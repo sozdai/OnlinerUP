@@ -86,9 +86,9 @@
             [self loadAd];
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForNeedReloadForAdsPage];
             [[NSUserDefaults standardUserDefaults] synchronize];
-        } else [self.tableView reloadData];
+        }
 //            [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
-    }
+    } else [self.tableView reloadData];
 }
 - (void)didReceiveMemoryWarning
 {
@@ -166,10 +166,17 @@
     cell.categoryLabel.text = myAd.category;
     if ([myAd.commentsCount length] != 0) {
         cell.commentsCountLabel.text = myAd.commentsCount;
-        cell.commentsCountLabel.textColor = myAd.isRead?[UIColor blackColor]:[UIColor orangeColor];
-        cell.commentsCountIcon.image = myAd.isRead?[UIImage imageNamed:@"icon_comment.png"]:[UIImage imageNamed:@"icon_comment_unread"];
+        cell.commentsCountLabel.textColor = myAd.isUnRead?[UIColor orangeColor]:[UIColor blackColor];
+        cell.commentsCountIcon.image = myAd.isUnRead?[UIImage imageNamed:@"icon_comment_unread"]:[UIImage imageNamed:@"icon_comment.png"];
         [cell.commentsCountLabel setHidden:NO];
         [cell.commentsCountIcon setHidden:NO];
+        if (myAd.isUnRead) {
+            [cell.contentView.layer setBorderColor:[UIColor orangeColor].CGColor];
+            [cell.contentView.layer setBackgroundColor:[UIColor whiteColor].CGColor];
+        } else {
+            [cell.contentView.layer setBorderColor:[UIColor whiteColor].CGColor];
+            [cell.contentView.layer setBackgroundColor:[UIColor groupTableViewBackgroundColor].CGColor];
+        }
     } else
     {
         [cell.commentsCountLabel setHidden:YES];
@@ -182,7 +189,7 @@
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
     MyAdTableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:@"Section"];
-    [headerView.adCountLabel setText:self.adsCount];
+    [headerView.adCountLabel setText:self.adsCount?[NSString stringWithFormat:@"%@",self.adsCount]:@"Нет объявлений"];
     headerView.avatarImage.image = self.userAvatrarImage;
     headerView.accountAmountLabel.text = self.accountAmount?[NSString stringWithFormat:@"%@ руб. на счету", self.accountAmount]:@"";
     return headerView;
@@ -206,6 +213,10 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MyAd* ad = [_objects objectAtIndex:indexPath.row];
+    if (ad.isUnRead) {
+        ad.isUnRead = NO;
+        [_objects replaceObjectAtIndex:indexPath.row withObject:ad];
+    }
     SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", ad.topicID]];
     webViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webViewController animated:YES];
@@ -223,15 +234,15 @@
         self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
         if (htmlData) {
             
-            NSString* adsCount = [Network findTextIn:self.htmlString fromStart:@"найдено " toEnd:@")"];
-            self.adsCount = adsCount?adsCount:@"Нет объявлений";
+            NSString* adsCount = [Network findTextIn:self.htmlString fromStart:@"(найдено " toEnd:@")<"];
+            self.adsCount = adsCount?adsCount:nil;
             NSString* userId = [Network findTextIn:self.htmlString fromStart:@"avatar/48x48/" toEnd:@"\""];
             NSString* userAvatarUrl = [NSString stringWithFormat:@"https://content.onliner.by/user/avatar/80x80/%@",userId];
             self.userAvatrarImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:userAvatarUrl]]];
             NSString* amount = [[Network findTextIn:self.htmlString fromStart:@"<span id=\"user-balance\">" toEnd: @"</span>"] stringByReplacingOccurrencesOfString:@" " withString:@""];
             self.accountAmount = amount?amount:@"";
             
-            if (![[Network findTextIn:self.htmlString fromStart:@"На данный " toEnd:@" у вас нет объявлений"] isEqualToString: @"момент"]) {
+            if (self.adsCount) {
                 // 2
                 TFHpple *parser = [TFHpple hppleWithHTMLData:htmlData];
                 
@@ -269,12 +280,11 @@
                     
                     if ([[element searchWithXPathQuery:self.commentsCountXpath] count] != 0) {
                         myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
-                        myAd.isRead = YES;
+                        myAd.isUnRead = NO;
                     }
-                    
                     if ([[element searchWithXPathQuery:self.commentsUnreadCountXpath] count] != 0) {
                         myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsUnreadCountXpath] objectAtIndex:0] text];
-                        myAd.isRead = NO;
+                        myAd.isUnRead = YES;
                     }
                     
                     myAd.sellType = [[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"];

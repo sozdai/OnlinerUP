@@ -15,6 +15,8 @@
 @property (strong, nonatomic) NSString* folder;
 @property (assign, nonatomic) int page;
 @property (assign, nonatomic) BOOL shouldMoveUp;
+@property (strong, nonatomic) NSString* title;
+@property (assign, nonatomic) int newMessagesCount;
 
 
 @end
