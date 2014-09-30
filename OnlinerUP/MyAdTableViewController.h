@@ -32,6 +32,7 @@
 @property (strong,nonatomic) NSString* sellTypeXpath;
 
 @property (strong,nonatomic) NSString* htmlString;
+@property int currentPage;
 @property (strong,nonatomic) NSString* accountAmount;
 @property (strong,nonatomic) NSString* loginName;
 @property (strong,nonatomic) NSString* adsCount;

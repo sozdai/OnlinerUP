@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSString* category;
 @property (strong, nonatomic) NSString* categoryTitle;
 
+
 @property (strong,nonatomic) NSString* listCategoryXpath;
 @property (strong,nonatomic) NSString* listCategoryLinkXpath;
 @property (strong,nonatomic) NSString* listItemXpath;

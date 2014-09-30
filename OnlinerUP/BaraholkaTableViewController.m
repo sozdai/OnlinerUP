@@ -486,7 +486,7 @@
                         myBaraholkaTotic.price = [NSString stringWithFormat:@"%@ %@", price, [key valueForKey:@"currency"]];
                     }
                     
-                    myBaraholkaTotic.isTorg = [key valueForKey:@"bargain"];
+                    myBaraholkaTotic.isTorg = [[key valueForKey:@"bargain"]isEqualToString:@"ТОРГ"]?@"торг":@"";
                     
                 }
                 [_objects removeAllObjects];
@@ -561,7 +561,7 @@
                         myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
                     }
                     if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
-                        myBaraholka.isTorg = [[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text];
+                        myBaraholka.isTorg = [[[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text] isEqualToString:@"ТОРГ"]?@"торг":@"";
                     }
                 } 
             }
