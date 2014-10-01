@@ -25,7 +25,20 @@ NSString* const KeyForIsUpUnlocked=@"UpUnlocked";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self.window setTintColor:[UIColor redColor]];
+    [self.window setTintColor:[UIColor colorWithRed:0.91 green:0.396 blue:0.337 alpha:1.0]];
+    
+    // 1
+    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    
+    // 2
+    [[GAI sharedInstance].logger setLogLevel:kGAILogLevelVerbose];
+    
+    // 3
+    [GAI sharedInstance].dispatchInterval = 20;
+    
+    // 4
+    id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:@"UA-55334434-1"];
+    
     return YES;
 }
 

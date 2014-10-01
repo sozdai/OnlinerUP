@@ -9,6 +9,9 @@
 #import "SVWebViewControllerActivityChrome.h"
 #import "SVWebViewControllerActivitySafari.h"
 #import "SVWebViewController.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
+#import "GAITrackedViewController.h"
 
 @interface SVWebViewController () <UIWebViewDelegate>
 
@@ -94,6 +97,11 @@
     if (self.navigationItem.title == nil) {
         self.navigationItem.title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     }
+    
+    //Google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Stopwatch"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

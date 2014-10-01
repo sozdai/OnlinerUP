@@ -18,6 +18,9 @@
 #import "SVWebViewController.h"
 #import "MBProgressHUD.h"
 #import "math.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
+#import "GAITrackedViewController.h"
 
 @interface MyAdTableViewController (){
     NSMutableArray *_objects;
@@ -89,6 +92,12 @@
         }
 //            [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     } else [self.tableView reloadData];
+    
+    //Google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"MyAd Screen"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+
 }
 - (void)didReceiveMemoryWarning
 {
@@ -172,10 +181,10 @@
         [cell.commentsCountIcon setHidden:NO];
         if (myAd.isUnRead) {
             [cell.contentView.layer setBorderColor:[UIColor orangeColor].CGColor];
-            [cell.contentView.layer setBackgroundColor:[UIColor whiteColor].CGColor];
+            [cell.contentView.layer setBackgroundColor:[UIColor groupTableViewBackgroundColor].CGColor];
         } else {
             [cell.contentView.layer setBorderColor:[UIColor whiteColor].CGColor];
-            [cell.contentView.layer setBackgroundColor:[UIColor groupTableViewBackgroundColor].CGColor];
+            [cell.contentView.layer setBackgroundColor:[UIColor whiteColor].CGColor];
         }
     } else
     {

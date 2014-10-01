@@ -12,6 +12,9 @@
 #import "MyAdTableViewController.h"
 #import "MBProgressHUD.h"
 #import "SVWebViewController.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
+#import "GAITrackedViewController.h"
 
 @interface LoginViewController () <UITextFieldDelegate>
 
@@ -34,6 +37,14 @@
     [self.loginTextField setText:@"Мистер Грин"];
     [self.passwordTextField setText:@"sashajorik"];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Login Screen"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning

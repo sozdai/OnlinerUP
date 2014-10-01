@@ -17,6 +17,9 @@
 #import "MBProgressHUD.h"
 #import "SVWebViewController.h"
 #import "OnlinerUPAppDelegate.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
+#import "GAITrackedViewController.h"
 
 
 @interface MyMessagesTableViewController (){
@@ -75,6 +78,11 @@
     self.page = 1;
     [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
     [self loadMessages];
+    
+    //Google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Messages Screen"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
 
 }
 

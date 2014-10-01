@@ -20,6 +20,9 @@
 #import "SVWebViewController.h"
 #import "GADBannerView.h"
 #import "GADRequest.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
+#import "GAITrackedViewController.h"
 
 @interface BaraholkaTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate, GADBannerViewDelegate>
 {
@@ -102,6 +105,10 @@
         [self loadCategories];
     }
     
+    //Google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Baraholka screen"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 -(void)observeValueForKeyPath:(NSString *)aKeyPath ofObject:(id)anObject
@@ -239,6 +246,9 @@
     else if (tableView == self.searchDisplayController.searchResultsTableView) {
         if (!self.isFullCell)
         {
+            if ([self.category length]) {
+                title = self.categoryTitle;
+            } else
            title = @"Быстрый поиск";
         } else if ([self.category length]) {
             title = self.categoryTitle;
@@ -257,11 +267,29 @@
     
     myLabel.frame = CGRectMake(8, 0, 312, 20);
     myLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17];
-    myLabel.textColor = [UIColor blackColor];
+    myLabel.textColor = [UIColor whiteColor];
     myLabel.text = [self tableView:tableView titleForHeaderInSection:section];
     UIView *headerView = [[UIView alloc] init];
     [headerView addSubview:myLabel];
-    headerView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    switch (section%4) {
+        case 0:
+            headerView.backgroundColor = [UIColor colorWithRed:0.91 green:0.396 blue:0.337 alpha:1.0];
+            break;
+        case 1:
+            headerView.backgroundColor = [UIColor colorWithRed:0.392 green:0.639 blue:0.816 alpha:1.0];
+            break;
+        case 2:
+            headerView.backgroundColor = [UIColor colorWithRed:0.455 green:0.753 blue:0.137 alpha:1.0];
+            break;
+        case 3:
+            headerView.backgroundColor = [UIColor colorWithRed:0.941 green:0.635 blue:0.247 alpha:1.0];
+            break;
+            
+        default:
+            headerView.backgroundColor = [UIColor colorWithRed:(232/255.0) green:(101/255.0) blue:(86/255.0) alpha:1.0];
+            break;
+    }
+    
     return headerView;
 }
 

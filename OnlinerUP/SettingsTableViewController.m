@@ -9,6 +9,9 @@
 #import "SettingsTableViewController.h"
 #import "Network.h"
 #import "OnlinerUPAppDelegate.h"
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
+#import "GAITrackedViewController.h"
 
 @interface SettingsTableViewController ()
 
