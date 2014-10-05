@@ -195,6 +195,7 @@
     [headerView.adCountLabel setText:self.adsCount?[NSString stringWithFormat:@"%@",self.adsCount]:@"Нет объявлений"];
     headerView.avatarImage.image = self.userAvatrarImage;
     headerView.accountAmountLabel.text = self.accountAmount?[NSString stringWithFormat:@"%@ руб. на счету", self.accountAmount]:@"";
+    [headerView.upAllButton setHidden:!self.accountAmount];
     return headerView;
 }
 
@@ -330,6 +331,7 @@
                     {
                         myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
                     }
+                    myAd.timeLeft = [myAd.timeLeft isEqualToString:@"21 ч"]?@"20 ч":myAd.timeLeft;
                     //[self findTextIn:tl fromStart:@"" toEnd:@" "];
                 }
                 myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
