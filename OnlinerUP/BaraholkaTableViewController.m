@@ -461,6 +461,7 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar
 {
+    self.isQuickCell = YES;
     self.category = @"";
     self.categoryTitle = @"";
     self.isFullCell = NO;
@@ -662,7 +663,10 @@
                     if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
                         myBaraholka.isTorg = [[[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text] isEqualToString:@"ТОРГ"]?@"торг":@"";
                     }
-                } 
+                } else
+                {
+                    break;
+                }
             }
             if (!self.isQuickCell)
             {
@@ -672,6 +676,14 @@
                 }
                 [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
 
+            }
+            else
+            {
+                NSLog(@"2");
+                [_objects removeAllObjects];
+                [self.tableView reloadData];
+                 [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
+                
             }
             // 8
         }

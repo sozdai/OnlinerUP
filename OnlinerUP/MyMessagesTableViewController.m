@@ -237,6 +237,26 @@
     
     [headerView.authorButton setTitle:myMessage.authorName forState:UIControlStateNormal];
     headerView.authorButton.tag = section;
+    
+    switch (section%4) {
+        case 0:
+            headerView.backgroundColor = [UIColor colorWithRed:0.98 green:0.878 blue:0.867 alpha:1];
+            break;
+        case 1:
+            headerView.backgroundColor = [UIColor colorWithRed:0.878 green:0.929 blue:0.965 alpha:1];
+            break;
+        case 2:
+            headerView.backgroundColor = [UIColor colorWithRed:0.89 green:0.949 blue:0.827 alpha:1];
+            break;
+        case 3:
+            headerView.backgroundColor = [UIColor colorWithRed:0.988 green:0.925 blue:0.851 alpha:1];
+            break;
+            
+        default:
+            headerView.backgroundColor = [UIColor colorWithRed:(232/255.0) green:(101/255.0) blue:(86/255.0) alpha:1.0];
+            break;
+    }
+    
     return headerView;
 }
 
