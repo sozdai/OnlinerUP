@@ -63,6 +63,14 @@
                                             forKeyPath:KeyForIsAdsRemoved
                                                options:NSKeyValueObservingOptionNew
                                                context:NULL];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillAppear:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadCategories:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
     
     self.searchDisplayController.displaysSearchBarInNavigationBar = NO;
 
@@ -88,11 +96,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [self changeAdsPosition];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillAppear:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-//    [self.searchDisplayController.searchResultsTableView reloadData];
+
     if (![Network isAuthorizated]) {
         [self.loginButton setTitle:@"Вход"];
         [[self.tabBarController tabBar] setHidden:YES];
@@ -100,9 +104,6 @@
     {
         [self.loginButton setTitle:@"Выход"];
         [[self.tabBarController tabBar] setHidden:NO];
-    }
-    if (![_categories count]) {
-        [self loadCategories];
     }
     
     //Google analytics
@@ -356,20 +357,69 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //quick search table
     if (tableView == self.tableView)
     {
-        
+        //google analytics
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"search"
+                                                              action:@"quick_search_cell_selected"
+                                                               label:nil
+                                                               value:nil] build]];
+
+        NSString* url;
         self.categoryTitle = [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] allKeys ] objectAtIndex:0];
-        [self.searchDisplayController setActive: YES animated: YES];
-        self.searchDisplayController.searchBar.hidden = NO;
-        self.searchDisplayController.searchBar.placeholder = @"Поиск по категории";
-        [MBProgressHUD showHUDAddedTo:self.searchDisplayController.searchResultsTableView animated:YES];
-        self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] valueForKey:self.categoryTitle] valueForKey:@"f"]];
-        [self baraholkaFullSearch:@""];
+        if ([_config valueForKey:@"exceptions"]) {
+            self.exceptionLinks = [_config valueForKey:@"exceptions"];
+            for (id key in self.exceptionLinks) {
+                if ([self.categoryTitle isEqualToString:key]) {
+                    url = [self.exceptionLinks valueForKey:key];
+                    
+                }
+            }
+        }
+        if (url) {
+            SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:url];
+            [webViewController.navigationItem setTitle:self.categoryTitle];
+            webViewController.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:webViewController animated:YES];
+            [bannerView_ setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height-94, bannerView_.bounds.size.width,bannerView_.bounds.size.height)];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        } else
+        {
+            //google analytics
+            id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"search"
+                                                                  action:@"full_search_cell_selected"
+                                                                   label:nil
+                                                                   value:nil] build]];
+
+            
+            [self.searchDisplayController setActive: YES animated: YES];
+            self.searchDisplayController.searchBar.hidden = NO;
+            self.searchDisplayController.searchBar.placeholder = @"Поиск по категории";
+            [MBProgressHUD showHUDAddedTo:self.searchDisplayController.searchResultsTableView animated:YES];
+            self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] valueForKey:self.categoryTitle] valueForKey:@"f"]];
+            [self baraholkaFullSearch:@""];
+        }
+        
     }
+    //full search table
     else {
+        
         Baraholka* myBaraholka = [_objects objectAtIndex:indexPath.row];
-        SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID]];
+
+        NSString* url = [NSString stringWithFormat:@"http://baraholka.onliner.by/viewtopic.php?t=%@", myBaraholka.topicID];
+        if (_config) {
+            self.exceptionLinks = [_config valueForKey:@"exceptions"];
+            for (id key in self.exceptionLinks) {
+                if ([myBaraholka.title isEqualToString:key]) {
+                    url = [self.exceptionLinks valueForKey:key];
+                }
+            }
+        }
+        
+        SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:url];
         webViewController.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:webViewController animated:YES];
         [bannerView_ setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height-94, bannerView_.bounds.size.width,bannerView_.bounds.size.height)];
@@ -386,6 +436,13 @@
         [self baraholkaQuickSearch:searchBar.text];
 
     }
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"search"
+                                                          action:@"quick_search"
+                                                           label:searchText
+                                                           value:nil] build]];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -393,6 +450,13 @@
     self.currentBaraholkaPage = 0;
     [MBProgressHUD showHUDAddedTo:self.searchDisplayController.searchResultsTableView animated:YES];
     [self baraholkaFullSearch:searchBar.text];
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"search"
+                                                          action:@"full_search"
+                                                           label:searchBar.text
+                                                           value:nil] build]];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar
@@ -405,6 +469,13 @@
     [_objects removeAllObjects];
     [searchBar setShowsCancelButton:NO];
     [self.tableView reloadData];
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"search"
+                                                          action:@"cancel_button"
+                                                           label:searchBar.text
+                                                           value:nil] build]];
 }
 
 -(void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView {
@@ -500,6 +571,7 @@
                     Baraholka *myBaraholkaTotic = [Baraholka new];
                     [newBaraholkaTopic addObject:myBaraholkaTotic];
                     NSString* link = [key valueForKey:@"link"];
+//                    myBaraholkaTotic.url = [Network findTextIn:link fromStart:@"href=\"" toEnd:@"\">"];
                     myBaraholkaTotic.title = [[[[[[Network findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]
                                                   stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]
                                                  stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""]
@@ -543,7 +615,6 @@
         NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@%@%@",searchText,currPage,self.category];
         NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
         NSData *data = [NSData dataWithContentsOfURL:url];
-//        self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
         if (data) {
             // 2
             TFHpple *parser = [TFHpple hppleWithHTMLData:data];
@@ -628,6 +699,12 @@
 
 - (void) performInfinityScroll
 {
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"search"
+                                                          action:@"infinity_search"
+                                                           label:self.searchDisplayController.searchBar.text
+                                                           value:nil] build]];
     if (![_objects count]) {
         [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
     } else
@@ -650,12 +727,18 @@
     
     [manager GET:@"http://kardash.by/config.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         _config = [responseObject mutableCopy];
+        if (_config) {
+            NSDictionary* settings = [_config valueForKey:@"settins"];
+            [[NSUserDefaults standardUserDefaults] setBool:[settings valueForKey:@"show ad"] forKey:KeyForShouldShowAp];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"error connection %@",error);
        
     }];
 
 }
+
 
 - (void) loadCategories
 {
@@ -712,12 +795,21 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.tableView animated:YES];
             [self.tableView reloadData];
-            if (![[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
-                [self adMobAd];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAp]) {
+                if (![[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
+                    [self adMobAd];
+                }
             }
         });
     });
     
+}
+
+- (void) reloadCategories:(NSNotification *)notification
+{
+    if (![_categories count]) {
+        [self loadCategories];
+    }
 }
 
 #pragma mark - AdMob
@@ -758,10 +850,10 @@
 
 - (void)adViewDidReceiveAd:(GADBannerView *)view
 {
-    if (!self.didBannerClosed) {
-        [view setHidden:NO];
-    }
-}
+        if (!self.didBannerClosed) {
+            [view setHidden:NO];
+        }
+ }
 
 - (void) adView:(GADBannerView *)banner didFailToReceiveAdWithError:(GADRequestError *)error{
 
@@ -780,11 +872,23 @@
 
 - (IBAction)loginButtonClicked:(UIBarButtonItem *)sender {
     if (![Network isAuthorizated]) {
+        //google analytics
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"login"
+                                                              action:@"logout_button_clicked"
+                                                               label:@""
+                                                               value:nil] build]];
         LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
         [self presentViewController:navigationController animated:YES completion:nil];
     } else
     {
+        //google analytics
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"login"
+                                                              action:@"login_button_clicked"
+                                                               label:@""
+                                                               value:nil] build]];
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Выход" message:@"Вы действительно хотите выйти?" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Выйти", nil];
         [alert show];
     }

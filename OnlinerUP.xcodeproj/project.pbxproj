@@ -98,6 +98,7 @@
 		58A53D48198944D600792508 /* btn-up-0.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A53D40198944D600792508 /* btn-up-0.png */; };
 		58A53D4D198944D600792508 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A53D45198944D600792508 /* logo.png */; };
 		58A53D521989462500792508 /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58A53D511989462500792508 /* libxml2.2.dylib */; };
+		58A55CB319E09C120040AD10 /* avatar_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 58A55CB219E09C120040AD10 /* avatar_image.png */; };
 		58A7871C19D492B800469A0E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58A7871B19D492B800469A0E /* StoreKit.framework */; };
 		58B9644C19D80FA500F8E9A1 /* PurchaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58B9644A19D80FA500F8E9A1 /* PurchaceViewController.m */; };
 		58B9644D19D80FA500F8E9A1 /* PurchaceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58B9644B19D80FA500F8E9A1 /* PurchaceViewController.xib */; };
@@ -312,6 +313,7 @@
 		58A53D40198944D600792508 /* btn-up-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn-up-0.png"; path = "../btn-up-0.png"; sourceTree = "<group>"; };
 		58A53D45198944D600792508 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = ../logo.png; sourceTree = "<group>"; };
 		58A53D511989462500792508 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
+		58A55CB219E09C120040AD10 /* avatar_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar_image.png; sourceTree = "<group>"; };
 		58A7871B19D492B800469A0E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		58B9644919D80FA500F8E9A1 /* PurchaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PurchaceViewController.h; path = ../PurchaceViewController.h; sourceTree = "<group>"; };
 		58B9644A19D80FA500F8E9A1 /* PurchaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PurchaceViewController.m; path = ../PurchaceViewController.m; sourceTree = "<group>"; };
@@ -777,6 +779,7 @@
 		58C5246C19A733B30012CB5E /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				58A55CB219E09C120040AD10 /* avatar_image.png */,
 				58B9644E19D8C20B00F8E9A1 /* Icon-40.png */,
 				58B9644F19D8C20B00F8E9A1 /* Icon-40@2x.png */,
 				58B9645019D8C20B00F8E9A1 /* Icon-40@3x.png */,
@@ -984,6 +987,7 @@
 			files = (
 				58A53D361989448600792508 /* Main.storyboard in Resources */,
 				58A53D4D198944D600792508 /* logo.png in Resources */,
+				58A55CB319E09C120040AD10 /* avatar_image.png in Resources */,
 				58A1C6F019D1C083002DCB1E /* SVWebViewControllerActivityChrome-iPad.png in Resources */,
 				589FE22D19989A9F00CBB57C /* label_important.png in Resources */,
 				581A0F5B19D5F35900499ABF /* gear@2x.png in Resources */,

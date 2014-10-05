@@ -13,6 +13,8 @@
     GADBannerView *bannerView_;
 }
 
+@property (strong, nonatomic) NSDictionary* exceptionLinks;
+
 @property (strong, nonatomic) NSDictionary* sellType;
 @property (strong, nonatomic) NSString* htmlString;
 @property (strong, nonatomic) NSString* category;

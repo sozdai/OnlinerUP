@@ -108,7 +108,7 @@
         {
             if (indexPath.row == 0)
             {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked]) {
                     cell.accessoryType = UITableViewCellAccessoryCheckmark;
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     cell.userInteractionEnabled = NO;
@@ -116,10 +116,13 @@
                 
             } else
             {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked]) {
-                    cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    cell.userInteractionEnabled = NO;
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAp]) {
+                    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
+                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                        cell.userInteractionEnabled = NO;
+                    }
+                    [cell setHidden:NO];
                 }
             }
         }
@@ -137,128 +140,39 @@
     [self.navigationController
      pushViewController:_purchaseController animated:YES];
     if (index == 0) {
-        _purchaseController.productID = @"com.sozdai.OnlinerUP.remads";
-        _purchaseController.productName = @"removeAds";
-    } else{
         _purchaseController.productID = @"com.sozdai.OnlinerUP.enableupbutton";
         _purchaseController.productName = @"enableUP";
-    }
-    [_purchaseController getProductInfo:_purchaseController.productID];
+        [_purchaseController getProductInfo:_purchaseController.productID];
+
+    } else{
+        _purchaseController.productID = @"com.sozdai.OnlinerUP.remads";
+        _purchaseController.productName = @"removeAds";    }
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"inapp"
+                                                          action:@"purchase_item"
+                                                           label:_purchaseController.productName
+                                                           value:nil] build]];
 }
-
-
-
-//
-//- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response{
-//    SKProduct *validProduct = nil;
-//    int count = [response.products count];
-//    if(count > 0){
-//        validProduct = [response.products objectAtIndex:0];
-//        NSLog(@"Products Available!");
-//        [self purchase:validProduct];
-//    }
-//    else if(!validProduct){
-//        NSLog(@"No products available");
-//        //this is called if your product id is not valid, this shouldn't be called unless that happens.
-//    }
-//}
-//    
-//- (void)purchase:(SKProduct *)product{
-//    SKPayment *payment = [SKPayment paymentWithProduct:product];
-//    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-//    [[SKPaymentQueue defaultQueue] addPayment:payment];
-//}
-//
-//- (void)restore
-//{
-//    //this is called when the user restores purchases, you should hook this up to a button
-//    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-//    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
-//}
-//
-//- (void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
-//{
-//    NSLog(@"received restored transactions: %lu", (unsigned long)queue.transactions.count);
-//    for (SKPaymentTransaction *transaction in queue.transactions)
-//    {
-//        if(SKPaymentTransactionStateRestored){
-//            NSLog(@"Transaction state -> Restored");
-//            //called when the user successfully restores a purchase
-//            if ([self.InappName isEqualToString:@"removeAds"]) {
-//                [self doRemoveAds];
-//            } else [self doUnlockUp];
-//            [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-//            break;
-//        }
-//        
-//    }
-//    
-//}
-//
-//- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions{
-//    for(SKPaymentTransaction *transaction in transactions){
-//        switch (transaction.transactionState){
-//            case SKPaymentTransactionStatePurchasing: NSLog(@"Transaction state -> Purchasing");
-//                //called when the user is in the process of purchasing, do not add any of your own code here.
-//                break;
-//            case SKPaymentTransactionStatePurchased:
-//                //this is called when the user has successfully purchased the package (Cha-Ching!)
-//                if ([self.InappName isEqualToString:@"removeAds"]) {
-//                    [self doRemoveAds];
-//                } else [self doUnlockUp];
-//                //you can add your code for what you want to happen when the user buys the purchase here, for this tutorial we use removing ads
-//                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-//                if ([self.InappName isEqualToString:@"removeAds"]) {
-//                    [self doRemoveAds];
-//                } else [self doUnlockUp];
-//                NSLog(@"Transaction state -> Purchased");
-//                break;
-//            case SKPaymentTransactionStateRestored:
-//                NSLog(@"Transaction state -> Restored");
-//                //add the same code as you did from SKPaymentTransactionStatePurchased here
-//                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-//                if ([self.InappName isEqualToString:@"removeAds"]) {
-//                    [self doRemoveAds];
-//                } else [self doUnlockUp];
-//                break;
-//            case SKPaymentTransactionStateFailed:
-//                //called when the transaction does not finnish
-//                if(transaction.error.code != SKErrorPaymentCancelled){
-//                    NSLog(@"Transaction state -> Cancelled");
-//                    //the user cancelled the payment ;(
-//                }
-//                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-//                break;
-//        }
-//    }
-//}
-//
-//- (void)doRemoveAds{
-//    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForIsAdsRemoved];
-//    //use NSUserDefaults so that you can load wether or not they bought it
-//    [[NSUserDefaults standardUserDefaults] synchronize];
-//    [self.tableView reloadData];
-//}
-//
-//- (void)doUnlockUp
-//{
-//    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForIsUpUnlocked];
-//    //use NSUserDefaults so that you can load wether or not they bought it
-//    [[NSUserDefaults standardUserDefaults] synchronize];
-//    [self.tableView reloadData];
-//}
-
 
 #pragma mark - Feedback
 
 - (void) sendEmail
 {
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"feedback"
+                                                          action:@"send_email"
+                                                           label:nil
+                                                           value:nil] build]];
     // Email Subject
     NSString *emailTitle = @"Барахолка";
     // Email Content
     NSString *messageBody = @"Здравствуйте, ";
     // To address
-    NSArray *toRecipents = [NSArray arrayWithObjects:@"sasha@kardash.by",@"sash.kardash@gmail.com",nil];
+    NSArray *toRecipents = [NSArray arrayWithObjects:@"sasha@kardash.by",nil];
     
     MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
     mc.mailComposeDelegate = self;
@@ -275,14 +189,39 @@
 {
     switch (result)
     {
-        case MFMailComposeResultCancelled:
-            break;
+        case MFMailComposeResultCancelled:{
+            //google analytics
+            id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"feedback"
+                                                                  action:@"email_canceled"
+                                                                   label:nil
+                                                                   value:nil] build]];
+            break;}
         case MFMailComposeResultSaved:
-            break;
-        case MFMailComposeResultSent:
-            break;
+        {
+            //google analytics
+            id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"feedback"
+                                                                  action:@"email_saved"
+                                                                   label:nil
+                                                                   value:nil] build]];
+            break;}
+        case MFMailComposeResultSent:{
+            //google analytics
+            id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"feedback"
+                                                                  action:@"email_sent"
+                                                                   label:nil
+                                                                   value:nil] build]];
+            break;}
         case MFMailComposeResultFailed:
         {
+            //google analytics
+            id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"feedback"
+                                                                  action:@"email_failed"
+                                                                   label:nil
+                                                                   value:nil] build]];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ошибка отправки" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"ОК" otherButtonTitles:nil, nil];
             [alert show];
         }

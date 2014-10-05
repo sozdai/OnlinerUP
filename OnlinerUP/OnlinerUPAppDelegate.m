@@ -16,6 +16,7 @@ NSString* const KeyForNeedReloadForAdsPage=@"AdsNeedReload";
 NSString* const KeyForNeedReloadForMessagesPage=@"MessagesNeedReload";
 NSString* const KeyForIsAdsRemoved=@"AdsRemoved";
 NSString* const KeyForIsUpUnlocked=@"UpUnlocked";
+NSString* const KeyForShouldShowAp=@"ShouldShowAd";
 
 @implementation OnlinerUPAppDelegate
 

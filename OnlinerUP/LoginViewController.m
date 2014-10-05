@@ -34,8 +34,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.loginTextField setText:@"Мистер Грин"];
-    [self.passwordTextField setText:@"sashajorik"];
     // Do any additional setup after loading the view.
 }
 
@@ -86,6 +84,12 @@
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     if (!theConnection) NSLog(@"No connection");
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"login"
+                                                          action:@"logged_in"
+                                                           label:@""
+                                                           value:nil] build]];
     
 }
 

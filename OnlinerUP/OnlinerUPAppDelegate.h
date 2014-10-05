@@ -15,6 +15,7 @@ extern NSString* const KeyForNeedReloadForAdsPage;
 extern NSString* const KeyForNeedReloadForMessagesPage;
 extern NSString* const KeyForIsAdsRemoved;
 extern NSString* const KeyForIsUpUnlocked;
+extern NSString* const KeyForShouldShowAp;
 
 
 @interface OnlinerUPAppDelegate : UIResponder <UIApplicationDelegate>

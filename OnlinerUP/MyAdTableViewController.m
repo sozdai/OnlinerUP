@@ -84,13 +84,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     if (![_objects count]) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForAdsPage])
-        {
-            [MBProgressHUD hideHUDForView:self.tableView animated:NO];
-            [MBProgressHUD showHUDAddedTo:self.tableView animated:NO];
-            [self adsLoading];
-        }
-//            [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
+        [self reloadAd];
     } else [self.tableView reloadData];
     
     //Google analytics
@@ -221,6 +215,13 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ads"
+                                                          action:@"ads_row_selected"
+                                                           label:nil
+                                                           value:nil] build]];
+
     MyAd* ad = [_objects objectAtIndex:indexPath.row];
     if (ad.isUnRead) {
         ad.isUnRead = NO;
@@ -243,6 +244,13 @@
         [self loadAd];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            
+            //google analytics
+            id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ads"
+                                                                  action:@"ads_loading"
+                                                                   label:@""
+                                                                   value:nil] build]];
             _objects = [NSMutableArray array];
             _objects = [[[_tempObjects reverseObjectEnumerator] allObjects] mutableCopy];
             [_tempObjects removeAllObjects];
@@ -254,6 +262,16 @@
     
 }
 
+- (void) reloadAd
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForAdsPage])
+    {
+        [_objects removeAllObjects];
+        [MBProgressHUD hideHUDForView:self.tableView animated:NO];
+        [MBProgressHUD showHUDAddedTo:self.tableView animated:NO];
+        [self adsLoading];
+    }
+}
 
 -(void)loadAd {
     NSString* currentPage = self.currentPage>0?[NSString stringWithFormat:@"&start=%d",self.currentPage*50]:@"";
@@ -353,6 +371,13 @@
 
 - (void)purchaseItem
 {
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"inapp"
+                                                          action:@"buy_up_all"
+                                                           label:@""
+                                                           value:nil] build]];
     _purchaseController.productID = @"com.sozdai.OnlinerUP.enableupbutton";
     
     [self.navigationController
@@ -366,6 +391,13 @@
 #pragma mark - Buttons actions
 
 - (IBAction)clickUpAllButton:(UIButton *)sender {
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"inapp"
+                                                          action:@"click_up_all"
+                                                           label:@""
+                                                           value:nil] build]];
     NSInteger clickCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"UpAllClickCount"];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked] ||  clickCount < 5)
     {
@@ -390,6 +422,13 @@
 }
 
 - (IBAction)avatarImageClick:(UIButton *)sender {
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ads"
+                                                          action:@"avatar_image_clicked"
+                                                           label:@""
+                                                           value:nil] build]];
+    
     SVWebViewController *webViewController = [[SVWebViewController alloc] initWithAddress:@"https://profile.onliner.by/"];
     webViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:webViewController animated:YES];
@@ -397,34 +436,29 @@
 
 - (IBAction)buttonUPClick:(UIButton *)sender
 {
-    NSInteger clickCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"UpClickCount"];
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ads"
+                                                          action:@"click_up"
+                                                           label:@""
+                                                           value:nil] build]];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked] ||  clickCount < 10)
-    {
-        [[NSUserDefaults standardUserDefaults] setInteger:clickCount+1 forKey:@"UpClickCount"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        self.sender = sender;
-        MyAd *currentAd = [_objects objectAtIndex: sender.tag];
-        int ballance = [self.accountAmount intValue];
-        int type = [currentAd.topicType intValue];
-        
-        if (type == 0) {
-            [self upAd:sender withParams:currentAd];
-        }
-        else if (ballance < 3000)
-        {
-            int needDeposit = 3000 - ballance;
-            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Вам не хватает %d рублей", needDeposit] message:@"Пополнить счет?" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Пополнить", nil];
-            [alert show];
-        } else
-        {
-            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Внимание, услуга платная!" message:@"Стоимость 3000 рублей" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Поднять", nil];
-            [alert show];
-        }
+    self.sender = sender;
+    MyAd *currentAd = [_objects objectAtIndex: sender.tag];
+    int ballance = [self.accountAmount intValue];
+    int type = [currentAd.topicType intValue];
+    
+    if (type == 0) {
+        [self upAd:sender withParams:currentAd];
     }
-    else
+    else if (ballance < 3000)
     {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Поднимать объявления очень удобно" message:@"Получить полный доступ к 'UP' и 'UP All' кнопкам навсегда?" delegate:self cancelButtonTitle:@"Нет, спасибо" otherButtonTitles:@"Получить", nil];
+        int needDeposit = 3000 - ballance;
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Вам не хватает %d рублей", needDeposit] message:@"Пополнить счет?" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Пополнить", nil];
+        [alert show];
+    } else
+    {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Внимание, услуга платная!" message:@"Стоимость 3000 рублей" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Поднять", nil];
         [alert show];
     }
     

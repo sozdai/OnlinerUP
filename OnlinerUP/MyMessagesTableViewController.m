@@ -105,6 +105,11 @@
                 andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
 }
 
+- (void) reloadMessages
+{
+    
+}
+
 - (void) getStringFromUrl: (NSString*) url withParams: (NSDictionary*) params andHeaders:(NSDictionary*) headers
 {
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
@@ -338,6 +343,13 @@
         default:
             break;
     }
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"messages"
+                                                          action:@"open_message_folder"
+                                                           label:self.title
+                                                           value:nil] build]];
 }
 
 - (void) performInfinityScroll
@@ -352,5 +364,13 @@
         }
         [self loadMessages];
     }
+    
+    
+    //google analytics
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"messages"
+                                                          action:@"infinity_scroll"
+                                                           label:self.title
+                                                           value:nil] build]];
 }
 @end
