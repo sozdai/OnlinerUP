@@ -330,6 +330,9 @@
                     {
                         myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
                     }
+                    if ([myAd.timeLeft isEqualToString:@"21 ч"]) {
+                        myAd.timeLeft = @"20 ч";
+                    }
                     //[self findTextIn:tl fromStart:@"" toEnd:@" "];
                 }
                 myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
