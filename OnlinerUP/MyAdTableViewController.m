@@ -332,7 +332,9 @@
                         myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
                     }
                     myAd.timeLeft = [myAd.timeLeft isEqualToString:@"21 ч"]?@"20 ч":myAd.timeLeft;
-                    //[self findTextIn:tl fromStart:@"" toEnd:@" "];
+                    if ([myAd.timeLeft isEqualToString:@"21 ч"]) {
+                        myAd.timeLeft = @"20 ч";
+                    }                    //[self findTextIn:tl fromStart:@"" toEnd:@" "];
                 }
                 myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
                 
@@ -418,7 +420,7 @@
     }
     else
     {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Исчерпан лимит" message:@"Получить полный доступ к 'UP' и 'UP All' кнопкам навсегда?" delegate:self cancelButtonTitle:@"Нет, спасибо" otherButtonTitles:@"Получить", nil];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ограниченная функциональность" message:@"Хотите разблокировать 'UP All' кнопку навсегда?" delegate:self cancelButtonTitle:@"Нет, спасибо" otherButtonTitles:@"Разблокировать", nil];
         [alert show];
     }
 }
@@ -575,7 +577,7 @@
     {
         [self upAd:self.sender withParams:[_objects objectAtIndex:self.sender.tag]];
     }
-    else if([title isEqualToString:@"Получить"])
+    else if([title isEqualToString:@"Разблокировать"])
     {
         [self purchaseItem];
     }
