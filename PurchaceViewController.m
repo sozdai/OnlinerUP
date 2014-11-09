@@ -8,7 +8,9 @@
 
 #import "PurchaceViewController.h"
 #import "MyAdTableViewController.h"
-
+#import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
+#import "GAITrackedViewController.h"
 @interface PurchaceViewController ()
 @property (strong, nonatomic) MyAdTableViewController *myAdViewController;
 
@@ -37,6 +39,12 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"inapp"
+                                                          action:@"purchace canceled"
+                                                           label:[NSString stringWithFormat:@"%@",  _productTitle.text]
+                                                           value:nil] build]];
+    
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
@@ -123,32 +131,41 @@
 
 - (void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
+    BOOL idFound;
     NSLog(@"received restored transactions: %lu", (unsigned long)queue.transactions.count);
     if (queue.transactions.count > 0) {
         for (SKPaymentTransaction *transaction in queue.transactions)
         {
             if(SKPaymentTransactionStateRestored){
                 NSLog(@"Transaction state -> Restored");
-                //called when the user successfully restores a purchase
-//                if ([self.productName isEqualToString:@"removeAds"]) {
-//                    [self doRemoveAds];
-//                } else [self doUnlockUp];
+                if ([transaction.payment.productIdentifier isEqualToString:self.productID]) {
+                    if ([self.productName isEqualToString:@"removeAds"]) {
+                        [self doRemoveAds];
+                    } else [self doUnlockUp];
+                    idFound = YES;
+                    break;
+                }
                 [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-                break;
+                //called when the user successfully restores a purchase
+                
             }
         }
-    } else
-    {
+        
+    }
+    if (!idFound) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка" message:@"Услуга не была куплена ранее." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
         self.buyButton.enabled = YES;
         self.restoreButton.enabled = YES;
+    } else
+    {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Спасибо" message:@"Покупка успешно осуществлена." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
     }
     
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions{
-    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Спасибо" message:@"Покупка успешно осуществлена." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     self.buyButton.enabled = YES;
     self.restoreButton.enabled = YES;
     for(SKPaymentTransaction *transaction in transactions){
@@ -159,9 +176,6 @@
                 break;
             case SKPaymentTransactionStatePurchased:
                 //this is called when the user has successfully purchased the package (Cha-Ching!)
-                if ([self.productName isEqualToString:@"removeAds"]) {
-                    [self doRemoveAds];
-                } else [self doUnlockUp];
                 //you can add your code for what you want to happen when the user buys the purchase here, for this tutorial we use removing ads
                 [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
                 if ([self.productName isEqualToString:@"removeAds"]) {
@@ -171,24 +185,27 @@
                 break;
             case SKPaymentTransactionStateRestored:
                 NSLog(@"Transaction state -> Restored");
-                //add the same code as you did from SKPaymentTransactionStatePurchased here
-                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-                if ([self.productName isEqualToString:@"removeAds"]) {
-                    [self doRemoveAds];
-                } else [self doUnlockUp];
-                [alert show];
                 break;
-            case SKPaymentTransactionStateFailed:
+            case SKPaymentTransactionStateFailed:{
                 //called when the transaction does not finnish
                 if(transaction.error.code != SKErrorPaymentCancelled){
-                    NSLog(@"Transaction state -> Cancelled");
+                    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка" message:@"Невозможно осуществить покупку" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                    [alert show];
                     //the user cancelled the payment ;(
                 }
-                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+                //google analytics
+                id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+                [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"inapp"
+                                                                      action:@"error purchacing"
+                                                                       label:[NSString stringWithFormat:@"%@", transaction.error ]
+                                                                       value:nil] build]];
+
+                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];}
                 break;
         }
     }
 }
+
 
 - (void)doRemoveAds{
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForIsAdsRemoved];

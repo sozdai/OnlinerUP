@@ -33,7 +33,7 @@
     if (status!=errSecSuccess) {
         NSLog(@"Deleteing from keychain problem");
         
-    } else NSLog(@"deleted from keychain");
+    }
     CFRelease(cfquery);
 }
 + (NSMutableDictionary *)newSearchDictionary:(NSString *)identifier {
@@ -56,7 +56,6 @@
     
     OSStatus status = SecItemAdd((CFDictionaryRef)CFBridgingRetain(dictionary), NULL);
     if (status == errSecSuccess) {
-        NSLog(@"created secsessfuly");
         return YES;
     }
     return NO;

@@ -18,6 +18,7 @@
 @property (strong,nonatomic) NSMutableData * responseData;
 @property (strong,nonatomic) NSString* task;
 @property (strong,nonatomic) NSString *xpathQueryString;
+@property (strong,nonatomic) NSString *xpathUserName;
 @property (strong,nonatomic) NSString *upButtonXpath;
 @property (strong,nonatomic) NSString* titleXpath;
 @property (strong,nonatomic) NSString* urlXpath;
@@ -32,6 +33,7 @@
 @property (strong,nonatomic) NSString* sellTypeXpath;
 
 @property (strong,nonatomic) NSString* htmlString;
+@property (strong,nonatomic) NSString* userName;
 @property int currentPage;
 @property (strong,nonatomic) NSString* accountAmount;
 @property (strong,nonatomic) NSString* loginName;

@@ -14,7 +14,7 @@
 		<string>https://github.com/sozdai/OnlinerUP.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>OnlinerUP.xcodeproj/project.xcworkspace</string>
+	<string>OnlinerUP.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2A75E1E53A676C452E316AD62DFA8B0BEA5050C2</key>
@@ -34,7 +34,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>2A75E1E53A676C452E316AD62DFA8B0BEA5050C2</string>
 			<key>IDESourceControlWCCName</key>
-			<string>OnlinerUP</string>
+			<string>OnlinerUP%20</string>
 		</dict>
 	</array>
 </dict>

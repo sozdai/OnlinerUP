@@ -43,7 +43,6 @@
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"error connection %@",error);
         if (block) {
             block([NSArray array], [NSString string], error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
@@ -82,7 +81,6 @@
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"error connection %@",error);
         if (block) {
             block([NSArray array], [NSString string], error);
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
@@ -133,9 +131,21 @@
     NSHTTPCookie *cookie;
     for (cookie in cookies) {
         if ([cookie.name isEqualToString:@"onl_session"]) return true;
-        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForUserDefaultsAuthorisationInfo];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     return false;
 }
+
++(void) cookiesStorageClearing{
+    NSHTTPCookie *cookie;
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (cookie in [storage cookies]) {
+        [storage deleteCookie:cookie];
+    }
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForUserDefaultsAuthorisationInfo ];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 
 @end

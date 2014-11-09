@@ -67,30 +67,16 @@
                                              selector:@selector(keyboardWillAppear:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadCategories:)
-                                                 name:UIApplicationDidBecomeActiveNotification
-                                               object:nil];
     
     self.searchDisplayController.displaysSearchBarInNavigationBar = NO;
 
-    [self loadConfig];
+    [self loadVersion];
     
     [self.searchDisplayController.searchResultsTableView addInfiniteScrollingWithActionHandler:^{
         [self performInfinityScroll];
     }];
-    [self loadXpath];
     [self.searchDisplayController.searchBar setShowsCancelButton:NO];
     
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    [manager GET:@"http://kardash.by/config.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-//        NSLog(@"%@",responseObject);
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@, %@",error, error.userInfo);
-    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -106,6 +92,11 @@
         [[self.tabBarController tabBar] setHidden:NO];
     }
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadCategories:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    
     //Google analytics
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:@"Baraholka screen"];
@@ -120,14 +111,16 @@
 
 - (void) changeAdsPosition
 {
-    CGFloat height;
-    if ([Network isAuthorizated]) {
-        height = 99;
-    } else
-    {
-        height = 50;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAd]) {
+        CGFloat height;
+        if ([Network isAuthorizated]) {
+            height = 99;
+        } else
+        {
+            height = 50;
+        }
+        [bannerView_ setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height-height, bannerView_.bounds.size.width,bannerView_.bounds.size.height)];
     }
-    [bannerView_ setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.height-height, bannerView_.bounds.size.width,bannerView_.bounds.size.height)];
 }
 
 
@@ -318,10 +311,35 @@
                 constraintSize = CGSizeMake(464.0f,MAXFLOAT);
             }
             
-            CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-            CGSize descriptionSize = [description sizeWithFont:descriptionFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
+            NSAttributedString *attributedSubject =
+            [[NSAttributedString alloc]
+             initWithString:subject
+             attributes:@
+             {
+             NSFontAttributeName: titleFont
+             }];
+            CGRect titleRect = [attributedSubject boundingRectWithSize:constraintSize
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                       context:nil];
+            CGSize titleSize = titleRect.size;
+            CGFloat descriptionHeight = 0;
+            if (description) {
+                NSAttributedString *attributedDescription =
+                [[NSAttributedString alloc]
+                 initWithString:description
+                 attributes:@
+                 {
+                 NSFontAttributeName: descriptionFont
+                 }];
+                CGRect descriptionRect = [attributedDescription boundingRectWithSize:constraintSize
+                                                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                                                             context:nil];
+                CGSize descriptionSize = descriptionRect.size;
+                descriptionHeight = descriptionSize.height;
+            }
             
-            height = titleSize.height+descriptionSize.height+58;
+            
+            height = ceilf(titleSize.height)+descriptionHeight+58;
         }
         
         
@@ -332,8 +350,19 @@
             UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:15.0f];
             CGSize constraintSize = CGSizeMake(304.0f,MAXFLOAT);
             NSString* subject = [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] allKeys] objectAtIndex:0];
-            CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-            height = titleSize.height+12;
+            NSAttributedString *attributedSubject =
+            [[NSAttributedString alloc]
+             initWithString:subject
+             attributes:@
+             {
+             NSFontAttributeName: titleFont
+             }];
+            CGRect titleRect = [attributedSubject boundingRectWithSize:constraintSize
+                                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                                              context:nil];
+            CGSize titleSize = titleRect.size;
+            
+            return ceilf(titleSize.height)+12;
         }
         else if (tableView == self.searchDisplayController.searchResultsTableView)
         {
@@ -347,8 +376,19 @@
             {
                 constraintSize = CGSizeMake(464.0f,MAXFLOAT);
             }
-            CGSize textSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-            height = textSize.height+34;
+            NSAttributedString *attributedSubject =
+            [[NSAttributedString alloc]
+             initWithString:subject
+             attributes:@
+             {
+             NSFontAttributeName: titleFont
+             }];
+            CGRect titleRect = [attributedSubject boundingRectWithSize:constraintSize
+                                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                                               context:nil];
+            CGSize titleSize = titleRect.size;
+            
+            return ceilf(titleSize.height)+34;
         }
     }
     
@@ -369,8 +409,8 @@
 
         NSString* url;
         self.categoryTitle = [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] allKeys ] objectAtIndex:0];
-        if ([_config valueForKey:@"exceptions"]) {
-            self.exceptionLinks = [_config valueForKey:@"exceptions"];
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:KeyForConfig] valueForKey:@"exceptions"]) {
+            self.exceptionLinks = [[[NSUserDefaults standardUserDefaults] objectForKey:KeyForConfig] valueForKey:@"exceptions"];
             for (id key in self.exceptionLinks) {
                 if ([self.categoryTitle isEqualToString:key]) {
                     url = [self.exceptionLinks valueForKey:key];
@@ -400,7 +440,7 @@
             self.searchDisplayController.searchBar.placeholder = @"Поиск по категории";
             [MBProgressHUD showHUDAddedTo:self.searchDisplayController.searchResultsTableView animated:YES];
             self.category = [NSString stringWithFormat:@"&f=%@", [[[[[[[_categories objectAtIndex:indexPath.section] allValues] objectAtIndex:0] valueForKey:@"items"] objectAtIndex:indexPath.row] valueForKey:self.categoryTitle] valueForKey:@"f"]];
-            [self baraholkaFullSearch:@""];
+            [self baraholkaFullSearch:@"" andUrl:@"http://baraholka.onliner.by/search.php"];
         }
         
     }
@@ -448,8 +488,9 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     self.currentBaraholkaPage = 0;
+    [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
     [MBProgressHUD showHUDAddedTo:self.searchDisplayController.searchResultsTableView animated:YES];
-    [self baraholkaFullSearch:searchBar.text];
+    [self baraholkaFullSearch:searchBar.text andUrl:@"http://baraholka.onliner.by/search.php"];
     
     //google analytics
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
@@ -466,6 +507,8 @@
     self.categoryTitle = @"";
     self.isFullCell = NO;
     self.currentBaraholkaPage = 0;
+    [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+    [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
     self.searchDisplayController.searchBar.placeholder = @"Поиск по барахолке";
     [_objects removeAllObjects];
     [searchBar setShowsCancelButton:NO];
@@ -485,7 +528,7 @@
         tableView.hidden = NO;
     }
     if (self.isFullCell && [self.category length]) {
-        [self baraholkaFullSearch:@""];
+        [self baraholkaFullSearch:@"" andUrl:@"http://baraholka.onliner.by/search.php"];
     } else [_objects removeAllObjects];
     [tableView reloadData];
 }
@@ -525,37 +568,50 @@
 - (void) loadXpath
 {
     
-    self.xpathQueryString=@"//td[@class='frst ph colspan']/..";
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAd]) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
+            [self adMobAd];
+        }
+    }
     
-    self.listCategoryXpath=@"//div[@class='cm-onecat']";
-    self.listCategoryLinkXpath=@"//small/a";
-    self.listItemXpath=@"//li";
-    self.listItemLinkXpath=@"//a";
-    self.listItemCount=@"//sup";
+    NSDictionary* baraholkaXpath = [[[NSUserDefaults standardUserDefaults] objectForKey:KeyForConfig] objectForKey:@"baraholkaXpath"];
     
-    self.topicTypeXpath=@"m-imp";
-    self.titleXpath=@"//h2[@class='wraptxt']/a";
-    self.descriptionXpath=@"//*[@class='wraptxt']/../p[2]";
-    self.categoryXpath=@"//a[@class='gray-link']";
-    self.sellTypeXpath=@"//div[@class='txt-i']/div";
-    self.cityXpath=@"//p[@class='ba-signature']/strong";
-    self.topicIDXpath=@"href";
-    self.urlXpath=@"href";
+    self.xpathQueryString=[baraholkaXpath valueForKey:@"xpathQueryString"];
     
-    self.topicPriceXpath=@"//td[@class='cost']/big/strong";
-    self.topicCurrencyXpath=@"//td[@class='cost']/big";
-    self.topicTorgXpath = @"//small[@class='cost-torg']";
+    self.listCategoryXpath=[baraholkaXpath valueForKey:@"listCategoryXpath"];
+    self.listCategoryLinkXpath=[baraholkaXpath valueForKey:@"listCategoryLinkXpath"];
+    self.listItemXpath=[baraholkaXpath valueForKey:@"listItemXpath"];
+    self.listItemLinkXpath=[baraholkaXpath valueForKey:@"listItemLinkXpath"];
+    self.listItemCount=[baraholkaXpath valueForKey:@"listItemCount"];
     
-    self.topicAuthorXpath=@"//a[@class='gray']";
-    self.imageUrlXpath=@"http://content.onliner.by/baraholka/icon_large/";
-    self.commentsCountXpath=@"//p[@class='ba-post-coms']/a/span";
+    self.topicTypeXpath=[baraholkaXpath valueForKey:@"topicTypeXpath"];
+    self.titleXpath=[baraholkaXpath valueForKey:@"titleXpath"];
+    self.descriptionXpath=[baraholkaXpath valueForKey:@"descriptionXpath"];
+    self.categoryXpath=[baraholkaXpath valueForKey:@"categoryXpath"];
+    self.sellTypeXpath=[baraholkaXpath valueForKey:@"sellTypeXpath"];
+    self.cityXpath=[baraholkaXpath valueForKey:@"cityXpath"];
+    self.topicIDXpath=[baraholkaXpath valueForKey:@"topicIDXpath"];
+    self.urlXpath=[baraholkaXpath valueForKey:@"urlXpath"];
+
+    self.topicPriceXpath=[baraholkaXpath valueForKey:@"topicPriceXpath"];
+    self.topicCurrencyXpath=[baraholkaXpath valueForKey:@"topicCurrencyXpath"];
+    self.topicTorgXpath=[baraholkaXpath valueForKey:@"topicTorgXpath"];
     
-    self.upTopicTime=@"//p[@class='ba-post-up']";
+    self.topicAuthorXpath=[baraholkaXpath valueForKey:@"topicAuthorXpath"];
+    self.imageUrlXpath=[baraholkaXpath valueForKey:@"imageUrlXpath"];
+    self.commentsCountXpath=[baraholkaXpath valueForKey:@"commentsCountXpath"];
+    
+    self.upTopicTime=[baraholkaXpath valueForKey:@"upTopicTime"];
+    
+    if (![_categories count]) {
+        [self loadCategories];
+    }
 }
 
 #pragma mark - Search
 -(void) baraholkaQuickSearch: (NSString*) searchText
 {
+    self.quickCellSearchText = searchText;
     [self.searchDisplayController.searchResultsTableView.infiniteScrollingView stopAnimating];
     self.isQuickCell = YES;
     if (![searchText isEqualToString:@""]) {
@@ -572,7 +628,6 @@
                     Baraholka *myBaraholkaTotic = [Baraholka new];
                     [newBaraholkaTopic addObject:myBaraholkaTotic];
                     NSString* link = [key valueForKey:@"link"];
-//                    myBaraholkaTotic.url = [Network findTextIn:link fromStart:@"href=\"" toEnd:@"\">"];
                     myBaraholkaTotic.title = [[[[[[Network findTextIn:link fromStart:@"<strong>" toEnd:@"</strong>"]
                                                   stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]
                                                  stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""]
@@ -590,19 +645,22 @@
                     myBaraholkaTotic.isTorg = [[key valueForKey:@"bargain"]isEqualToString:@"ТОРГ"]?@"торг":@"";
                     
                 }
-                [_objects removeAllObjects];
-                _objects = [newBaraholkaTopic mutableCopy];
-                [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
-                [self.searchDisplayController.searchResultsTableView reloadData];
-
+                
+                if ([searchText isEqualToString: self.quickCellSearchText]) {
+                    [_objects removeAllObjects];
+                    _objects = [newBaraholkaTopic mutableCopy];
+                    [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+                    [self.searchDisplayController.searchResultsTableView reloadData];
+                }
+                
             }
-            
         }];
     }
 }
 
--(void) baraholkaFullSearch:(NSString*)searchText {
+-(void) baraholkaFullSearch:(NSString*)searchText andUrl:(NSString*) enterUrl{
     self.isQuickCell = NO;
+    self.fullCellSearchText = searchText;
     long count = [_objects count];
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
@@ -612,11 +670,27 @@
         {
             currPage=[NSString stringWithFormat:@"&start=%d",self.currentBaraholkaPage*25];
         }
-            
-        NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?charset=utf-8&q=%@%@%@",searchText,currPage,self.category];
+        
+        NSString* topicTitle = @"";
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"topicTitle"]) {
+            topicTitle = @"&topicTitle=1";
+        }
+        
+         NSString* q = @"";
+        if ([searchText length]) {
+           q = searchText;
+        }
+        BOOL connectionError = NO;
+        
+        NSString* urlString = [NSString stringWithFormat:@"%@?charset=utf8&q=%@%@%@%@",enterUrl,q,self.category,topicTitle,currPage];
         NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
         NSData *data = [NSData dataWithContentsOfURL:url];
-        if (data) {
+        if (!data)
+        {
+            connectionError = YES;
+        }
+        else
+        {
             // 2
             TFHpple *parser = [TFHpple hppleWithHTMLData:data];
             
@@ -624,10 +698,17 @@
             NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
             
             // 4
+            int indexEE = 0;
             NSMutableArray *newBaraholka = [[NSMutableArray alloc] initWithCapacity:0];
             for (TFHppleElement *element in nodes) {
                 // 5
-                if (!self.isQuickCell) {
+                indexEE++;
+                if (self.isQuickCell || ![self.fullCellSearchText isEqualToString:searchText])
+                {
+                    break;
+                }
+                else
+                {
                     Baraholka *myBaraholka = [Baraholka new];
                     [newBaraholka addObject:myBaraholka];
                     
@@ -643,8 +724,11 @@
                         myBaraholka.topicDescription = [[[[[element searchWithXPathQuery:self.descriptionXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
                         
                     }
-                    myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
-                    myBaraholka.sellType = [Network findTextIn:[[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"] fromStart:@"label-" toEnd:@"#"] ;
+                    if ([[element searchWithXPathQuery:self.categoryXpath] count]) {
+                        myBaraholka.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
+                    } else myBaraholka.category = self.categoryTitle;
+                    NSString* sellTypeClass = [[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"];
+                    myBaraholka.sellType = [Network findTextIn:sellTypeClass fromStart:@"label-" toEnd:@"#"] ;
                     myBaraholka.city = [[[element searchWithXPathQuery:self.cityXpath] objectAtIndex:0] text];
                     myBaraholka.topicID = [Network findTextIn:[[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] objectForKey:self.topicIDXpath] fromStart:@"?t=" toEnd:@"#"];
                     if ([[element searchWithXPathQuery:self.topicPriceXpath] count]) {
@@ -656,16 +740,12 @@
                     
                     myBaraholka.imageUrl = [NSString stringWithFormat:@"%@%@",self.imageUrlXpath,myBaraholka.topicID];
                     myBaraholka.imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString: myBaraholka.imageUrl]];
-                    
                     if ([[element searchWithXPathQuery:self.commentsCountXpath] count]) {
-                        myBaraholka.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
+                        myBaraholka.commentsCount=[[[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] componentsJoinedByString:@""] ;
                     }
                     if ([[element searchWithXPathQuery:self.topicTorgXpath] count]) {
                         myBaraholka.isTorg = [[[[element searchWithXPathQuery:self.topicTorgXpath] objectAtIndex:0] text] isEqualToString:@"ТОРГ"]?@"торг":@"";
                     }
-                } else
-                {
-                    break;
                 }
             }
             if (!self.isQuickCell)
@@ -675,25 +755,19 @@
                     [_objects removeAllObjects];
                 }
                 [_objects addObjectsFromArray:[[[newBaraholka objectEnumerator] allObjects] mutableCopy]];
-
-            }
-            else
-            {
-                NSLog(@"2");
-                [_objects removeAllObjects];
-                [self.tableView reloadData];
-                 [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
                 
             }
             // 8
         }
-        else
-        {
-            
-        }
+       
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (!self.isQuickCell) {
+            if (connectionError) {
+                [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка" message:@"Вероятно, соединение с Интернетом прервано." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                [alert show];
+            }else if (!self.isQuickCell && [self.fullCellSearchText isEqualToString:searchText])
+            {
                 if (self.currentBaraholkaPage == 0) {
                     if ([_objects count] != count) {
                         [self.searchDisplayController.searchResultsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
@@ -706,7 +780,7 @@
             }
         });
     });
-
+    
 }
 
 - (void) performInfinityScroll
@@ -723,37 +797,71 @@
     {
         if ([_objects count] >= 25) {
             self.currentBaraholkaPage++;
+            [self baraholkaFullSearch:self.searchDisplayController.searchBar.text andUrl:@"http://baraholka.onliner.by/search.php"];
         }
-        [self baraholkaFullSearch:self.searchDisplayController.searchBar.text];
+        else if (self.isQuickCell)
+        {
+            self.currentBaraholkaPage = 0;
+            [self baraholkaFullSearch:self.searchDisplayController.searchBar.text andUrl:@"http://baraholka.onliner.by/search.php"];
+        }
+        
     }
 }
 
-- (void) loadConfig
+- (void) loadVersion
 {
-    
     [[AFHTTPRequestOperationManager manager].operationQueue cancelAllOperations];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
     
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     
-    [manager GET:@"http://kardash.by/config.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager GET:@"http://kardash.by/version.json#" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if (![[[NSUserDefaults standardUserDefaults] valueForKey:KeyForConfigVersion] isEqualToString:[responseObject valueForKey:@"version"]] ) {
+            [self loadConfig];
+        } else
+        {
+            [self loadXpath];
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    }];
+    
+}
+
+- (void) loadConfig
+{
+    [[AFHTTPRequestOperationManager manager].operationQueue cancelAllOperations];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+    
+    [manager GET:@"http://kardash.by/config.json#" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         _config = [responseObject mutableCopy];
         if (_config) {
-            NSDictionary* settings = [_config valueForKey:@"settins"];
-            [[NSUserDefaults standardUserDefaults] setBool:[settings valueForKey:@"show ad"] forKey:KeyForShouldShowAp];
+            NSDictionary* settings = [_config valueForKey:@"settings"];
+            NSString* version = [settings valueForKey:@"version"];
+            BOOL shouldShowAd = [[settings valueForKey:@"show ad"] boolValue];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:_config forKey:KeyForConfig];
+            [[NSUserDefaults standardUserDefaults] setBool:shouldShowAd forKey:KeyForShouldShowAd];
+            [[NSUserDefaults standardUserDefaults] setValue:version forKey:KeyForConfigVersion];
+
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [self loadXpath];
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"error connection %@",error);
-       
+        
     }];
 
 }
 
-
 - (void) loadCategories
 {
+    __block BOOL connectionError = NO;
+    [MBProgressHUD hideHUDForView:self.tableView animated:NO];
     [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
@@ -762,7 +870,11 @@
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://baraholka.onliner.by"]];
         NSData *data = [NSData dataWithContentsOfURL:url];
         
-        if (data) {
+        if (!data)
+        {
+            connectionError = YES;
+        } else
+        {
             // 2
             TFHpple *parser = [TFHpple hppleWithHTMLData:data];
             
@@ -797,20 +909,15 @@
                                                                                                               @"items":itemArray}}];
                 [_categories addObject:catDict];
             }
-            
+            [self.tableView reloadData];
         }
-        else
-        {
-            [MBProgressHUD hideHUDForView:self.tableView animated:YES];
-        }
+        
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.tableView animated:YES];
-            [self.tableView reloadData];
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAp]) {
-                if (![[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
-                    [self adMobAd];
-                }
+            if (connectionError) {
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка" message:@"Вероятно, соединение с Интернетом прервано." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                [alert show];
             }
         });
     });
@@ -820,7 +927,7 @@
 - (void) reloadCategories:(NSNotification *)notification
 {
     if (![_categories count]) {
-        [self loadCategories];
+        [self loadVersion];
     }
 }
 
@@ -887,7 +994,7 @@
         //google analytics
         id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
         [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"login"
-                                                              action:@"logout_button_clicked"
+                                                              action:@"login_button_clicked"
                                                                label:@""
                                                                value:nil] build]];
         LoginViewController *controller = (LoginViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
@@ -898,7 +1005,7 @@
         //google analytics
         id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
         [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"login"
-                                                              action:@"login_button_clicked"
+                                                              action:@"logout_button_clicked"
                                                                label:@""
                                                                value:nil] build]];
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Выход" message:@"Вы действительно хотите выйти?" delegate:self cancelButtonTitle:@"Отмена" otherButtonTitles:@"Выйти", nil];
@@ -911,20 +1018,8 @@
 {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForAdsPage];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForMessagesPage];
+    [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:KeyForUserDefaultUserName];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    NSString *dataString=[NSString stringWithFormat:@"&key=%@",[Network getHash]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://profile.onliner.by/logout?redirect=http://profile.onliner.by"]];
-    
-    NSMutableData *body = [NSMutableData data];
-    [body appendData:[[NSString stringWithString:dataString] dataUsingEncoding:NSUTF8StringEncoding]];
-    request.HTTPBody = body;
-    request.HTTPMethod = @"POST";
-    NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    if (!theConnection)
-    {
-        NSLog(@"error");
-    }
-    
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -934,7 +1029,7 @@
     {
         [self.loginButton setTitle:@"Вход"];
         [self logout];
-        [LoginViewController cookiesStorageClearing];
+        [Network cookiesStorageClearing];
         [[self.tabBarController tabBar] setHidden:YES];
         [self changeAdsPosition];
     }

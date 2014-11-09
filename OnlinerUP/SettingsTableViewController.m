@@ -15,15 +15,19 @@
 
 @interface SettingsTableViewController ()
 
+#define YOUR_APP_STORE_ID 564204730 //Change this one to your ID
+
 @end
 
 @implementation SettingsTableViewController
+
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        
     }
     return self;
 }
@@ -31,6 +35,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+//    self.tableView.contentInset = UIEdgeInsetsMake(-1.0f, 0.0f, 0.0f, 0.0);
+    NSString* version = [[NSUserDefaults standardUserDefaults] valueForKey:KeyForConfigVersion];
+    if (version) {
+        self.versionLabel.text = [NSString stringWithFormat:@"v %@",[[NSUserDefaults standardUserDefaults] valueForKey:KeyForConfigVersion]];
+    }
     _purchaseController = [[PurchaceViewController alloc]init];
 }
 
@@ -48,7 +57,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -56,11 +65,15 @@
     switch(section)
     {
         case 0:
-            return 1;
+            return 3;
             break;
             
         case 1:
             return 2;
+            break;
+            
+        case 3:
+            return 1;
             break;
             
         default:
@@ -75,7 +88,19 @@
     {
         case 0:
         {
-            [self sendEmail];
+            switch (indexPath.row) {
+                    
+                case 1:
+                    [self sendEmail];
+                    break;
+                    
+                case 2:
+                    
+                     // Would contain the right link
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/id923025320"]];
+                    break;
+            }
+            
             
         }
             break;
@@ -86,6 +111,22 @@
             [self purchaseItem:indexPath.row];
         }
             break;
+        
+        case 2:
+        {
+            switch (indexPath.row) {
+                case 0:
+                {
+                    BOOL topicTitle = [[NSUserDefaults standardUserDefaults] boolForKey:@"topicTitle"];
+                    [[NSUserDefaults standardUserDefaults] setBool:!topicTitle forKey:@"topicTitle"];
+                    [[NSUserDefaults standardUserDefaults]synchronize];
+                    [tableView reloadData];
+                }
+                    break;
+                default:
+                    break;
+            }
+        }
             
         default:
             break;
@@ -100,7 +141,6 @@
     {
         case 0:
         {
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
             break;
             
@@ -108,21 +148,40 @@
         {
             if (indexPath.row == 0)
             {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked]) {
-                    cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    cell.userInteractionEnabled = NO;
-                }
+                NSInteger clickCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"UpAllClickCount"];
+                  if ( clickCount >= [[[[[NSUserDefaults standardUserDefaults] objectForKey:KeyForConfig] objectForKey:@"settings"] valueForKey:@"upAllClickCount"] intValue]) {
+                      if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked]) {
+                          cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                          cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                          cell.userInteractionEnabled = NO;
+                      }
+                  } else
+                      [cell setHidden:YES];
+                      break;
                 
             } else
             {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAp]) {
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAd]) {
                     if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsAdsRemoved]) {
                         cell.accessoryType = UITableViewCellAccessoryCheckmark;
                         cell.selectionStyle = UITableViewCellSelectionStyleNone;
                         cell.userInteractionEnabled = NO;
                     }
-                    [cell setHidden:NO];
+                } else
+                [cell setHidden:YES];
+                break;
+            }
+        }
+        case 2:
+        {
+            if (indexPath.row == 0)
+            {
+                BOOL topicTitle = [[NSUserDefaults standardUserDefaults] boolForKey:@"topicTitle"];
+                if (topicTitle) {
+                    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                } else
+                {
+                    cell.accessoryType = UITableViewCellAccessoryNone;
                 }
             }
         }
@@ -133,6 +192,57 @@
     };
  }
 
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 1.0f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0:
+                    return 114.0f;
+                    break;
+                case 1:
+                    return 32.0f;
+                    break;
+                case 2:
+                    return 32.0f;
+                    break;
+                    
+                default:
+                    break;
+            }
+        case 1:
+            switch (indexPath.row) {
+                case 0:{
+                    NSInteger clickCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"UpAllClickCount"];
+                    if ( clickCount < [[[[[NSUserDefaults standardUserDefaults] objectForKey:KeyForConfig] objectForKey:@"settings"] valueForKey:@"upAllClickCount"] intValue]) {
+                        return 0.0f;
+                        break;
+                    }
+                }
+                    break;
+                case 1:{
+                    if (![[NSUserDefaults standardUserDefaults] boolForKey:KeyForShouldShowAd]) {
+                        return 0.0f;
+                        break;
+                    }
+                }
+                    break;
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    return 32.0f;
+}
+
 #pragma mark - in-app purchaces
 
 - (void)purchaseItem:(long) index
@@ -140,13 +250,23 @@
     [self.navigationController
      pushViewController:_purchaseController animated:YES];
     if (index == 0) {
+        _purchaseController.productTitle.text = @"Загрузка...";
+        _purchaseController.productDescription.text = @"";
+        _purchaseController.buyButton.enabled = NO;
+        _purchaseController.restoreButton.enabled = NO;
         _purchaseController.productID = @"com.sozdai.OnlinerUP.enableupbutton";
         _purchaseController.productName = @"enableUP";
         [_purchaseController getProductInfo:_purchaseController.productID];
 
     } else{
+        _purchaseController.productTitle.text = @"Загрузка...";
+        _purchaseController.productDescription.text = @"";
+        _purchaseController.buyButton.enabled = NO;
+        _purchaseController.restoreButton.enabled = NO;
         _purchaseController.productID = @"com.sozdai.OnlinerUP.remads";
-        _purchaseController.productName = @"removeAds";    }
+        _purchaseController.productName = @"removeAds";
+        [_purchaseController getProductInfo:_purchaseController.productID];
+    }
     
     //google analytics
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
@@ -213,6 +333,8 @@
                                                                   action:@"email_sent"
                                                                    label:nil
                                                                    value:nil] build]];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Успешно отправлено" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"ОК" otherButtonTitles:nil, nil];
+            [alert show];
             break;}
         case MFMailComposeResultFailed:
         {

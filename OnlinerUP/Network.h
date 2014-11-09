@@ -24,4 +24,6 @@
 
 + (BOOL) rightCookiesDidLoad;
 
++(void) cookiesStorageClearing;
+
 @end

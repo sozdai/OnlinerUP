@@ -13,6 +13,7 @@
 
 @interface SettingsTableViewController : UITableViewController <MFMailComposeViewControllerDelegate>
 @property (strong, nonatomic) PurchaceViewController *purchaseController;
+@property (strong, nonatomic) IBOutlet UILabel *versionLabel;
 
 - (void)purchaseItem:(long) index;
 - (void) sendEmail;

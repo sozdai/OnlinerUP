@@ -2,23 +2,15 @@
 //  LoginViewController.h
 //  OnlinerUP
 //
-//  Created by Alex Kardash on 6/24/14.
-//  Copyright (c) 2014 sozdai. All rights reserved.
+//  Created by Alex Kardash on 10/17/14.
+//
 //
 
 #import <UIKit/UIKit.h>
 
-@interface LoginViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UITextField *loginTextField;
-@property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
-
-@property (strong,nonatomic) NSMutableData * responseData;
-@property (strong,nonatomic) NSString* task;
-
-+(void) cookiesStorageClearing;
-- (IBAction)login:(id)sender;
-- (IBAction)closeButtonClick:(UIBarButtonItem *)sender;
-- (IBAction)registerButtonClick:(UIButton *)sender;
-- (IBAction)forgotPasswordClick:(UIButton *)sender;
+@interface LoginViewController : UIViewController <UIWebViewDelegate>
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *closeButton;
+- (IBAction)closeButtonClick:(id)sender;
 
 @end

@@ -44,7 +44,6 @@ NSDictionary *DictionaryForNode(xmlNodePtr currentNode, NSMutableDictionary *par
             {
                 [resultForNode setObject:currentNodeContent forKey:@"nodeContent"];
             }
-//            NSLog(@"content: %@",currentNodeContent);
             return resultForNode;
 
         }
@@ -66,7 +65,6 @@ NSDictionary *DictionaryForNode(xmlNodePtr currentNode, NSMutableDictionary *par
             [NSString stringWithCString:(const char *)attribute->name encoding:NSUTF8StringEncoding];
           if (attributeName)
             {
-//                NSLog(@"Attribute Name Set: %@",attributeName);
               [attributeDictionary setObject:attributeName forKey:@"attributeName"];
             }
 
@@ -139,14 +137,12 @@ NSArray *PerformXPathQuery(xmlDocPtr doc, NSString *query)
   xpathCtx = xmlXPathNewContext(doc);
   if(xpathCtx == NULL)
     {
-      NSLog(@"Unable to create XPath context.");
       return nil;
     }
 
   /* Evaluate xpath expression */
   xpathObj = xmlXPathEvalExpression((xmlChar *)[query cStringUsingEncoding:NSUTF8StringEncoding], xpathCtx);
   if(xpathObj == NULL) {
-    NSLog(@"Unable to evaluate XPath.");
     xmlXPathFreeContext(xpathCtx);
     return nil;
   }
@@ -154,7 +150,6 @@ NSArray *PerformXPathQuery(xmlDocPtr doc, NSString *query)
   xmlNodeSetPtr nodes = xpathObj->nodesetval;
   if (!nodes)
     {
-//      NSLog(@"Nodes was nil.");
       xmlXPathFreeObject(xpathObj);
       xmlXPathFreeContext(xpathCtx);
       return nil;
@@ -193,7 +188,6 @@ NSArray *PerformHTMLXPathQueryWithEncoding(NSData *document, NSString *query,NSS
     
     if (doc == NULL)
     {
-        NSLog(@"Unable to parse.");
         return nil;
     }
     
@@ -219,7 +213,6 @@ NSArray *PerformXMLXPathQueryWithEncoding(NSData *document, NSString *query,NSSt
     
     if (doc == NULL)
     {
-        NSLog(@"Unable to parse.");
         return nil;
     }
     

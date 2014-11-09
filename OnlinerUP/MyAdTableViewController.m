@@ -44,12 +44,6 @@
 {
     [super viewDidLoad];
     
-    _purchaseController = [[PurchaceViewController alloc]init];
-    
-    [[SKPaymentQueue defaultQueue]
-     addTransactionObserver:_purchaseController];
-    
-    
     [self loadXpath];
     self.adsCount = @" ";
     
@@ -66,7 +60,7 @@
     
     __weak typeof(self) weakSelf = self;
     [self.tableView addPullToRefreshWithActionHandler:^{
-        [weakSelf adsLoading];
+        [weakSelf loadAd];
 //        [weakSelf getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     }];
     [self.tableView.pullToRefreshView setTitle:@"" forState:SVPullToRefreshStateAll];
@@ -74,11 +68,13 @@
 
 -(void) viewWillAppear:(BOOL)animated
 {
-    self.navigationItem.title = [[NSUserDefaults standardUserDefaults] valueForKey:KeyForUserDefaultUserName];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForAdsPage])
     {
         [_objects removeAllObjects];
+        self.navigationItem.title = @"";
     }
+    
+//    self.navigationItem.title = [[NSUserDefaults standardUserDefaults] valueForKey:KeyForUserDefaultUserName];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -119,20 +115,22 @@
 
 - (void) loadXpath
 {
-    self.xpathQueryString = @"//td[@class='frst ph colspan']/..";
-    self.upButtonXpath = @"//div[@class='b-up-section-5 arrow-right']/a";
-    self.urlXpath = @"href";
-    self.topicIDXpath = @"topicid";
-    self.topicPriceXpath = @"expectedprice";
-    self.topicTypeXpath = @"type";
-    self.titleXpath = @"//h2[@class='wraptxt']/a";
-    self.timeLeftXpath = @"//*[@class='time']";
-    self.imageUrlXpath = @"http://content.onliner.by/baraholka/icon/";
-    self.categoryXpath = @"//a[@class='gray-link']";
-    self.commentsCountXpath = @"//a[@class='c-read-replies-count']";
-    self.commentsUnreadCountXpath = @"//a[@class='c-org']";
-    self.sellTypeXpath = @"//div[@class='txt-i']/div";
-    self.messagesCountXpath = @"//*[@class='new_privmsg_count']";
+    NSDictionary* adXpath=[[[NSUserDefaults standardUserDefaults] objectForKey:KeyForConfig] objectForKey:@"adXpath"];
+    self.xpathQueryString=[adXpath valueForKey:@"xpathQueryString"];
+    self.xpathUserName=[adXpath valueForKey:@"xpathUserName"];
+    self.upButtonXpath=[adXpath valueForKey:@"upButtonXpath"];
+    self.urlXpath=[adXpath valueForKey:@"urlXpath"];
+    self.topicIDXpath=[adXpath valueForKey:@"topicIDXpath"];
+    self.topicPriceXpath=[adXpath valueForKey:@"topicPriceXpath"];
+    self.topicTypeXpath=[adXpath valueForKey:@"topicTypeXpath"];
+    self.titleXpath=[adXpath valueForKey:@"titleXpath"];
+    self.timeLeftXpath=[adXpath valueForKey:@"timeLeftXpath"];
+    self.imageUrlXpath=[adXpath valueForKey:@"imageUrlXpath"];
+    self.categoryXpath=[adXpath valueForKey:@"categoryXpath"];
+    self.commentsCountXpath=[adXpath valueForKey:@"commentsCountXpath"];
+    self.commentsUnreadCountXpath=[adXpath valueForKey:@"commentsUnreadCountXpath"];
+    self.sellTypeXpath=[adXpath valueForKey:@"sellTypeXpath"];
+    self.messagesCountXpath=[adXpath valueForKey:@"messagesCountXpath"];
 }
 
 #pragma mark - Table view data source
@@ -210,8 +208,19 @@
     UIFont *titleFont = [UIFont fontWithName:@"Helvetica Neue" size:16.0f];
     CGSize constraintSize = CGSizeMake(251.0f,MAXFLOAT);
     NSString* subject = myAd.title;
-    CGSize titleSize = [subject sizeWithFont:titleFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-    return titleSize.height+29;
+    NSAttributedString *attributedSubject =
+    [[NSAttributedString alloc]
+     initWithString:subject
+     attributes:@
+     {
+     NSFontAttributeName: titleFont
+     }];
+    CGRect titleRect = [attributedSubject boundingRectWithSize:constraintSize
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                       context:nil];
+    CGSize titleSize = titleRect.size;
+    
+    return ceilf(titleSize.height)+29;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -236,16 +245,131 @@
 }
 
 #pragma mark - Load data
-- (void) adsLoading
+
+- (void) reloadAd
 {
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        // 1
-        _tempObjects = [NSMutableArray array];
-        self.currentPage = 0;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForAdsPage])
+    {
+//        [_objects removeAllObjects];
+        [MBProgressHUD hideHUDForView:self.tableView animated:NO];
+        [MBProgressHUD showHUDAddedTo:self.tableView animated:NO];
         [self loadAd];
+    }
+}
+
+-(void)loadAd {
+    
+    _tempObjects = [NSMutableArray array];
+    self.currentPage = 0;
+    
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        
+        BOOL connectionError = NO;
+        NSString* currentPage = self.currentPage>0?[NSString stringWithFormat:@"&start=%d",self.currentPage*50]:@"";
+        NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?type=ufleamarket%@",currentPage];
+        
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSData *htmlData = [NSData dataWithContentsOfURL:url];
+        if (!htmlData) {
+            connectionError = YES;
+        }
+        else {
+            self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+            self.userName = [Network findTextIn:self.htmlString fromStart:@"nickname: '" toEnd:@"'"];
+            NSString* adsCount = [Network findTextIn:self.htmlString fromStart:@"(найдено " toEnd:@")<"];
+            self.adsCount = adsCount?adsCount:nil;
+            NSString* userId = [Network findTextIn:self.htmlString fromStart:@"id: parseInt('" toEnd:@"'"];
+            NSString* userAvatarUrl = [NSString stringWithFormat:@"https://content.onliner.by/user/avatar/80x80/%@",userId];
+            self.userAvatrarImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:userAvatarUrl]]];
+            NSString* amount = [[Network findTextIn:self.htmlString fromStart:@"money: '" toEnd: @" руб.'"] stringByReplacingOccurrencesOfString:@" " withString:@""];
+            self.accountAmount = amount?amount:@"";
+            
+            NSString* adsCountStr = [Network findTextIn:self.htmlString fromStart:@"(найдено " toEnd:@" объявл"];
+            float adsCountFloat = [adsCountStr floatValue]/50;
+            int maxPage = (int)floorf(adsCountFloat);
+            
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForNeedReloadForAdsPage];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            if (self.adsCount) {
+                // 2
+                TFHpple *parser = [TFHpple hppleWithHTMLData:htmlData];
+                
+                // 3
+                NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
+                
+                // 4
+                NSMutableArray *singlePageObjects = [NSMutableArray array];
+                NSMutableArray *newAd = [[NSMutableArray alloc] initWithCapacity:0];
+                for (TFHppleElement *element in nodes) {
+                    // 5
+                    MyAd *myAd = [MyAd new];
+                    [newAd addObject:myAd];
+                    
+                    // 7
+                    TFHppleElement* elementUP = [[element searchWithXPathQuery:self.upButtonXpath] objectAtIndex:0];
+                    
+                    myAd.url = [elementUP objectForKey:self.urlXpath];
+                    myAd.topicID = [elementUP objectForKey:self.topicIDXpath];
+                    myAd.topicPrice = [elementUP objectForKey:self.topicPriceXpath];
+                    myAd.topicType = [elementUP objectForKey:self.topicTypeXpath];
+                    // 6
+                    myAd.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
+                    if ([myAd.topicType isEqualToString:@"1"]) {
+                        NSString* tl = [NSString stringWithFormat:@"s%@", [[[element searchWithXPathQuery:self.timeLeftXpath] objectAtIndex:0] text]];
+                        if ([tl rangeOfString:@"час" options:NSCaseInsensitiveSearch].location != NSNotFound)
+                        {
+                            myAd.timeLeft = [NSString stringWithFormat:@"%@ ч", [Network findTextIn:tl fromStart:@"s" toEnd:@" час"]];
+                        } else
+                        {
+                            myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
+                        }
+                        myAd.timeLeft = [myAd.timeLeft isEqualToString:@"21 ч"]?@"20 ч":myAd.timeLeft;
+                        if ([myAd.timeLeft isEqualToString:@"21 ч"]) {
+                            myAd.timeLeft = @"20 ч";
+                        }                    //[self findTextIn:tl fromStart:@"" toEnd:@" "];
+                    }
+                    myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
+                    
+                    if ([[element searchWithXPathQuery:self.commentsCountXpath] count] != 0) {
+                        myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
+                        myAd.isUnRead = NO;
+                    }
+                    if ([[element searchWithXPathQuery:self.commentsUnreadCountXpath] count] != 0) {
+                        myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsUnreadCountXpath] objectAtIndex:0] text];
+                        myAd.isUnRead = YES;
+                    }
+                    
+                    myAd.sellType = [[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"];
+                }
+                
+                singlePageObjects = [[[newAd objectEnumerator] allObjects] mutableCopy];
+                [_tempObjects addObjectsFromArray:[singlePageObjects mutableCopy]];
+                // 8
+                
+                if (self.currentPage<maxPage) {
+                    self.currentPage++;
+                    [self loadAd];
+                }
+                
+            }
+            else {
+            }
+            
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
+            if (connectionError) {
+                [MBProgressHUD hideHUDForView:self.searchDisplayController.searchResultsTableView animated:YES];
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                [alert show];
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForAdsPage];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+
+            } else {
+                
+            self.navigationItem.title = self.userName;
             //google analytics
             id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
             [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ads"
@@ -258,118 +382,13 @@
             [self.tableView reloadData];
             [self.tableView.pullToRefreshView stopAnimating];
             [MBProgressHUD hideHUDForView:self.tableView animated:YES];
+            }
         });
     });
-    
-}
 
-- (void) reloadAd
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForNeedReloadForAdsPage])
-    {
-        [_objects removeAllObjects];
-        [MBProgressHUD hideHUDForView:self.tableView animated:NO];
-        [MBProgressHUD showHUDAddedTo:self.tableView animated:NO];
-        [self adsLoading];
-    }
-}
-
--(void)loadAd {
-    NSString* currentPage = self.currentPage>0?[NSString stringWithFormat:@"&start=%d",self.currentPage*50]:@"";
-    NSString* urlString = [NSString stringWithFormat:@"http://baraholka.onliner.by/search.php?type=ufleamarket%@",currentPage];
     
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSData *htmlData = [NSData dataWithContentsOfURL:url];
-    if (htmlData) {
-        self.htmlString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
-        
-        NSString* adsCount = [Network findTextIn:self.htmlString fromStart:@"(найдено " toEnd:@")<"];
-        self.adsCount = adsCount?adsCount:nil;
-        NSString* userId = [Network findTextIn:self.htmlString fromStart:@"avatar/48x48/" toEnd:@"\""];
-        NSString* userAvatarUrl = [NSString stringWithFormat:@"https://content.onliner.by/user/avatar/80x80/%@",userId];
-        self.userAvatrarImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:userAvatarUrl]]];
-        NSString* amount = [[Network findTextIn:self.htmlString fromStart:@"<span id=\"user-balance\">" toEnd: @"</span>"] stringByReplacingOccurrencesOfString:@" " withString:@""];
-        self.accountAmount = amount?amount:@"";
-        
-        NSString* adsCountStr = [Network findTextIn:self.htmlString fromStart:@"(найдено " toEnd:@" объявл"];
-        float adsCountFloat = [adsCountStr floatValue]/50;
-        int maxPage = (int)floorf(adsCountFloat);
-        
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:KeyForNeedReloadForAdsPage];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        if (self.adsCount) {
-            // 2
-            TFHpple *parser = [TFHpple hppleWithHTMLData:htmlData];
-            
-            // 3
-            NSArray *nodes = [parser searchWithXPathQuery:self.xpathQueryString];
-            
-            // 4
-            NSMutableArray *singlePageObjects = [NSMutableArray array];
-            NSMutableArray *newAd = [[NSMutableArray alloc] initWithCapacity:0];
-            for (TFHppleElement *element in nodes) {
-                // 5
-                MyAd *myAd = [MyAd new];
-                [newAd addObject:myAd];
-                
-                // 7
-                TFHppleElement* elementUP = [[element searchWithXPathQuery:self.upButtonXpath] objectAtIndex:0];
-                
-                myAd.url = [elementUP objectForKey:self.urlXpath];
-                myAd.topicID = [elementUP objectForKey:self.topicIDXpath];
-                myAd.topicPrice = [elementUP objectForKey:self.topicPriceXpath];
-                myAd.topicType = [elementUP objectForKey:self.topicTypeXpath];
-                // 6
-                myAd.title = [[[element searchWithXPathQuery:self.titleXpath] objectAtIndex:0] text];
-                if ([myAd.topicType isEqualToString:@"1"]) {
-                    NSString* tl = [NSString stringWithFormat:@"s%@", [[[element searchWithXPathQuery:self.timeLeftXpath] objectAtIndex:0] text]];
-                    if ([tl rangeOfString:@"час" options:NSCaseInsensitiveSearch].location != NSNotFound)
-                    {
-                        myAd.timeLeft = [NSString stringWithFormat:@"%@ ч", [Network findTextIn:tl fromStart:@"s" toEnd:@" час"]];
-                    } else
-                    {
-                        myAd.timeLeft = [NSString stringWithFormat:@"%@ м", [Network findTextIn:tl fromStart:@"s" toEnd:@" мин"]];
-                    }
-                    myAd.timeLeft = [myAd.timeLeft isEqualToString:@"21 ч"]?@"20 ч":myAd.timeLeft;
-                    if ([myAd.timeLeft isEqualToString:@"21 ч"]) {
-                        myAd.timeLeft = @"20 ч";
-                    }                    //[self findTextIn:tl fromStart:@"" toEnd:@" "];
-                }
-                myAd.category = [[[element searchWithXPathQuery:self.categoryXpath] objectAtIndex:0] text];
-                
-                if ([[element searchWithXPathQuery:self.commentsCountXpath] count] != 0) {
-                    myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsCountXpath] objectAtIndex:0] text];
-                    myAd.isUnRead = NO;
-                }
-                if ([[element searchWithXPathQuery:self.commentsUnreadCountXpath] count] != 0) {
-                    myAd.commentsCount=[[[element searchWithXPathQuery:self.commentsUnreadCountXpath] objectAtIndex:0] text];
-                    myAd.isUnRead = YES;
-                }
-                
-                myAd.sellType = [[[element searchWithXPathQuery:self.sellTypeXpath] objectAtIndex:0] objectForKey:@"class"];
-            }
-            
-            singlePageObjects = [[[newAd objectEnumerator] allObjects] mutableCopy];
-            [_tempObjects addObjectsFromArray:[singlePageObjects mutableCopy]];
-            // 8
-            
-            if (self.currentPage<maxPage) {
-                self.currentPage++;
-                [self loadAd];
-            }
-            
-        }
-        else {
-            NSLog(@"Нет объявлений");
-        }
-        
-    }
-    else
-    {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:KeyForNeedReloadForAdsPage];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
+    
+    
 }
 
 
@@ -403,13 +422,13 @@
                                                            label:@""
                                                            value:nil] build]];
     NSInteger clickCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"UpAllClickCount"];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked] ||  clickCount < 5)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:KeyForIsUpUnlocked] ||  clickCount < [[[[[NSUserDefaults standardUserDefaults] objectForKey:KeyForConfig] objectForKey:@"settings"] valueForKey:@"upAllClickCount"] intValue])
     {
        
-        [[NSUserDefaults standardUserDefaults] setInteger:clickCount+1 forKey:@"UpAllClickCount"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
         NSArray* params = [self getIDsWithType0];
         if (![params count] == 0) {
+            [[NSUserDefaults standardUserDefaults] setInteger:clickCount+1 forKey:@"UpAllClickCount"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [self upAllFreeAds:params];
         }
         else
@@ -420,7 +439,7 @@
     }
     else
     {
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ограниченная функциональность" message:@"Хотите разблокировать 'UP All' кнопку навсегда?" delegate:self cancelButtonTitle:@"Нет, спасибо" otherButtonTitles:@"Разблокировать", nil];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Кнопка заблокирована" message:@"Хотите навсегда разблокировать кнопку 'UP All'?" delegate:self cancelButtonTitle:@"Нет, спасибо" otherButtonTitles:@"Разблокировать", nil];
         [alert show];
     }
 }
@@ -554,7 +573,7 @@
     manager.responseSerializer = [AFJSONResponseSerializer serializer];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [self adsLoading];
+        [self loadAd];
 //        [self getStringFromUrl:@"http://baraholka.onliner.by/gapi/messages/unread/" withParams:nil andHeaders:@{@"Content-Type":@"text/html; charset=utf-8"}];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Ошибка соединения" message:@"Проверьте соединение с интернетом" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
@@ -579,6 +598,10 @@
     }
     else if([title isEqualToString:@"Разблокировать"])
     {
+        _purchaseController = [[PurchaceViewController alloc]init];
+        
+        [[SKPaymentQueue defaultQueue]
+         addTransactionObserver:_purchaseController];
         [self purchaseItem];
     }
 }

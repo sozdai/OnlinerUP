@@ -16,7 +16,9 @@ NSString* const KeyForNeedReloadForAdsPage=@"AdsNeedReload";
 NSString* const KeyForNeedReloadForMessagesPage=@"MessagesNeedReload";
 NSString* const KeyForIsAdsRemoved=@"AdsRemoved";
 NSString* const KeyForIsUpUnlocked=@"UpUnlocked";
-NSString* const KeyForShouldShowAp=@"ShouldShowAd";
+NSString* const KeyForShouldShowAd=@"ShouldShowAd";
+NSString* const KeyForConfigVersion=@"ConfigVersion";
+NSString* const KeyForConfig=@"Config";
 
 @implementation OnlinerUPAppDelegate
 
@@ -39,6 +41,8 @@ NSString* const KeyForShouldShowAp=@"ShouldShowAd";
     
     // 4
     id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:@"UA-55334434-1"];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     return YES;
 }
@@ -79,8 +83,7 @@ NSString* const KeyForShouldShowAp=@"ShouldShowAd";
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
              // Replace this implementation with code to handle the error appropriately.
-             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             abort();
         } 
     }
@@ -152,7 +155,6 @@ NSString* const KeyForShouldShowAp=@"ShouldShowAd";
          Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
          
          */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }    
     

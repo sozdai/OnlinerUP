@@ -76,7 +76,6 @@
 {
     self.shouldMoveUp = NO;
     self.page = 1;
-    [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];
     [self loadMessages];
     
     //Google analytics
@@ -114,6 +113,7 @@
 {
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 //        [_objects removeAllObjects];
+        __block BOOL connectionError = NO;
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         manager.responseSerializer = [AFJSONResponseSerializer serializer];
         manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
@@ -173,16 +173,21 @@
                 self.navigationItem.title = [NSString stringWithFormat:@"%@ (%d)", self.title, self.newMessagesCount];
             } else self.navigationItem.title = self.title;
             
-                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if (self.page == 1)
+                    }
+             failure:^(AFHTTPRequestOperation *operation, NSError *error)
             {
-            _objects = [NSMutableArray array];
-                [self.tableView reloadData];
-            }
+                 if (self.page == 1)
+                 {
+                     _objects = [NSMutableArray array];
+                     [self.tableView reloadData];
+                 }
             [MBProgressHUD hideHUDForView:self.tableView animated:YES];
         }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            if (connectionError) {
+               
+            }
             [self.tableView.pullToRefreshView stopAnimating];
             [self.tableView.infiniteScrollingView stopAnimating];
             
@@ -237,21 +242,6 @@
     
     [headerView.authorButton setTitle:myMessage.authorName forState:UIControlStateNormal];
     headerView.authorButton.tag = section;
-    int folder = [self.folder intValue];
-    switch (folder) {
-        case 0:
-            headerView.backgroundColor = [UIColor colorWithRed:0.988 green:0.925 blue:0.851 alpha:1];
-            break;
-        case 1:
-            headerView.backgroundColor = [UIColor colorWithRed:0.878 green:0.929 blue:0.965 alpha:1];
-            break;
-        case -1:
-            headerView.backgroundColor = [UIColor colorWithRed:0.89 green:0.949 blue:0.827 alpha:1];
-            break;
-        default:
-            headerView.backgroundColor = [UIColor colorWithRed:(232/255.0) green:(101/255.0) blue:(86/255.0) alpha:1.0];
-            break;
-    }
     
     return headerView;
 }
@@ -268,8 +258,20 @@
     {
         constraintSize = CGSizeMake(465.0f,MAXFLOAT);
     }
-    CGSize textSize = [subject sizeWithFont:cellFont constrainedToSize:constraintSize lineBreakMode:NSLineBreakByWordWrapping];
-    return textSize.height+9;
+    
+    NSAttributedString *attributedSubject =
+    [[NSAttributedString alloc]
+     initWithString:subject
+     attributes:@
+     {
+     NSFontAttributeName: cellFont
+     }];
+    CGRect cellRect = [attributedSubject boundingRectWithSize:constraintSize
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                       context:nil];
+    CGSize cellSize = cellRect.size;
+    
+    return ceilf(cellSize.height)+9;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
